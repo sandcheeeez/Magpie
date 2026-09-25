@@ -54,6 +54,16 @@ The Xcode project, targets and some class names still use the original Yippy nam
 
 To render the UI with sample data into PNGs without touching your real history, run the XCTest build with `--snapshot=<output dir>`.
 
+### Tests
+
+Run the unit tests from Xcode with the **Yippy XCTest** scheme (⌘U), or from the command line:
+
+```
+xcodebuild -project Yippy.xcodeproj -scheme "Yippy XCTest" -destination 'platform=macOS' test -only-testing:YippyTests
+```
+
+History tests use an in-memory SwiftData store, so they never touch real data. The UI tests (`YippyUITests`) predate the redesign and haven't been updated yet.
+
 ### Regenerating the icon
 
 The app icon is drawn in code: `swift tools/make-icon.swift Yippy/Resources/Assets.xcassets/AppIcon.appiconset` (add `beta` for the beta icon).

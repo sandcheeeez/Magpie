@@ -9,23 +9,21 @@ import XCTest
 class PasteboardMonitorTests: XCTestCase {
     
     func testPasteboardDidChangeCalled() {
-        // 1. Given
-        let pasteboard = NSPasteboard(name: NSPasteboard.Name(rawValue: "test"))
-        let delegate = PasteboardMonitorDelegateMock(expectation: self.expectation(description: "pasteboardDidChangeCalled"))
-        _ = PasteboardMonitor(pasteboard: pasteboard, delegate: delegate)
+        // 1. Given a monitor that has seen the pasteboard's current contents
+        let pasteboard = NSPasteboard(name: NSPasteboard.Name(rawValue: "MagpieTests.PasteboardMonitor"))
+        pasteboard.clearContents()
+        let expectation = self.expectation(description: "pasteboardDidChangeCalled")
+        expectation.assertForOverFulfill = false
+        let delegate = PasteboardMonitorDelegateMock(expectation: expectation)
+        let monitor = PasteboardMonitor(pasteboard: pasteboard, changeCount: pasteboard.changeCount, delegate: delegate)
         
-        // 2. Add something to the pasteboard
+        // 2. Copy something, the way apps do (only clearing the pasteboard increments its change count)
+        pasteboard.clearContents()
         pasteboard.setString("test", forType: .string)
         
         // 3. Assert delegate function called
-        XCTAssertEqual(pasteboard.string(forType: .string), "test")
-        waitForExpectations(timeout: 1, handler: nil)
-    }
-
-    func testPerformancePasteboardChangeDetection() {
-        self.measure {
-            testPasteboardDidChangeCalled()
-        }
+        waitForExpectations(timeout: 2, handler: nil)
+        withExtendedLifetime(monitor) {}
     }
 }
 
@@ -37,7 +35,7 @@ class PasteboardMonitorDelegateMock: PasteboardMonitorDelegate {
         self.expectation = expectation
     }
     
-    func pasteboardDidChange(_ pasteboard: NSPasteboard) {
+    func pasteboardDidChange(_ pasteboard: NSPasteboard, originBundleId: String?) {
         expectation.fulfill()
     }
 }

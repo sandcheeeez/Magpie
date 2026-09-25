@@ -36,7 +36,8 @@ Work happens on `main` in small commits. Each checked step has been built and co
 - [x] Update the snapshot tool
 
 ### Phase 3: Tests
-- [ ] Replace the outdated tests (Rx and file-storage based, and currently not compiling) with Swift Testing tests: history operations against an in-memory store, search ranking, settings decoding, filters
+- [x] Replace the outdated tests (Rx and file-storage based, and currently not compiling) with Swift Testing tests: history operations against an in-memory store, search ranking, settings decoding, filters
+- [ ] Update the UI tests (`YippyUITests`) for the redesigned panel and settings (optional; they need Accessibility access to run)
 
 ### Phase 4: Naming
 - [ ] Rename the internal `Yippy*` types, files, targets, schemes and project to Magpie

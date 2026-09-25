@@ -3,105 +3,39 @@
 //  MagpieTests
 //
 
-import XCTest
+import Testing
+import AppKit
 @testable import Magpie
 
-class HistoryItemTests: XCTestCase {
-
-    var savedItem: HistoryItem!
-    var unsavedItem: HistoryItem!
+@Suite struct HistoryItemTests {
     
-    var unsavedData: [NSPasteboard.PasteboardType: Data]!
-    
-    var cache: HistoryCacheMock!
-    
-    override func setUp() {
-        
-        unsavedData = [.string: "Test".data(using: .utf8)!]
-        
-        cache = HistoryCacheMock()
-        
-        savedItem = HistoryItem(
-            fsId: UUID(),
-            types: [.string],
-            cache: cache
-        )
-        
-        unsavedItem = HistoryItem(
-            unsavedData: unsavedData,
-            cache: cache
-        )
+    @Test(arguments: [
+        ("https://github.com/sandcheeeez/Magpie", true),
+        ("  https://apple.com  ", true),
+        ("see https://apple.com for details", false),
+        ("just some words", false),
+        ("", false),
+    ])
+    func linkDetection(string: String, isLink: Bool) {
+        #expect(HistoryItem.isLink(string) == isLink)
     }
     
-    // MARK: - data()
-    func testDataForMissingType() {
-        // 1. For an item without a type
-        XCTAssertFalse(savedItem.types.contains(.color))
-        
-        // 2. Get the data for that type
-        let res = savedItem.data(forType: .color)
-        
-        // 3. The data should be nil
-        XCTAssertNil(res)
+    @Test func kindComesFromTheData() {
+        let url = URL(fileURLWithPath: "/Applications/Safari.app")
+        #expect(HistoryItem.kind(of: [.fileURL: url.dataRepresentation]) == .file)
+        #expect(HistoryItem.kind(of: [.tiff: Data([0])]) == .image)
+        #expect(HistoryItem.kind(of: [.string: Data("https://apple.com".utf8)]) == .link)
+        #expect(HistoryItem.kind(of: [.string: Data("hello".utf8)]) == .text)
     }
     
-    func testDataForTypeInUnsavedData() {
-        // 1. For an item with a type
-        XCTAssertTrue(savedItem.types.contains(.string))
-        
-        // 2. Get the data for that type
-        let res = unsavedItem.data(forType: .string)
-        
-        // 3. Should be the unsaved data
-        XCTAssertEqual(res, unsavedData[.string])
+    @Test func searchTextIsFolded() {
+        let text = HistoryItem.searchText(of: [.string: Data("Café ÜBER".utf8)], kind: .text)
+        #expect(text == "cafe uber")
     }
     
-    func testDataForNoUnsavedData() {
-        // 1. Set up the mock
-        let data = Data(repeating: 1, count: 1)
-        cache.data = data
-        
-        // 2. Get the data for that type
-        let res = savedItem.data(forType: .string)
-        
-        // 3. Should be the data from the cache
-        XCTAssertEqual(res, data)
-        XCTAssertEqual(cache.dataCallCount, 1)
-    }
-    
-    // MARK: - startCaching()
-    func testStartCaching() {
-        // 1. Start not caching with unsaved data
-        XCTAssertFalse(unsavedItem.isCached)
-        XCTAssertNotNil(unsavedItem.unsavedData)
-        
-        // 2. Start caching
-        unsavedItem.startCaching()
-        
-        // 3. Unsaved data should be nil and should be caching
-        self.expectation(for: NSPredicate(block: { (_, _) -> Bool in
-            return self.unsavedItem.isCached && self.unsavedItem.unsavedData == nil
-        }), evaluatedWith: nil, handler: nil)
-        
-        waitForExpectations(timeout: 2, handler: nil)
-    }
-    
-    // MARK: - stopCaching()
-    func testStopCaching() {
-        // 1. Need to make sure caching has started.
-        self.expectation(for: NSPredicate(block: { (_, _) -> Bool in
-            return self.savedItem.isCached
-        }), evaluatedWith: nil, handler: { () -> Bool in
-            // 2. Start caching
-            self.savedItem.stopCaching()
-            return true
-        })
-        
-        // 3. Unsaved data should be nil and should not be caching
-        self.expectation(for: NSPredicate(block: { (_, _) -> Bool in
-            return !self.savedItem.isCached && self.savedItem.unsavedData == nil
-        }), evaluatedWith: nil, handler: nil)
-        
-        waitForExpectations(timeout: 2, handler: nil)
+    @Test func fileSearchTextIncludesTheName() {
+        let url = URL(fileURLWithPath: "/Users/me/Documents/Report.pdf")
+        let text = HistoryItem.searchText(of: [.fileURL: url.dataRepresentation], kind: .file)
+        #expect(text.contains("report.pdf"))
     }
 }
