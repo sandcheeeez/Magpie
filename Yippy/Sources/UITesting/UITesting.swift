@@ -16,7 +16,9 @@ struct UITesting {
         _ = UserDefaults.standard.blank()
         
         if let test = CommandLine.arguments.filter({$0.contains("--Settings.testData=")}).first {
-            Settings.main = Settings.testData.from(test)
+            if let settings = Settings.testData.from(test) {
+                Settings.main = settings
+            }
         }
         
         try loadTestAppSupport(launchArgs: launchArgs, environment: environment)

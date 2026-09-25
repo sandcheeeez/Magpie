@@ -5,28 +5,17 @@
 
 import Foundation
 import Cocoa
-import RxSwift
-import RxRelay
 
 /// Representation of all the history
 class History {
 
     private var _items = [HistoryItem]()
 
-    /// Behaviour relay for the last change count of the pasteboard.
-    /// Private so that it cannot be manipulated outside of the class.
-    private var _lastRecordedChangeCount = BehaviorRelay<Int>(value: -1)
-
-    /// Observable for the last recorded change count of the pasteboard.
-    var observableLastRecordedChangeCount: Observable<Int> {
-        return _lastRecordedChangeCount.asObservable()
+    /// The last change count for which the items on the pasteboard have been added to the history. Saved so copies aren't re-added after relaunching.
+    private(set) var lastRecordedChangeCount = -1 {
+        didSet { Settings.main.pasteboardChangeCount = lastRecordedChangeCount }
     }
-
-    /// The last change count for which the items on the pasteboard have been added to the history.
-    var lastRecordedChangeCount: Int {
-        return _lastRecordedChangeCount.value
-    }
-
+    
     /// The file manager for the storage of pasteboard history.
     var historyFM: HistoryFileManager
 
@@ -36,16 +25,13 @@ class History {
     /// The cache for the history item.
     var cache: HistoryCache
 
-    private var _maxItems: BehaviorRelay<Int>
+    /// The most unpinned items kept. Pinned items don't count towards it.
+    private(set) var maxItems: Int
 
     var items: [HistoryItem] {
         get {
             return self._items
         }
-    }
-
-    var maxItems: Observable<Int> {
-        _maxItems.asObservable()
     }
 
     enum Change {
@@ -86,7 +72,7 @@ class History {
         self.metadataStore = metadataStore
         self.cache = cache
         self._items = items
-        self._maxItems = BehaviorRelay<Int>(value: maxItems)
+        self.maxItems = maxItems
 
         if unpinnedCount > maxItems {
             reduceHistory(to: maxItems)
@@ -134,8 +120,8 @@ class History {
         historyFM.insertItem(newHistory: _items, at: i)
         metadataStore.save(_items)
 
-        if unpinnedCount > _maxItems.value {
-            reduceHistory(to: _maxItems.value)
+        if unpinnedCount > maxItems {
+            reduceHistory(to: maxItems)
         }
     }
 
@@ -177,8 +163,8 @@ class History {
         notify(.update(index: i))
         metadataStore.save(_items)
 
-        if !isPinned && unpinnedCount > _maxItems.value {
-            reduceHistory(to: _maxItems.value)
+        if !isPinned && unpinnedCount > maxItems {
+            reduceHistory(to: maxItems)
         }
     }
 
@@ -190,14 +176,15 @@ class History {
     }
 
     func recordPasteboardChange(withCount changeCount: Int) {
-        _lastRecordedChangeCount.accept(changeCount)
+        lastRecordedChangeCount = changeCount
     }
 
     func setMaxItems(_ maxItems: Int) {
-        if maxItems < _maxItems.value {
+        if maxItems < self.maxItems {
             reduceHistory(to: maxItems)
         }
-        _maxItems.accept(maxItems)
+        self.maxItems = maxItems
+        Settings.main.maxHistory = maxItems
     }
 
     /// Removes the oldest unpinned items until there are at most `maxItems` unpinned items.

@@ -5,8 +5,6 @@
 
 import Foundation
 import Cocoa
-import RxSwift
-import RxRelay
 
 class YippyWindowController: NSWindowController {
     
@@ -47,33 +45,37 @@ class YippyWindowController: NSWindowController {
     
     private var oldApp: NSRunningApplication?
     
-    private var position = PanelPosition.right
-    private var targetFrame: NSRect?
+    private weak var state: AppState?
     
     /// Incremented on each show, so a fade-out that finishes after the panel was reshown doesn't close it.
     private var showGeneration = 0
     
-    func subscribeTo(toggle: BehaviorRelay<Bool>) -> Disposable {
-        return toggle
-            .subscribe(onNext: {
-                [] in
-                if !$0 {
-                    self.hide()
-                    self.oldApp?.activate()
-                }
-                else {
-                    self.oldApp = NSWorkspace.shared.frontmostApplication
-                    self.show()
-                    NSApp.activate()
-                }
-            })
+    /// Shows or hides the panel, and keeps its frame in place, as the state changes.
+    func observe(state: AppState) {
+        self.state = state
+        Magpie.observe({ state.isHistoryPanelShown }) { isShown in
+            if isShown {
+                self.oldApp = NSWorkspace.shared.frontmostApplication
+                self.show()
+                NSApp.activate()
+            }
+            else if self.window?.isVisible == true {
+                self.hide()
+                self.oldApp?.activate()
+            }
+        }
+        observeAll({ (state.panelPosition, state.currentScreen) }) { position, screen in
+            self.window?.setFrame(position.getFrame(forScreen: screen), display: true)
+        }
     }
     
     /// Slides and fades the panel in from its edge.
     private func show() {
         guard let window = window else { return }
         showGeneration += 1
-        let frame = targetFrame ?? window.frame
+        // Computed here rather than relying on the frame observer, which may not have run yet.
+        let position = state?.panelPosition ?? .right
+        let frame = state.map({ position.getFrame(forScreen: $0.currentScreen) }) ?? window.frame
         let offset = position.slideOffset
         let reduceMotion = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
         
@@ -104,16 +106,6 @@ class YippyWindowController: NSWindowController {
             if generation == self.showGeneration {
                 self.close()
             }
-        })
-    }
-    
-    func subscribeFrameTo(position: Observable<PanelPosition>, screen: Observable<NSScreen>) -> Disposable {
-        Observable.combineLatest(position, screen).subscribe(onNext: {
-            (position, screen) in
-            let frame = position.getFrame(forScreen: screen)
-            self.position = position
-            self.targetFrame = frame
-            self.window?.setFrame(frame, display: true)
         })
     }
 }

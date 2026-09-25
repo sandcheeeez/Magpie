@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0562EBC4ABC1E46234F6DDB5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08BBCA4AEAA6B36DC994A78 /* SettingsView.swift */; };
 		34010D2A234AB3F100C1218D /* YippyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34010D29234AB3F100C1218D /* YippyWindow.swift */; };
-		340D3CA72361957100C2B335 /* ObservableType+WithPrevious.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340D3CA62361957100C2B335 /* ObservableType+WithPrevious.swift */; };
 		340FB43B236407D70053D82C /* Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340FB43A236407D70053D82C /* Controller.swift */; };
 		340FB43D236550390053D82C /* YippyTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340FB43C236550390053D82C /* YippyTableViewDelegate.swift */; };
 		341D9D25233724A2008A2BE6 /* KeyPressMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341D9D24233724A2008A2BE6 /* KeyPressMonitor.swift */; };
@@ -45,7 +44,6 @@
 		343F411A233C8C14004DA324 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343F4119233C8C14004DA324 /* SettingsTests.swift */; };
 		343F411C233C97A4004DA324 /* UserDefaults+Blank.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343F411B233C97A4004DA324 /* UserDefaults+Blank.swift */; };
 		34417677240863930076BEDA /* SettingsWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34417676240863930076BEDA /* SettingsWindowController.swift */; };
-		344176792408640D0076BEDA /* HotKeySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344176782408640D0076BEDA /* HotKeySettingsViewController.swift */; };
 		344C1160234DB23B00B35DC9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 344C115F234DB23B00B35DC9 /* Assets.xcassets */; };
 		344C1162234DD2EF00B35DC9 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 344C1161234DD2EF00B35DC9 /* Quartz.framework */; };
 		344DF6FB2348459F00351310 /* NSLayoutDimension+Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344DF6FA2348459F00351310 /* NSLayoutDimension+Constraint.swift */; };
@@ -86,13 +84,11 @@
 		347D59A522F43B94005F6EA8 /* YippyTextCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347D59A322F43B94005F6EA8 /* YippyTextCellView.swift */; };
 		3486C0A6234416A4004B2F2E /* YippyTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3486C0A5234416A4004B2F2E /* YippyTableView.swift */; };
 		3488B14022FAE8F30019E7DA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3488B13F22FAE8F30019E7DA /* Constants.swift */; };
-		3488B14222FAE9FA0019E7DA /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3488B14122FAE9FA0019E7DA /* State.swift */; };
+		3488B14222FAE9FA0019E7DA /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3488B14122FAE9FA0019E7DA /* AppState.swift */; };
 		348D526523876B1E0024A5C7 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 348D526423876B1E0024A5C7 /* README.md */; };
 		348D526723878E160024A5C7 /* PanelPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B2FD9422F98B1A0068D50A /* PanelPosition.swift */; };
 		3490D3972328D6BD00BA8747 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490D3962328D6BD00BA8747 /* WelcomeViewController.swift */; };
 		3490D3992328EFB300BA8747 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490D3982328EFB300BA8747 /* HelpViewController.swift */; };
-		3496BAD92442A90000D110AE /* GeneralSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496BAD82442A90000D110AE /* GeneralSettingsViewController.swift */; };
-		3496BADB2442B28A00D110AE /* SettingsTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496BADA2442B28A00D110AE /* SettingsTabViewController.swift */; };
 		349F7942235C2055000CA5B9 /* ArrayFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349F7941235C2055000CA5B9 /* ArrayFileManager.swift */; };
 		349F7944235C24D4000CA5B9 /* HistoryFileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349F7943235C24D4000CA5B9 /* HistoryFileManagerTests.swift */; };
 		349F7946235C4D2B000CA5B9 /* Alerter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349F7945235C4D2B000CA5B9 /* Alerter.swift */; };
@@ -137,7 +133,6 @@
 		34E516CD2352C4AF008B4256 /* YippyItemBaseCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E516CC2352C4AF008B4256 /* YippyItemBaseCellView.swift */; };
 		34E516CF2352C4D4008B4256 /* YippyItemContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E516CE2352C4D4008B4256 /* YippyItemContentView.swift */; };
 		34E56483235E777E00E362CF /* NSTextCheckingResult+Groups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E56482235E777E00E362CF /* NSTextCheckingResult+Groups.swift */; };
-		34EC0FF42504A599004E1A63 /* Fuse in Frameworks */ = {isa = PBXBuildFile; productRef = 34EC0FF32504A599004E1A63 /* Fuse */; };
 		34EC0FF72504AC9C004E1A63 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EC0FF62504AC9C004E1A63 /* Search.swift */; };
 		34EC0FF92504ADE7004E1A63 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EC0FF82504ADE7004E1A63 /* SearchEngine.swift */; };
 		34F1047D23542CCE00B65251 /* HistoryItem+YippyItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F1047C23542CCE00B65251 /* HistoryItem+YippyItem.swift */; };
@@ -145,10 +140,9 @@
 		42B6F2330A4EE1A2D16DADE6 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B679C12318A792B1DFA689 /* TextRecognizer.swift */; };
 		450DD275E227C6EAC455C70E /* LoginItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D36FC7A206FA20B75B81814 /* LoginItem.swift */; };
 		764DF3758B5EB4CD5F35E6A2 /* HistoryItemMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = A09A2D3C7841CFB98A6BEDBD /* HistoryItemMetadata.swift */; };
-		A264A9577B701DDB6DE3BFBF /* Pods_Yippy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0ACFCB0B26BF8B8E6EF42EA /* Pods_Yippy.framework */; };
-		B8A057305B33D2028FC0EC05 /* Pods_YippyUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06717A6CF5535260A83784EF /* Pods_YippyUITests.framework */; };
+		9A0EC23317F60DC1130BA6CB /* Observe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C79B51B543C112E8758093A /* Observe.swift */; };
 		C7317E5797295F4A49A5AA1A /* DevSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F52C876769BE8B8ECC4645 /* DevSnapshot.swift */; };
-		D104B1D4E210055A8E6424F0 /* Pods_YippyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1AA8E9C3FA65CDE7DA527C7 /* Pods_YippyTests.framework */; };
+		F7A1D6E3484C68CAB08E7BCF /* KeyFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356EEC64EE5ADE316FD93E19 /* KeyFormatting.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,14 +163,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		04546907DC383E069F30ADBE /* Pods-YippyUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyUITests.debug.xcconfig"; path = "Target Support Files/Pods-YippyUITests/Pods-YippyUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		06717A6CF5535260A83784EF /* Pods_YippyUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YippyUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		202453EF7CD6236AEDFC2D28 /* Pods-Yippy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yippy.debug.xcconfig"; path = "Target Support Files/Pods-Yippy/Pods-Yippy.debug.xcconfig"; sourceTree = "<group>"; };
-		292479A169E6616BA796405B /* Pods-Yippy.xctest.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yippy.xctest.xcconfig"; path = "Target Support Files/Pods-Yippy/Pods-Yippy.xctest.xcconfig"; sourceTree = "<group>"; };
-		2D2B3E00E7AF930AA001E27C /* Pods-Yippy.beta release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yippy.beta release.xcconfig"; path = "Target Support Files/Pods-Yippy/Pods-Yippy.beta release.xcconfig"; sourceTree = "<group>"; };
 		2D36FC7A206FA20B75B81814 /* LoginItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LoginItem.swift; sourceTree = "<group>"; };
 		34010D29234AB3F100C1218D /* YippyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YippyWindow.swift; sourceTree = "<group>"; };
-		340D3CA62361957100C2B335 /* ObservableType+WithPrevious.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ObservableType+WithPrevious.swift"; sourceTree = "<group>"; };
 		340FB43A236407D70053D82C /* Controller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controller.swift; sourceTree = "<group>"; };
 		340FB43C236550390053D82C /* YippyTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YippyTableViewDelegate.swift; sourceTree = "<group>"; };
 		341D9D24233724A2008A2BE6 /* KeyPressMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyPressMonitor.swift; sourceTree = "<group>"; };
@@ -211,7 +199,6 @@
 		343F4119233C8C14004DA324 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
 		343F411B233C97A4004DA324 /* UserDefaults+Blank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Blank.swift"; sourceTree = "<group>"; };
 		34417676240863930076BEDA /* SettingsWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindowController.swift; sourceTree = "<group>"; };
-		344176782408640D0076BEDA /* HotKeySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotKeySettingsViewController.swift; sourceTree = "<group>"; };
 		344C115F234DB23B00B35DC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		344C1161234DD2EF00B35DC9 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		344C1163234DD31700B35DC9 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -249,12 +236,10 @@
 		347D59A322F43B94005F6EA8 /* YippyTextCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YippyTextCellView.swift; sourceTree = "<group>"; };
 		3486C0A5234416A4004B2F2E /* YippyTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YippyTableView.swift; sourceTree = "<group>"; };
 		3488B13F22FAE8F30019E7DA /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		3488B14122FAE9FA0019E7DA /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
+		3488B14122FAE9FA0019E7DA /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		348D526423876B1E0024A5C7 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3490D3962328D6BD00BA8747 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		3490D3982328EFB300BA8747 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
-		3496BAD82442A90000D110AE /* GeneralSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsViewController.swift; sourceTree = "<group>"; };
-		3496BADA2442B28A00D110AE /* SettingsTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTabViewController.swift; sourceTree = "<group>"; };
 		349F7941235C2055000CA5B9 /* ArrayFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayFileManager.swift; sourceTree = "<group>"; };
 		349F7943235C24D4000CA5B9 /* HistoryFileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryFileManagerTests.swift; sourceTree = "<group>"; };
 		349F7945235C4D2B000CA5B9 /* Alerter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerter.swift; sourceTree = "<group>"; };
@@ -309,23 +294,12 @@
 		34EC0FF62504AC9C004E1A63 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
 		34EC0FF82504ADE7004E1A63 /* SearchEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEngine.swift; sourceTree = "<group>"; };
 		34F1047C23542CCE00B65251 /* HistoryItem+YippyItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HistoryItem+YippyItem.swift"; sourceTree = "<group>"; };
-		473D1B2417E6C47B92751AA6 /* Pods-YippyTests.beta debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyTests.beta debug.xcconfig"; path = "Target Support Files/Pods-YippyTests/Pods-YippyTests.beta debug.xcconfig"; sourceTree = "<group>"; };
-		497AE5F620140FB1A3632D80 /* Pods-YippyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyTests.debug.xcconfig"; path = "Target Support Files/Pods-YippyTests/Pods-YippyTests.debug.xcconfig"; sourceTree = "<group>"; };
-		6345AD4696DA11C3A58F38CB /* Pods-Yippy.beta debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yippy.beta debug.xcconfig"; path = "Target Support Files/Pods-Yippy/Pods-Yippy.beta debug.xcconfig"; sourceTree = "<group>"; };
+		356EEC64EE5ADE316FD93E19 /* KeyFormatting.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KeyFormatting.swift; sourceTree = "<group>"; };
+		5C79B51B543C112E8758093A /* Observe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Observe.swift; sourceTree = "<group>"; };
 		73F52C876769BE8B8ECC4645 /* DevSnapshot.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DevSnapshot.swift; sourceTree = "<group>"; };
 		81B679C12318A792B1DFA689 /* TextRecognizer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		A09A2D3C7841CFB98A6BEDBD /* HistoryItemMetadata.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HistoryItemMetadata.swift; sourceTree = "<group>"; };
 		B08BBCA4AEAA6B36DC994A78 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		B1AA8E9C3FA65CDE7DA527C7 /* Pods_YippyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YippyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B7B2145CEF513C8B71E739A5 /* Pods-YippyUITests.xctest.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyUITests.xctest.xcconfig"; path = "Target Support Files/Pods-YippyUITests/Pods-YippyUITests.xctest.xcconfig"; sourceTree = "<group>"; };
-		C0ACFCB0B26BF8B8E6EF42EA /* Pods_Yippy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yippy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C555279B4167FBDCA36E01CC /* Pods-YippyUITests.beta debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyUITests.beta debug.xcconfig"; path = "Target Support Files/Pods-YippyUITests/Pods-YippyUITests.beta debug.xcconfig"; sourceTree = "<group>"; };
-		D494A85C58610499F7B77533 /* Pods-YippyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyTests.release.xcconfig"; path = "Target Support Files/Pods-YippyTests/Pods-YippyTests.release.xcconfig"; sourceTree = "<group>"; };
-		D645D0527FE8FF6EF353F28D /* Pods-YippyUITests.beta release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyUITests.beta release.xcconfig"; path = "Target Support Files/Pods-YippyUITests/Pods-YippyUITests.beta release.xcconfig"; sourceTree = "<group>"; };
-		DB08CF772E2DDB5EB572EC69 /* Pods-YippyTests.xctest.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyTests.xctest.xcconfig"; path = "Target Support Files/Pods-YippyTests/Pods-YippyTests.xctest.xcconfig"; sourceTree = "<group>"; };
-		DD6B8A620296CD50E196DD19 /* Pods-YippyTests.beta release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyTests.beta release.xcconfig"; path = "Target Support Files/Pods-YippyTests/Pods-YippyTests.beta release.xcconfig"; sourceTree = "<group>"; };
-		E64E0EE8F7B5AE23FF150E45 /* Pods-Yippy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yippy.release.xcconfig"; path = "Target Support Files/Pods-Yippy/Pods-Yippy.release.xcconfig"; sourceTree = "<group>"; };
-		FEE6024221D8C9C221BBE212 /* Pods-YippyUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyUITests.release.xcconfig"; path = "Target Support Files/Pods-YippyUITests/Pods-YippyUITests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -335,8 +309,6 @@
 			files = (
 				344C1162234DD2EF00B35DC9 /* Quartz.framework in Frameworks */,
 				34545E50267715D600D6404D /* HotKey in Frameworks */,
-				34EC0FF42504A599004E1A63 /* Fuse in Frameworks */,
-				A264A9577B701DDB6DE3BFBF /* Pods_Yippy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,7 +316,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D104B1D4E210055A8E6424F0 /* Pods_YippyTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,7 +323,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B8A057305B33D2028FC0EC05 /* Pods_YippyUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,9 +334,6 @@
 			children = (
 				344C1163234DD31700B35DC9 /* QuartzCore.framework */,
 				344C1161234DD2EF00B35DC9 /* Quartz.framework */,
-				C0ACFCB0B26BF8B8E6EF42EA /* Pods_Yippy.framework */,
-				B1AA8E9C3FA65CDE7DA527C7 /* Pods_YippyTests.framework */,
-				06717A6CF5535260A83784EF /* Pods_YippyUITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -432,8 +399,8 @@
 				343F411B233C97A4004DA324 /* UserDefaults+Blank.swift */,
 				34E516C823528AE5008B4256 /* NSTextView+AttributedText.swift */,
 				34E56482235E777E00E362CF /* NSTextCheckingResult+Groups.swift */,
-				340D3CA62361957100C2B335 /* ObservableType+WithPrevious.swift */,
 				34A0E5512414F42D00B6A470 /* NSEvent.ModifierFlags+Codable.swift */,
+				5C79B51B543C112E8758093A /* Observe.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -488,9 +455,6 @@
 		3441767A240864260076BEDA /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				3496BAD82442A90000D110AE /* GeneralSettingsViewController.swift */,
-				344176782408640D0076BEDA /* HotKeySettingsViewController.swift */,
-				3496BADA2442B28A00D110AE /* SettingsTabViewController.swift */,
 				34417676240863930076BEDA /* SettingsWindowController.swift */,
 				B08BBCA4AEAA6B36DC994A78 /* SettingsView.swift */,
 			);
@@ -614,6 +578,7 @@
 			children = (
 				341D9D3423373083008A2BE6 /* YippyHotKey.swift */,
 				341D9D36233730A5008A2BE6 /* YippyHotKeys.swift */,
+				356EEC64EE5ADE316FD93E19 /* KeyFormatting.swift */,
 			);
 			path = YippyHotKey;
 			sourceTree = "<group>";
@@ -646,7 +611,7 @@
 				34B2FD9422F98B1A0068D50A /* PanelPosition.swift */,
 				34734C7D2330CB6A0056F855 /* PasteboardMonitor */,
 				343F4116233C5A6F004DA324 /* Settings */,
-				3488B14122FAE9FA0019E7DA /* State.swift */,
+				3488B14122FAE9FA0019E7DA /* AppState.swift */,
 				348D525E2387667D0024A5C7 /* YippyHotKey */,
 				341FFEE82442EDA500C47E6D /* HistoryItemText.swift */,
 			);
@@ -708,7 +673,6 @@
 				34ACFBD022EB0B11004E6E63 /* YippyTests */,
 				34ACFBDB22EB0B11004E6E63 /* YippyUITests */,
 				34ACFBBC22EB0B0F004E6E63 /* Products */,
-				E25B1BF673F15B06A7F5367C /* Pods */,
 				2F6C79B4B534D194417375B9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -772,28 +736,6 @@
 			path = Search;
 			sourceTree = "<group>";
 		};
-		E25B1BF673F15B06A7F5367C /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				202453EF7CD6236AEDFC2D28 /* Pods-Yippy.debug.xcconfig */,
-				292479A169E6616BA796405B /* Pods-Yippy.xctest.xcconfig */,
-				6345AD4696DA11C3A58F38CB /* Pods-Yippy.beta debug.xcconfig */,
-				E64E0EE8F7B5AE23FF150E45 /* Pods-Yippy.release.xcconfig */,
-				2D2B3E00E7AF930AA001E27C /* Pods-Yippy.beta release.xcconfig */,
-				497AE5F620140FB1A3632D80 /* Pods-YippyTests.debug.xcconfig */,
-				DB08CF772E2DDB5EB572EC69 /* Pods-YippyTests.xctest.xcconfig */,
-				473D1B2417E6C47B92751AA6 /* Pods-YippyTests.beta debug.xcconfig */,
-				D494A85C58610499F7B77533 /* Pods-YippyTests.release.xcconfig */,
-				DD6B8A620296CD50E196DD19 /* Pods-YippyTests.beta release.xcconfig */,
-				04546907DC383E069F30ADBE /* Pods-YippyUITests.debug.xcconfig */,
-				B7B2145CEF513C8B71E739A5 /* Pods-YippyUITests.xctest.xcconfig */,
-				C555279B4167FBDCA36E01CC /* Pods-YippyUITests.beta debug.xcconfig */,
-				FEE6024221D8C9C221BBE212 /* Pods-YippyUITests.release.xcconfig */,
-				D645D0527FE8FF6EF353F28D /* Pods-YippyUITests.beta release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -801,11 +743,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 34ACFBE122EB0B11004E6E63 /* Build configuration list for PBXNativeTarget "Yippy" */;
 			buildPhases = (
-				750D5CFCA0BAE22103480DDB /* [CP] Check Pods Manifest.lock */,
 				34ACFBB722EB0B0F004E6E63 /* Sources */,
 				34ACFBB822EB0B0F004E6E63 /* Frameworks */,
 				34ACFBB922EB0B0F004E6E63 /* Resources */,
-				D04500AD22B2AEF42A36F940 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -813,7 +753,6 @@
 			);
 			name = Yippy;
 			packageProductDependencies = (
-				34EC0FF32504A599004E1A63 /* Fuse */,
 				34545E4F267715D600D6404D /* HotKey */,
 			);
 			productName = Yippy;
@@ -824,11 +763,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 34ACFBE422EB0B11004E6E63 /* Build configuration list for PBXNativeTarget "YippyTests" */;
 			buildPhases = (
-				7DDB83DEAFAC1A134A439734 /* [CP] Check Pods Manifest.lock */,
 				34ACFBC922EB0B11004E6E63 /* Sources */,
 				34ACFBCA22EB0B11004E6E63 /* Frameworks */,
 				34ACFBCB22EB0B11004E6E63 /* Resources */,
-				4A0057EE70700FCD977DF106 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -845,11 +782,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 34ACFBE722EB0B11004E6E63 /* Build configuration list for PBXNativeTarget "YippyUITests" */;
 			buildPhases = (
-				2A60A7B814DF5E6C64690AA7 /* [CP] Check Pods Manifest.lock */,
 				34ACFBD422EB0B11004E6E63 /* Sources */,
 				34ACFBD522EB0B11004E6E63 /* Frameworks */,
 				34ACFBD622EB0B11004E6E63 /* Resources */,
-				651949D2B65A134E8F9E664E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -900,7 +835,6 @@
 			mainGroup = 34ACFBB222EB0B0E004E6E63;
 			packageReferences = (
 				345DCFBB2420C2D2003E214D /* XCRemoteSwiftPackageReference "HotKey" */,
-				34EC0FF22504A599004E1A63 /* XCRemoteSwiftPackageReference "fuse-swift" */,
 			);
 			productRefGroup = 34ACFBBC22EB0B0F004E6E63 /* Products */;
 			projectDirPath = "";
@@ -940,126 +874,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		2A60A7B814DF5E6C64690AA7 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-YippyUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4A0057EE70700FCD977DF106 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-YippyTests/Pods-YippyTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-YippyTests/Pods-YippyTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-YippyTests/Pods-YippyTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		651949D2B65A134E8F9E664E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-YippyUITests/Pods-YippyUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-YippyUITests/Pods-YippyUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-YippyUITests/Pods-YippyUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		750D5CFCA0BAE22103480DDB /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Yippy-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7DDB83DEAFAC1A134A439734 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-YippyTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D04500AD22B2AEF42A36F940 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Yippy/Pods-Yippy-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Yippy/Pods-Yippy-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Yippy/Pods-Yippy-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		34ACFBB722EB0B0F004E6E63 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -1075,7 +889,6 @@
 				345131ED238366B1002D9D03 /* PreviewWindowController.swift in Sources */,
 				34B5C43223580CFF005247EB /* Loggable.swift in Sources */,
 				3426811E233E0A4600BA226A /* Accessibility.swift in Sources */,
-				3496BADB2442B28A00D110AE /* SettingsTabViewController.swift in Sources */,
 				3465A90023EF84A2009EE52B /* Cache.swift in Sources */,
 				34E516CD2352C4AF008B4256 /* YippyItemBaseCellView.swift in Sources */,
 				3490D3992328EFB300BA8747 /* HelpViewController.swift in Sources */,
@@ -1085,7 +898,7 @@
 				345B149323403B4100C2D0DA /* AccessControlMock.swift in Sources */,
 				345131EF23836725002D9D03 /* PreviewViewController.swift in Sources */,
 				341D9D27233724FE008A2BE6 /* NSEventModifierFlags+KeyPressMonitor.swift in Sources */,
-				3488B14222FAE9FA0019E7DA /* State.swift in Sources */,
+				3488B14222FAE9FA0019E7DA /* AppState.swift in Sources */,
 				34B2FD9722F98C4E0068D50A /* NSMenu+Functional.swift in Sources */,
 				345B14B12341AF1900C2D0DA /* KeyPressHelperMock.swift in Sources */,
 				340FB43D236550390053D82C /* YippyTableViewDelegate.swift in Sources */,
@@ -1095,7 +908,6 @@
 				34ACFBEB22EB0D6A004E6E63 /* YippyViewController.swift in Sources */,
 				34E56483235E777E00E362CF /* NSTextCheckingResult+Groups.swift in Sources */,
 				3474C1402346E82900232620 /* YippyHistory.swift in Sources */,
-				3496BAD92442A90000D110AE /* GeneralSettingsViewController.swift in Sources */,
 				345A900723ED422400A21334 /* CellHeightCache.swift in Sources */,
 				345BAE3423500E4B008ACB4C /* PasteboardType+Codable.swift in Sources */,
 				341D9D37233730A5008A2BE6 /* YippyHotKeys.swift in Sources */,
@@ -1140,7 +952,6 @@
 				3423B1C3234DA3B700B40715 /* YippyStatusItem.swift in Sources */,
 				34EC0FF92504ADE7004E1A63 /* SearchEngine.swift in Sources */,
 				341D9D3C233ADE6E008A2BE6 /* YippyWindowController.swift in Sources */,
-				340D3CA72361957100C2B335 /* ObservableType+WithPrevious.swift in Sources */,
 				34D018EB232B4D70006259E1 /* WelcomeWindowController.swift in Sources */,
 				34CA01FE235D3AE700EB067C /* DataFileManager.swift in Sources */,
 				34B5C42E23580CD9005247EB /* YippyError.swift in Sources */,
@@ -1149,7 +960,6 @@
 				34268126233EE83700BA226A /* AccessControlHelperMock.swift in Sources */,
 				341D9D33233725DE008A2BE6 /* SpecialKeyChangedEventMonitor.swift in Sources */,
 				345BAE2C23500580008ACB4C /* YippyFileIconCellView.swift in Sources */,
-				344176792408640D0076BEDA /* HotKeySettingsViewController.swift in Sources */,
 				34B5C42A23580CB0005247EB /* ErrorLogger.swift in Sources */,
 				34A0E5522414F42D00B6A470 /* NSEvent.ModifierFlags+Codable.swift in Sources */,
 				34B5C43623582CCB005247EB /* YippyTiffCellView.swift in Sources */,
@@ -1164,6 +974,8 @@
 				42B6F2330A4EE1A2D16DADE6 /* TextRecognizer.swift in Sources */,
 				C7317E5797295F4A49A5AA1A /* DevSnapshot.swift in Sources */,
 				0562EBC4ABC1E46234F6DDB5 /* SettingsView.swift in Sources */,
+				F7A1D6E3484C68CAB08E7BCF /* KeyFormatting.swift in Sources */,
+				9A0EC23317F60DC1130BA6CB /* Observe.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1364,7 +1176,6 @@
 		};
 		34ACFBE222EB0B11004E6E63 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 202453EF7CD6236AEDFC2D28 /* Pods-Yippy.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Yippy/Supporting Files/Yippy.entitlements";
@@ -1391,7 +1202,6 @@
 		};
 		34ACFBE322EB0B11004E6E63 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E64E0EE8F7B5AE23FF150E45 /* Pods-Yippy.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Yippy/Supporting Files/Yippy.entitlements";
@@ -1418,7 +1228,6 @@
 		};
 		34ACFBE522EB0B11004E6E63 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 497AE5F620140FB1A3632D80 /* Pods-YippyTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1441,7 +1250,6 @@
 		};
 		34ACFBE622EB0B11004E6E63 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D494A85C58610499F7B77533 /* Pods-YippyTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1464,7 +1272,6 @@
 		};
 		34ACFBE822EB0B11004E6E63 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 04546907DC383E069F30ADBE /* Pods-YippyUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1486,7 +1293,6 @@
 		};
 		34ACFBE922EB0B11004E6E63 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FEE6024221D8C9C221BBE212 /* Pods-YippyUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1570,7 +1376,6 @@
 		};
 		34F104802354323100B65251 /* Beta Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6345AD4696DA11C3A58F38CB /* Pods-Yippy.beta debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = BetaAppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Yippy/Supporting Files/Yippy.entitlements";
@@ -1598,7 +1403,6 @@
 		};
 		34F104812354323100B65251 /* Beta Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 473D1B2417E6C47B92751AA6 /* Pods-YippyTests.beta debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1621,7 +1425,6 @@
 		};
 		34F104822354323100B65251 /* Beta Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C555279B4167FBDCA36E01CC /* Pods-YippyUITests.beta debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1698,7 +1501,6 @@
 		};
 		34F104842354325400B65251 /* Beta Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2D2B3E00E7AF930AA001E27C /* Pods-Yippy.beta release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = BetaAppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Yippy/Supporting Files/Yippy.entitlements";
@@ -1726,7 +1528,6 @@
 		};
 		34F104852354325400B65251 /* Beta Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DD6B8A620296CD50E196DD19 /* Pods-YippyTests.beta release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1749,7 +1550,6 @@
 		};
 		34F104862354325400B65251 /* Beta Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D645D0527FE8FF6EF353F28D /* Pods-YippyUITests.beta release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1833,7 +1633,6 @@
 		};
 		34F104882354325E00B65251 /* XCTest */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 292479A169E6616BA796405B /* Pods-Yippy.xctest.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Yippy/Supporting Files/Yippy.entitlements";
@@ -1860,7 +1659,6 @@
 		};
 		34F104892354325E00B65251 /* XCTest */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DB08CF772E2DDB5EB572EC69 /* Pods-YippyTests.xctest.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1884,7 +1682,6 @@
 		};
 		34F1048A2354325E00B65251 /* XCTest */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B7B2145CEF513C8B71E739A5 /* Pods-YippyUITests.xctest.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1966,14 +1763,6 @@
 				version = 0.1.5;
 			};
 		};
-		34EC0FF22504A599004E1A63 /* XCRemoteSwiftPackageReference "fuse-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/krisk/fuse-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1981,11 +1770,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 345DCFBB2420C2D2003E214D /* XCRemoteSwiftPackageReference "HotKey" */;
 			productName = HotKey;
-		};
-		34EC0FF32504A599004E1A63 /* Fuse */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 34EC0FF22504A599004E1A63 /* XCRemoteSwiftPackageReference "fuse-swift" */;
-			productName = Fuse;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

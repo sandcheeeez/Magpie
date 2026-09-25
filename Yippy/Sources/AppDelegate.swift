@@ -5,14 +5,10 @@
 
 import Cocoa
 import HotKey
-import RxSwift
-import RxRelay
-import RxCocoa
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     
-    let disposeBag = DisposeBag()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         checkBuildFlags()
@@ -23,7 +19,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             DevSnapshot.prepare()
         }
         #endif
-        Controller.main = Controller(state: State.main, settings: Settings.main)
+        Controller.main = Controller(state: AppState.main, settings: Settings.main)
         #if XCTEST
         if let snapshotDirectory = snapshotDirectory {
             setupHotKey()
@@ -38,7 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        State.main.history.metadataStore.flush()
+        AppState.main.history.metadataStore.flush()
     }
     
     func checkLaunchArgs() {

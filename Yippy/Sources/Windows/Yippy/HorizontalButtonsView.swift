@@ -5,8 +5,6 @@
 
 import Foundation
 import Cocoa
-import RxSwift
-import RxRelay
 
 class HorizontalButtonsView: NSScrollView {
     
@@ -44,20 +42,17 @@ class HorizontalButtonsView: NSScrollView {
         contentView.drawsBackground = false
     }
     
-    func bind(toData data: Observable<[String]>) -> Disposable {
-        return data.bind(onNext: {
-            self.titles = $0
-            self.buttons = self.createButtons(data: $0)
-            self.buttonsDocumentView = NSView()
-            self.buttons.forEach({self.buttonsDocumentView.addSubview($0)})
-            self.layoutButtons()
-        })
+    /// Replaces the buttons with one per title.
+    func setTitles(_ titles: [String]) {
+        self.titles = titles
+        buttons = createButtons(data: titles)
+        buttonsDocumentView = NSView()
+        buttons.forEach({ buttonsDocumentView.addSubview($0) })
+        layoutButtons()
     }
     
-    func bind(toSelected selected: Observable<Int>) -> Disposable {
-        return selected.bind(onNext: {
-            self.updateSelected($0)
-        })
+    func select(_ index: Int) {
+        updateSelected(index)
     }
     
     private func createButtons(data: [String]) -> [NSButton] {

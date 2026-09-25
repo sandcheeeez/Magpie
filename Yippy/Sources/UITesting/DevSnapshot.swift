@@ -23,7 +23,7 @@ enum DevSnapshot {
     }
     
     static func run(outputDirectory: URL) {
-        let history = State.main.history!
+        let history = AppState.main.history!
         history.clear()
         for (i, sample) in samples().enumerated().reversed() {
             let item = HistoryItem(unsavedData: sample.data, cache: history.cache)
@@ -33,8 +33,10 @@ enum DevSnapshot {
         }
         
         Controller.main.togglePopover()
-        // Select the image, whose content runs to the card's edges.
-        (Controller.main.yippyWindowController.contentViewController as? YippyViewController)?.selected.accept(3)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            // Select the image, whose content runs to the card's edges.
+            (Controller.main.yippyWindowController.contentViewController as? YippyViewController)?.selected = 3
+        }
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {

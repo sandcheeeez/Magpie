@@ -5,8 +5,6 @@
 
 import Foundation
 import Cocoa
-import RxSwift
-import RxRelay
 
 protocol PreviewViewController: NSViewController {
     

@@ -5,42 +5,17 @@
 
 import SwiftUI
 import AppKit
-import RxSwift
 import HotKey
 import UniformTypeIdentifiers
 
-/// Bridges the app's Rx state to SwiftUI for the settings window.
+/// Settings window behaviour that isn't app state: recording a new shortcut and choosing apps to exclude.
+///
+/// Everything else binds directly to `AppState`.
 @Observable
 final class SettingsModel {
-
-    var launchAtLogin: Bool {
-        didSet {
-            guard launchAtLogin != State.main.launchAtLogin.value else { return }
-            LoginItem.setEnabled(launchAtLogin)
-            State.main.launchAtLogin.accept(LoginItem.isEnabled)
-        }
-    }
-
-    var panelPosition: PanelPosition {
-        didSet { if panelPosition != State.main.panelPosition.value { State.main.panelPosition.accept(panelPosition) } }
-    }
-
-    var maxHistory: Int {
-        didSet { State.main.history.setMaxItems(maxHistory) }
-    }
-
-    var showsRichText: Bool {
-        didSet { if showsRichText != State.main.showsRichText.value { State.main.showsRichText.accept(showsRichText) } }
-    }
-
-    var pastesRichText: Bool {
-        didSet { if pastesRichText != State.main.pastesRichText.value { State.main.pastesRichText.accept(pastesRichText) } }
-    }
-
-    var excludedBundleIds: [String] {
-        didSet { if excludedBundleIds != State.main.excludedBundleIds.value { State.main.excludedBundleIds.accept(excludedBundleIds) } }
-    }
-
+    
+    let state = AppState.main
+    
     var toggleHotKey: KeyCombo
 
     /// A shortcut being recorded, shown until saved.
@@ -54,21 +29,9 @@ final class SettingsModel {
     }
 
     @ObservationIgnored private let keyPressMonitor = KeyPressMonitor()
-    @ObservationIgnored private let disposeBag = DisposeBag()
 
     init() {
-        let state = State.main
-        launchAtLogin = LoginItem.isEnabled
-        panelPosition = state.panelPosition.value
-        maxHistory = Settings.main.maxHistory
-        showsRichText = state.showsRichText.value
-        pastesRichText = state.pastesRichText.value
-        excludedBundleIds = state.excludedBundleIds.value
         toggleHotKey = Settings.main.toggleHotKey
-
-        // Keep in sync with changes made from the status menu.
-        state.panelPosition.subscribe(onNext: { [weak self] in self?.panelPosition = $0 }).disposed(by: disposeBag)
-        state.launchAtLogin.subscribe(onNext: { [weak self] in self?.launchAtLogin = $0 }).disposed(by: disposeBag)
 
         keyPressMonitor.isPaused = true
         keyPressMonitor.subscribeToKeyDown { [weak self] keys, modifiers in
@@ -106,8 +69,8 @@ final class SettingsModel {
         panel.prompt = "Exclude"
         panel.message = "Copies made in these apps won't be saved to your history."
         guard panel.runModal() == .OK else { return }
-        let ids = panel.urls.compactMap({ Bundle(url: $0)?.bundleIdentifier }).filter({ !excludedBundleIds.contains($0) })
-        excludedBundleIds.append(contentsOf: ids)
+        let ids = panel.urls.compactMap({ Bundle(url: $0)?.bundleIdentifier }).filter({ !state.excludedBundleIds.contains($0) })
+        state.excludedBundleIds.append(contentsOf: ids)
     }
 }
 
@@ -116,19 +79,20 @@ struct GeneralSettingsView: View {
     @Bindable var model: SettingsModel
 
     var body: some View {
+        @Bindable var state = model.state
         Form {
             Section {
-                Toggle("Open Magpie when you log in", isOn: $model.launchAtLogin)
+                Toggle("Open Magpie when you log in", isOn: Binding(get: { state.launchAtLogin }, set: { state.setLaunchAtLogin($0) }))
             }
             Section("Panel") {
-                Picker("Position", selection: $model.panelPosition) {
+                Picker("Position", selection: $state.panelPosition) {
                     ForEach([PanelPosition.right, .left, .top, .bottom], id: \.self) { Text($0.title).tag($0) }
                     Divider()
                     ForEach([PanelPosition.centerExtraSmall, .centerSmall, .centerMedium, .centerLarge, .fullScreen], id: \.self) { Text($0.title).tag($0) }
                 }
             }
             Section {
-                Picker("Keep up to", selection: $model.maxHistory) {
+                Picker("Keep up to", selection: $state.maxHistory) {
                     ForEach(Constants.settings.maxHistoryItemsOptions, id: \.self) { Text("\($0) items").tag($0) }
                 }
             } header: {
@@ -138,8 +102,8 @@ struct GeneralSettingsView: View {
                     .foregroundStyle(.secondary)
             }
             Section("Formatting") {
-                Toggle("Show formatting in the history", isOn: $model.showsRichText)
-                Toggle("Paste with formatting", isOn: $model.pastesRichText)
+                Toggle("Show formatting in the history", isOn: $state.showsRichText)
+                Toggle("Paste with formatting", isOn: $state.pastesRichText)
             }
         }
         .formStyle(.grouped)
@@ -208,7 +172,7 @@ struct PrivacySettingsView: View {
         Form {
             Section {
                 List(selection: $selection) {
-                    ForEach(model.excludedBundleIds, id: \.self) { bundleId in
+                    ForEach(model.state.excludedBundleIds, id: \.self) { bundleId in
                         HStack(spacing: 8) {
                             if let icon = AppInfo.icon(forBundleId: bundleId) {
                                 Image(nsImage: icon).resizable().frame(width: 20, height: 20)
@@ -228,12 +192,12 @@ struct PrivacySettingsView: View {
                 HStack {
                     Button("Add App…", systemImage: "plus") { model.addExcludedApps() }
                     Button("Remove", systemImage: "minus") {
-                        model.excludedBundleIds.removeAll(where: { selection.contains($0) })
+                        model.state.excludedBundleIds.removeAll(where: { selection.contains($0) })
                         selection.removeAll()
                     }
                     .disabled(selection.isEmpty)
                     Spacer()
-                    Button("Restore Defaults") { model.excludedBundleIds = Settings.defaultExcludedBundleIds }
+                    Button("Restore Defaults") { model.state.excludedBundleIds = Settings.defaultExcludedBundleIds }
                 }
             } header: {
                 Text("Don't save copies from these apps")

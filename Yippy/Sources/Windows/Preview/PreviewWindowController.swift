@@ -5,16 +5,12 @@
 
 import Foundation
 import Cocoa
-import RxSwift
-import RxRelay
 
 class PreviewWindowController: NSWindowController {
     
     var previewTextViewController: PreviewTextViewController!
     var previewImageViewController: PreviewImageViewController!
     var previewQLViewController: PreviewQLViewController!
-    
-    var disposeBag = DisposeBag()
     
     var previewItem: HistoryItem?
     
@@ -38,23 +34,21 @@ class PreviewWindowController: NSWindowController {
         previewWC.previewImageViewController = createPreviewViewController()
         previewWC.previewQLViewController = createPreviewViewController()
         
-        State.main.showsRichText.distinctUntilChanged().subscribe(onNext: previewWC.onShowsRichText).disposed(by: previewWC.disposeBag)
-        
         return previewWC
     }
     
-    func subscribeTo(previewItem: BehaviorRelay<HistoryItem?>) -> Disposable {
-        return previewItem
-            .subscribe(onNext: {
-                self.previewItem = $0
-                if let item = $0 {
-                    self.showWindow(nil)
-                    self.updateController(forItem: item)
-                }
-                else {
-                    self.close()
-                }
-            })
+    func observe(state: AppState) {
+        Magpie.observe({ state.previewHistoryItem }) { item in
+            self.previewItem = item
+            if let item = item {
+                self.showWindow(nil)
+                self.updateController(forItem: item)
+            }
+            else {
+                self.close()
+            }
+        }
+        Magpie.observe({ state.showsRichText }, onChange: onShowsRichText)
     }
     
     func updateController(forItem item: HistoryItem) {

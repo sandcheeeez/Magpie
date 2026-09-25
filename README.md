@@ -39,9 +39,10 @@ A fast, keyboard-first clipboard manager for macOS. Magpie keeps everything you 
 
 ## Building
 
-1. Install [Xcode](https://developer.apple.com/xcode/) and [CocoaPods](https://cocoapods.org) (`brew install cocoapods`).
-2. Run `pod install`.
-3. Open `Yippy.xcworkspace` and run the **Yippy** scheme.
+1. Install [Xcode](https://developer.apple.com/xcode/).
+2. Open `Yippy.xcodeproj` and run the **Yippy** scheme. The only dependency, [HotKey](https://github.com/mattDavo/HotKey), is fetched by Swift Package Manager.
+
+To sign your own builds, set your team under Signing & Capabilities.
 
 The Xcode project, targets and some class names still use the original Yippy naming. They'll be renamed during the upcoming architecture update.
 
@@ -59,7 +60,7 @@ The app icon is drawn in code: `swift tools/make-icon.swift Yippy/Resources/Asse
 
 ## Roadmap
 
-- [ ] Replace RxSwift with Swift Observation and async/await
+- [x] Replace RxSwift with Swift Observation and async/await
 - [ ] Move history storage to SwiftData
 - [ ] iCloud sync of history and pins
 - [ ] Rename the Xcode project and types from Yippy to Magpie

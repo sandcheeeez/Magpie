@@ -5,9 +5,6 @@
 
 import Cocoa
 import HotKey
-import RxSwift
-import RxRelay
-import RxCocoa
 
 struct Results {
     let items: [HistoryItem]
@@ -23,58 +20,61 @@ class YippyViewController: NSViewController {
     
     @IBOutlet var searchBar: NSTextField!
     
-    var yippyHistory = YippyHistory(history: State.main.history, items: [])
+    var yippyHistory = YippyHistory(history: AppState.main.history, items: [])
     
     let searchEngine = SearchEngine()
     
-    let filter = BehaviorRelay<HistoryFilter>(value: .all)
-    
-    let disposeBag = DisposeBag()
+    var filter = HistoryFilter.all {
+        didSet {
+            guard filter != oldValue else { return }
+            itemGroupScrollView.select(filter.rawValue)
+            runSearch()
+        }
+    }
     
     var isPreviewShowing = false
     
-    var itemGroups = BehaviorRelay<[String]>(value: HistoryFilter.allCases.map({ $0.title }))
-    
     var isRichText = Settings.main.showsRichText
     
-    let results = BehaviorRelay(value: Results(items: [], isSearchResult: false))
-    let selected = BehaviorRelay<Int?>(value: nil)
+    /// The items to show. Setting it updates the table.
+    var results = Results(items: [], isSearchResult: false) {
+        didSet { render(previousSelection: selected) }
+    }
+    
+    /// The selected row in `results`. Setting it updates the table.
+    var selected: Int? {
+        didSet {
+            guard selected != oldValue else { return }
+            render(previousSelection: oldValue)
+        }
+    }
+    
+    /// Hotkeys that only act while the panel is shown.
+    private var panelHotKeys = [YippyHotKey]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         yippyHistoryView.yippyDelegate = self
         
-        State.main.history.subscribe(onNext: onHistoryChange)
+        AppState.main.history.subscribe(onNext: onHistoryChange)
         
-        State.main.showsRichText.distinctUntilChanged().subscribe(onNext: onShowsRichText).disposed(by: disposeBag)
+        Magpie.observe({ AppState.main.showsRichText }, onChange: onShowsRichText)
         
         styleHeader()
         itemGroupScrollView.symbolNames = HistoryFilter.allCases.map({ $0.symbolName })
         itemGroupScrollView.innerPadding = 6
-        itemGroupScrollView.bind(toData: itemGroups.asObservable()).disposed(by: disposeBag)
-        itemGroupScrollView.bind(toSelected: filter.map({ $0.rawValue })).disposed(by: disposeBag)
+        itemGroupScrollView.setTitles(HistoryFilter.allCases.map({ $0.title }))
+        itemGroupScrollView.select(filter.rawValue)
         itemGroupScrollView.onSelect = { [weak self] in
-            self?.filter.accept(HistoryFilter(rawValue: $0) ?? .all)
+            self?.filter = HistoryFilter(rawValue: $0) ?? .all
         }
-        filter.distinctUntilChanged().skip(1).subscribe(onNext: { [weak self] _ in
-            self?.runSearch()
-        }).disposed(by: disposeBag)
         
         yippyHistoryView.menu = makeContextMenu()
         
-        Observable.combineLatest(
-            results,
-            selected.distinctUntilChanged().withPrevious(startWith: nil)
-        )
-            .observeOn(MainScheduler.instance)
-            .subscribe(onNext: onAllChange)
-            .disposed(by: disposeBag)
-        
         searchBar.delegate = self
         
-        // TODO: Fix hack to make onAllChange run initially
-        selected.accept(1)
+        render(previousSelection: nil)
         resetSelected()
         
         YippyHotKeys.downArrow.onDown(goToNextItem)
@@ -87,10 +87,10 @@ class YippyViewController: NSViewController {
         YippyHotKeys.pageUp.onLong(goToPreviousItem)
         YippyHotKeys.escape.onDown(close)
         YippyHotKeys.return.onDown(pasteSelected)
-        YippyHotKeys.ctrlAltCmdLeftArrow.onDown { State.main.panelPosition.accept(.left) }
-        YippyHotKeys.ctrlAltCmdRightArrow.onDown { State.main.panelPosition.accept(.right) }
-        YippyHotKeys.ctrlAltCmdDownArrow.onDown { State.main.panelPosition.accept(.bottom) }
-        YippyHotKeys.ctrlAltCmdUpArrow.onDown { State.main.panelPosition.accept(.top) }
+        YippyHotKeys.ctrlAltCmdLeftArrow.onDown { AppState.main.panelPosition = .left }
+        YippyHotKeys.ctrlAltCmdRightArrow.onDown { AppState.main.panelPosition = .right }
+        YippyHotKeys.ctrlAltCmdDownArrow.onDown { AppState.main.panelPosition = .bottom }
+        YippyHotKeys.ctrlAltCmdUpArrow.onDown { AppState.main.panelPosition = .top }
         YippyHotKeys.ctrlDelete.onDown(deleteSelected)
         YippyHotKeys.ctrlSpace.onDown(togglePreview)
         YippyHotKeys.cmdBackslash.onDown(focusSearchBar)
@@ -111,32 +111,36 @@ class YippyViewController: NSViewController {
         YippyHotKeys.cmd8.onDown { self.shortcutPressed(key: 8) }
         YippyHotKeys.cmd9.onDown { self.shortcutPressed(key: 9) }
         
-        bindHotKeyToYippyWindow(YippyHotKeys.downArrow, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.upArrow, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.return, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.escape, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.pageDown, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.pageUp, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.ctrlAltCmdLeftArrow, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.ctrlAltCmdRightArrow, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.ctrlAltCmdDownArrow, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.ctrlAltCmdUpArrow, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmd0, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmd1, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmd2, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmd3, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmd4, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmd5, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmd6, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmd7, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmd8, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmd9, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.ctrlDelete, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.ctrlSpace, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.optionReturn, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmdP, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmdLeftArrow, disposeBag: disposeBag)
-        bindHotKeyToYippyWindow(YippyHotKeys.cmdRightArrow, disposeBag: disposeBag)
+        panelHotKeys.append(YippyHotKeys.downArrow)
+        panelHotKeys.append(YippyHotKeys.upArrow)
+        panelHotKeys.append(YippyHotKeys.return)
+        panelHotKeys.append(YippyHotKeys.escape)
+        panelHotKeys.append(YippyHotKeys.pageDown)
+        panelHotKeys.append(YippyHotKeys.pageUp)
+        panelHotKeys.append(YippyHotKeys.ctrlAltCmdLeftArrow)
+        panelHotKeys.append(YippyHotKeys.ctrlAltCmdRightArrow)
+        panelHotKeys.append(YippyHotKeys.ctrlAltCmdDownArrow)
+        panelHotKeys.append(YippyHotKeys.ctrlAltCmdUpArrow)
+        panelHotKeys.append(YippyHotKeys.cmd0)
+        panelHotKeys.append(YippyHotKeys.cmd1)
+        panelHotKeys.append(YippyHotKeys.cmd2)
+        panelHotKeys.append(YippyHotKeys.cmd3)
+        panelHotKeys.append(YippyHotKeys.cmd4)
+        panelHotKeys.append(YippyHotKeys.cmd5)
+        panelHotKeys.append(YippyHotKeys.cmd6)
+        panelHotKeys.append(YippyHotKeys.cmd7)
+        panelHotKeys.append(YippyHotKeys.cmd8)
+        panelHotKeys.append(YippyHotKeys.cmd9)
+        panelHotKeys.append(YippyHotKeys.ctrlDelete)
+        panelHotKeys.append(YippyHotKeys.ctrlSpace)
+        panelHotKeys.append(YippyHotKeys.optionReturn)
+        panelHotKeys.append(YippyHotKeys.cmdP)
+        panelHotKeys.append(YippyHotKeys.cmdLeftArrow)
+        panelHotKeys.append(YippyHotKeys.cmdRightArrow)
+        
+        Magpie.observe({ AppState.main.isHistoryPanelShown }) { [weak self] isShown in
+            self?.panelHotKeys.forEach({ $0.isPaused = !isShown })
+        }
         
         searchBar.resignFirstResponder()
     }
@@ -168,15 +172,15 @@ class YippyViewController: NSViewController {
     
     func resetSelected() {
         if yippyHistory.items.count > 0 {
-            selected.accept(0)
+            selected = 0
         }
         else {
-            selected.accept(nil)
+            selected = nil
         }
     }
     
     var isFiltered: Bool {
-        return !searchBar.stringValue.trimmingCharacters(in: .whitespaces).isEmpty || filter.value != .all
+        return !searchBar.stringValue.trimmingCharacters(in: .whitespaces).isEmpty || filter != .all
     }
     
     func onHistoryChange(_ history: [HistoryItem], change: History.Change) {
@@ -194,7 +198,7 @@ class YippyViewController: NSViewController {
             runSearch()
         }
         else {
-            results.accept(Results(items: history, isSearchResult: false))
+            results = Results(items: history, isSearchResult: false)
             switch change {
             case .insert(let i):
                 if i == 0 {
@@ -206,7 +210,10 @@ class YippyViewController: NSViewController {
         }
     }
     
-    func onAllChange(_ results: Results, _ selected: (Int?, Int?)) {
+    /// Updates the table for the current `results` and `selected` row, deselecting `previousSelection`.
+    func render(previousSelection: Int?) {
+        let results = self.results
+        let selected = (previousSelection, self.selected)
         if results.items != self.yippyHistory.items {
                 if results.isSearchResult {
                     self.itemCountLabel.stringValue = "\(results.items.count) \(results.items.count == 1 ? "match" : "matches")"
@@ -215,7 +222,7 @@ class YippyViewController: NSViewController {
                     self.itemCountLabel.stringValue = "\(results.items.count) items"
                 }
                 
-                self.yippyHistory = YippyHistory(history: State.main.history, items: results.items)
+                self.yippyHistory = YippyHistory(history: AppState.main.history, items: results.items)
                 self.yippyHistoryView.allowsReordering = !results.isSearchResult
                 self.yippyHistoryView.reloadData(self.yippyHistory.items, isRichText: self.isRichText)
             }
@@ -224,7 +231,7 @@ class YippyViewController: NSViewController {
             self.yippyHistoryView.deselectItem(previous)
             self.yippyHistoryView.reloadItem(previous)
         }
-        if let selected = selected.1 {
+        if let selected = selected.1, selected < self.yippyHistory.items.count {
             let currentSelection = self.yippyHistoryView.selected
             if currentSelection == nil || currentSelection != selected {
                 self.yippyHistoryView.selectItem(selected)
@@ -232,7 +239,7 @@ class YippyViewController: NSViewController {
             self.yippyHistoryView.reloadItem(selected)
             
             if self.isPreviewShowing && selected < self.yippyHistory.items.count {
-                State.main.previewHistoryItem.accept(self.yippyHistory.items[selected])
+                AppState.main.previewHistoryItem = self.yippyHistory.items[selected]
             }
         }
     }
@@ -240,15 +247,6 @@ class YippyViewController: NSViewController {
     func onShowsRichText(_ showsRichText: Bool) {
         isRichText = showsRichText
         yippyHistoryView.reloadData(yippyHistory.items, isRichText: isRichText)
-    }
-    
-    func bindHotKeyToYippyWindow(_ hotKey: YippyHotKey, disposeBag: DisposeBag) {
-        State.main.isHistoryPanelShown
-            .distinctUntilChanged()
-            .subscribe(onNext: { [] in
-                hotKey.isPaused = !$0
-            })
-            .disposed(by: disposeBag)
     }
     
     func goToNextItem() {
@@ -279,19 +277,19 @@ class YippyViewController: NSViewController {
     
     func cycleFilter(by offset: Int) {
         let count = HistoryFilter.allCases.count
-        filter.accept(HistoryFilter(rawValue: (filter.value.rawValue + offset + count) % count) ?? .all)
+        filter = HistoryFilter(rawValue: (filter.rawValue + offset + count) % count) ?? .all
     }
     
     func deleteSelected() {
         if let selected = self.yippyHistoryView.selected {
-            self.selected.accept(yippyHistory.delete(selected: selected))
+            self.selected = yippyHistory.delete(selected: selected)
         }
     }
     
     func close() {
         isPreviewShowing = false
-        State.main.isHistoryPanelShown.accept(false)
-        State.main.previewHistoryItem.accept(nil)
+        AppState.main.isHistoryPanelShown = false
+        AppState.main.previewHistoryItem = nil
         resetSelected()
     }
     
@@ -331,9 +329,9 @@ class YippyViewController: NSViewController {
         case .togglePin:
             yippyHistory.togglePin(selected: row)
         case .preview:
-            selected.accept(row)
+            selected = row
             isPreviewShowing = true
-            State.main.previewHistoryItem.accept(item)
+            AppState.main.previewHistoryItem = item
         case .copyRecognizedText:
             guard let text = item.metadata.recognizedText else { return }
             NSPasteboard.general.clearContents()
@@ -350,7 +348,7 @@ class YippyViewController: NSViewController {
         case .delete:
             let next = yippyHistory.delete(selected: row)
             if !isFiltered {
-                selected.accept(next)
+                selected = next
             }
         }
     }
@@ -359,10 +357,10 @@ class YippyViewController: NSViewController {
         if let selected = yippyHistoryView.selected {
             isPreviewShowing = !isPreviewShowing
             if isPreviewShowing {
-                State.main.previewHistoryItem.accept(yippyHistory.items[selected])
+                AppState.main.previewHistoryItem = yippyHistory.items[selected]
             }
             else {
-                State.main.previewHistoryItem.accept(nil)
+                AppState.main.previewHistoryItem = nil
             }
         }
     }
@@ -374,35 +372,35 @@ class YippyViewController: NSViewController {
     
     func runSearch() {
         let isFiltered = self.isFiltered
-        searchEngine.search(query: searchBar.stringValue, filter: filter.value, items: State.main.history.items) { items in
-            self.results.accept(Results(items: items, isSearchResult: isFiltered))
-            if self.selected.value == nil || self.selected.value! >= items.count {
+        searchEngine.search(query: searchBar.stringValue, filter: filter, items: AppState.main.history.items) { items in
+            self.results = Results(items: items, isSearchResult: isFiltered)
+            if self.selected == nil || self.selected! >= items.count {
                 self.resetSelected()
             }
         }
     }
     
     private func incrementSelected() {
-        guard let s = selected.value else {
+        guard let s = selected else {
             if yippyHistory.items.count > 0 {
-                selected.accept(0)
+                selected = 0
             }
             return
         }
         if s < yippyHistory.items.count - 1 {
-            selected.accept(s + 1)
+            selected = s + 1
         }
     }
     
     private func decrementSelected() {
-        guard let s = selected.value else {
+        guard let s = selected else {
             if yippyHistory.items.count > 0 {
-                selected.accept(0)
+                selected = 0
             }
             return
         }
         if s > 0 {
-            selected.accept(s - 1)
+            selected = s - 1
         }
     }
     
@@ -450,11 +448,11 @@ extension YippyViewController: NSTextFieldDelegate {
 
 extension YippyViewController: YippyTableViewDelegate {
     func yippyTableView(_ yippyTableView: YippyTableView, selectedDidChange selected: Int?) {
-        self.selected.accept(selected)
+        self.selected = selected
     }
     
     func yippyTableView(_ yippyTableView: YippyTableView, didMoveItem from: Int, to: Int) {
         yippyHistory.move(from: from, to: to)
-        selected.accept(to)
+        selected = to
     }
 }

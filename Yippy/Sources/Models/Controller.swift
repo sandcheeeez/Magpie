@@ -5,8 +5,6 @@
 
 import Foundation
 import Cocoa
-import RxSwift
-import RxRelay
 
 class Controller {
     
@@ -17,7 +15,7 @@ class Controller {
     
     // MARK: - Attributes
     
-    var state: State
+    var state: AppState
     
     /// Must exist for the duration of the application so that the status bar does not disappear.
     var statusItem: NSStatusItem!
@@ -45,23 +43,23 @@ class Controller {
     
     // MARK: - Constructor
     
-    init(state: State, settings: Settings) {
+    init(state: AppState, settings: Settings) {
         self.state = state
         // Setup status item
         self.statusItem = YippyStatusItem.create()
         self.statusItem.menu = Self.createMenu(settings: settings, state: state, target: self)
         
         // Create yippy window controller
-        self.yippyWindowController = Self.createYippyWindowController(state: state, disposeBag: state.disposeBag)
+        self.yippyWindowController = Self.createYippyWindowController(state: state)
        
         // Create preview window controllers
-        self.previewWindowController = Self.createPreviewWindowController(previewItem: state.previewHistoryItem, disposeBag: state.disposeBag)
+        self.previewWindowController = Self.createPreviewWindowController(state: state)
     }
     
     
     // MARK: - Constructor Helpers
     
-    static func createMenu(settings: Settings, state: State, target: AnyObject?) -> NSMenu {
+    static func createMenu(settings: Settings, state: AppState, target: AnyObject?) -> NSMenu {
         let menu = NSMenu()
             .with(menuItem: NSMenuItem(title: "About Magpie", action: #selector(showAboutWindow), keyEquivalent: "")
                 .with(accessibilityIdentifier: Accessibility.identifiers.aboutButton)
@@ -96,39 +94,32 @@ class Controller {
         
         Self.setMenuItemsTarget(target: target, menu: menu)
         
-        state.launchAtLogin
-            .subscribe (onNext: {
-                menu.item(withTitle: "Launch at Login")?.state = $0 ? .on : .off
-            })
-            .disposed(by: state.disposeBag)
+        observe({ state.launchAtLogin }) { launchAtLogin in
+            menu.item(withTitle: "Launch at Login")?.state = launchAtLogin ? .on : .off
+        }
         
-        state.panelPosition
-            .subscribe(onNext: { next in
-                PanelPosition.allCases.forEach { pos in
-                    menu.item(withTitle: "Position")?.submenu?.item(withTag: pos.rawValue)?.state = next == pos ? .on : .off
-                }
-            })
-            .disposed(by: state.disposeBag)
+        observe({ state.panelPosition }) { next in
+            PanelPosition.allCases.forEach { pos in
+                menu.item(withTitle: "Position")?.submenu?.item(withTag: pos.rawValue)?.state = next == pos ? .on : .off
+            }
+        }
         
-        
-        state.isHistoryPanelShown
-            .subscribe(onNext: {
-                menu.item(withTitle: "Position")?.submenu?.item(withTag: PanelPosition.left.rawValue)?.keyEquivalent = $0 ? Constants.statusItemMenu.leftArrowKeyEquivalent : ""
-                menu.item(withTitle: "Position")?.submenu?.item(withTag: PanelPosition.left.rawValue)?.keyEquivalentModifierMask = NSEvent.ModifierFlags(arrayLiteral: .control, .option, .command)
-                
-                menu.item(withTitle: "Position")?.submenu?.item(withTag: PanelPosition.right.rawValue)?.keyEquivalent = $0 ? Constants.statusItemMenu.rightArrowKeyEquivalent : ""
-                menu.item(withTitle: "Position")?.submenu?.item(withTag: PanelPosition.right.rawValue)?.keyEquivalentModifierMask = NSEvent.ModifierFlags(arrayLiteral: .control, .option, .command)
-                
-                menu.item(withTitle: "Position")?.submenu?.item(withTag: PanelPosition.top.rawValue)?.keyEquivalent = $0 ? Constants.statusItemMenu.upArrowKeyEquivalent : ""
-                menu.item(withTitle: "Position")?.submenu?.item(withTag: PanelPosition.top.rawValue)?.keyEquivalentModifierMask = NSEvent.ModifierFlags(arrayLiteral: .control, .option, .command)
-                
-                menu.item(withTitle: "Position")?.submenu?.item(withTag: PanelPosition.bottom.rawValue)?.keyEquivalent = $0 ? Constants.statusItemMenu.downArrowKeyEquivalent : ""
-                menu.item(withTitle: "Position")?.submenu?.item(withTag: PanelPosition.bottom.rawValue)?.keyEquivalentModifierMask = NSEvent.ModifierFlags(arrayLiteral: .control, .option, .command)
-                
-                menu.item(withTitle: "Delete Selected")?.isEnabled = $0
-                menu.item(withTitle: "Delete Selected")?.keyEquivalentModifierMask = .control
-            })
-            .disposed(by: state.disposeBag)
+        observe({ state.isHistoryPanelShown }) { isShown in
+            // Arrow key equivalents for moving the panel only apply while it is shown.
+            let arrows: [(PanelPosition, String)] = [
+                (.left, Constants.statusItemMenu.leftArrowKeyEquivalent),
+                (.right, Constants.statusItemMenu.rightArrowKeyEquivalent),
+                (.top, Constants.statusItemMenu.upArrowKeyEquivalent),
+                (.bottom, Constants.statusItemMenu.downArrowKeyEquivalent),
+            ]
+            for (position, key) in arrows {
+                let item = menu.item(withTitle: "Position")?.submenu?.item(withTag: position.rawValue)
+                item?.keyEquivalent = isShown ? key : ""
+                item?.keyEquivalentModifierMask = [.control, .option, .command]
+            }
+            menu.item(withTitle: "Delete Selected")?.isEnabled = isShown
+            menu.item(withTitle: "Delete Selected")?.keyEquivalentModifierMask = .control
+        }
         
         return menu
     }
@@ -153,22 +144,15 @@ class Controller {
         }
     }
     
-    static func createYippyWindowController(state: State, disposeBag: DisposeBag) -> YippyWindowController {
+    static func createYippyWindowController(state: AppState) -> YippyWindowController {
         let controller = YippyWindowController.createYippyWindowController()
-        controller
-            .subscribeTo(toggle: state.isHistoryPanelShown)
-            .disposed(by: disposeBag)
-        controller
-            .subscribeFrameTo(position: state.panelPosition.asObservable(), screen: state.currentScreen.asObservable())
-            .disposed(by: disposeBag)
+        controller.observe(state: state)
         return controller
     }
     
-    static func createPreviewWindowController(previewItem: BehaviorRelay<HistoryItem?>, disposeBag: DisposeBag) -> PreviewWindowController {
+    static func createPreviewWindowController(state: AppState) -> PreviewWindowController {
         let controller = PreviewWindowController.create()
-        controller
-            .subscribeTo(previewItem: previewItem)
-            .disposed(by: disposeBag)
+        controller.observe(state: state)
         return controller
     }
     
@@ -176,7 +160,7 @@ class Controller {
     // MARK: - Methods
     @objc func panelPositionSelected(_ sender: NSMenuItem) {
         if let position = PanelPosition(rawValue: sender.tag) {
-            state.panelPosition.accept(position)
+            state.panelPosition = position
         }
         else {
             YippyError(localizedDescription: "Received invalid panel position from \(sender)").log(with: ErrorLogger.general)
@@ -184,10 +168,10 @@ class Controller {
     }
 
     @objc func togglePopover() {
-        if !state.isHistoryPanelShown.value {
+        if !state.isHistoryPanelShown {
             state.updateCurrentScreen()
         }
-        state.isHistoryPanelShown.accept(!state.isHistoryPanelShown.value)
+        state.isHistoryPanelShown.toggle()
     }
     
     @objc func deleteSelectedClicked() {
@@ -236,7 +220,6 @@ class Controller {
     }
     
     @objc func launchAtLogin() {
-        LoginItem.setEnabled(!state.launchAtLogin.value)
-        state.launchAtLogin.accept(LoginItem.isEnabled)
+        state.setLaunchAtLogin(!state.launchAtLogin)
     }
 }

@@ -4,14 +4,29 @@
 //
 
 import Foundation
-import Default
-import RxSwift
-import RxRelay
 import HotKey
 
-struct Settings: Codable, DefaultStorable {
+/// Saved preferences, stored as JSON in `UserDefaults`.
+struct Settings: Codable, Equatable {
     
-    // MARK: - Singleton
+    // MARK: - Storage
+    
+    private static let key = "settings"
+    
+    static var main: Settings {
+        get {
+            guard let data = UserDefaults.standard.data(forKey: key),
+                  let settings = try? JSONDecoder().decode(Settings.self, from: data) else {
+                return .default
+            }
+            return settings
+        }
+        set {
+            if let data = try? JSONEncoder().encode(newValue) {
+                UserDefaults.standard.set(data, forKey: key)
+            }
+        }
+    }
     
     private init(
         panelPosition: PanelPosition,
@@ -27,19 +42,6 @@ struct Settings: Codable, DefaultStorable {
         self.maxHistory = maxHistory
         self.showsRichText = showsRichText
         self.pastesRichText = pastesRichText
-    }
-    
-    static var main: Settings! {
-        get {
-            let settings = Settings.read(forKey: "settings")
-            if settings != nil {
-                return settings
-            }
-            return Settings.default
-        }
-        set (main) {
-            main.write(withKey: "settings")
-        }
     }
     
     // MARK: - Default
@@ -97,45 +99,6 @@ struct Settings: Codable, DefaultStorable {
         pastesRichText = try container.decodeIfPresent(Bool.self, forKey: .pastesRichText) ?? defaults.pastesRichText
         excludedBundleIds = try container.decodeIfPresent([String].self, forKey: .excludedBundleIds) ?? defaults.excludedBundleIds
     }
-    
-    
-    // MARK: - State Binding Methods
-    
-    func bindPanelPositionTo(state: BehaviorRelay<PanelPosition>) -> Disposable {
-        return state.bind { (x) in
-            Settings.main.panelPosition = x
-        }
-    }
-    
-    func bindPasteboardChangeCountTo(state: Observable<Int>) -> Disposable {
-        return state.bind { (x) in
-            Settings.main.pasteboardChangeCount = x
-        }
-    }
-    
-    func bindMaxHistoryTo(state: Observable<Int>) -> Disposable {
-        return state.bind { (x) in
-            Settings.main.maxHistory = x
-        }
-    }
-    
-    func bindShowsRichTextTo(state: Observable<Bool>) -> Disposable {
-        return state.bind { (x) in
-            Settings.main.showsRichText = x
-        }
-    }
-    
-    func bindPastesRichTextTo(state: Observable<Bool>) -> Disposable {
-        return state.bind { (x) in
-            Settings.main.pastesRichText = x
-        }
-    }
-    
-    func bindExcludedBundleIdsTo(state: Observable<[String]>) -> Disposable {
-        return state.bind { (x) in
-            Settings.main.excludedBundleIds = x
-        }
-    }
 }
 
 extension Settings {
@@ -156,8 +119,4 @@ extension Settings {
             }
         }
     }
-}
-
-extension Settings: Equatable {
-    
 }

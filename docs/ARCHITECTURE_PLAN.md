@@ -23,11 +23,11 @@ Work happens on `main` in small commits. Each checked step has been built and co
 - [x] Sign builds with the owner's Apple Development certificate (team 8ML4S57F6X), so Accessibility permission survives rebuilds
 
 ### Phase 1: Remove RxSwift and CocoaPods
-- [ ] Add `AppState` (`@Observable`) and `Settings` persistence without `Default`
-- [ ] Move `Controller` (status menu), `YippyWindowController`, the preview window, the filter chips and `YippyViewController` onto `AppState`
-- [ ] Move `SettingsModel` (SwiftUI settings) onto `AppState`
-- [ ] Delete the unused storyboard settings screens (`GeneralSettingsViewController`, `HotKeySettingsViewController`, `SettingsTabViewController`) and their scenes
-- [ ] Remove the RxSwift, RxCocoa and Default pods, CocoaPods itself, and the unused fuse-swift package. The project then opens as a plain `.xcodeproj`
+- [x] Add `AppState` (`@Observable`) and `Settings` persistence without `Default`
+- [x] Move `Controller` (status menu), `YippyWindowController`, the preview window, the filter chips and `YippyViewController` onto `AppState`
+- [x] Move `SettingsModel` (SwiftUI settings) onto `AppState`
+- [x] Delete the unused storyboard settings screens (`GeneralSettingsViewController`, `HotKeySettingsViewController`, `SettingsTabViewController`) and their scenes
+- [x] Remove the RxSwift, RxCocoa and Default pods, CocoaPods itself, and the unused fuse-swift package. The project then opens as a plain `.xcodeproj`
 
 ### Phase 2: SwiftData storage
 - [ ] Add the `ClipItem` and `ClipRepresentation` models and a `HistoryStore` (the `ModelContainer`)
@@ -42,6 +42,9 @@ Work happens on `main` in small commits. Each checked step has been built and co
 - [ ] Rename the internal `Yippy*` types, files, targets, schemes and project to Magpie
 
 ## Notes
+
+- AppKit classes inherit `NSObject.observe` (KVO), so they call the global helper as `Magpie.observe`.
+- Observation delivers changes asynchronously, so code that must run straight after a state change (e.g. the panel frame in `show()`) reads the state directly rather than waiting for an observer.
 
 - Existing history does not need migrating (owner's decision, 2026-09-25). The first SwiftData launch starts empty.
 - `--snapshot=<dir>` (XCTest configuration only) renders the UI with sample data. Use it to check visual changes.
