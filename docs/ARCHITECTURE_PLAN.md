@@ -60,3 +60,7 @@ Work happens on `main` in small commits. Each checked step has been built and co
 - [x] **Privacy.** Remove the unused WebKit-backed HTML parsing and the old website link. Add a test that fails if network APIs appear in the app. Document the local-only guarantee.
 - [x] **MCP server.** `Magpie --mcp` speaks MCP over stdio and reads the history store read-only. It is off until enabled in Settings, runs locally only, and only returns what Magpie already stored (excluded and concealed items never exist).
 - [x] **UI tests.** Update `MagpieUITests` for the current UI: fixtures built in code, and new search, filter and pin tests. They compile but haven't been run yet. They take over the mouse and keyboard, and need the test runner to be allowed to control the computer.
+
+## Before the first public release
+- [ ] Switch the bundle id from `com.sandcheeeez.Magpie` to one based on the owner's domain (`com.<domain>.Magpie`), before anyone else installs it. Changing it later resets every user's history, settings and Accessibility permission.
+- [ ] Sign with a Developer ID certificate and notarise. The Apple Development certificate used for local builds embeds the owner's Apple ID email, so share source rather than builds until then.
