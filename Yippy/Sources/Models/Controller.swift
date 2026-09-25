@@ -10,7 +10,6 @@ import Foundation
 import Cocoa
 import RxSwift
 import RxRelay
-import LoginServiceKit
 
 class Controller {
     
@@ -188,6 +187,9 @@ class Controller {
     }
 
     @objc func togglePopover() {
+        if !state.isHistoryPanelShown.value {
+            state.updateCurrentScreen()
+        }
         state.isHistoryPanelShown.accept(!state.isHistoryPanelShown.value)
     }
     
@@ -237,13 +239,7 @@ class Controller {
     }
     
     @objc func launchAtLogin() {
-        let launchAtLogin = !state.launchAtLogin.value
-        state.launchAtLogin.accept(launchAtLogin)
-        if launchAtLogin {
-            LoginServiceKit.addLoginItems()
-        }
-        else {
-            LoginServiceKit.removeLoginItems()
-        }
+        LoginItem.setEnabled(!state.launchAtLogin.value)
+        state.launchAtLogin.accept(LoginItem.isEnabled)
     }
 }

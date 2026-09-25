@@ -10,7 +10,6 @@ import Foundation
 import Cocoa
 import RxRelay
 import RxSwift
-import LoginServiceKit
 
 class State {
     
@@ -50,7 +49,7 @@ class State {
         self.isHistoryPanelShown = BehaviorRelay<Bool>(value: false)
         self.panelPosition = BehaviorRelay<PanelPosition>(value: settings.panelPosition)
         self.previewHistoryItem = BehaviorRelay<HistoryItem?>(value: nil)
-        self.launchAtLogin = BehaviorRelay<Bool>(value: LoginServiceKit.isExistLoginItems())
+        self.launchAtLogin = BehaviorRelay<Bool>(value: LoginItem.isEnabled)
         self.showsRichText = BehaviorRelay<Bool>(value: settings.showsRichText)
         self.pastesRichText = BehaviorRelay<Bool>(value: settings.pastesRichText)
         self.currentScreen = BehaviorRelay<NSScreen>(value: Self.getCurrentScreen(forMouseLocation: NSEvent.mouseLocation))
@@ -69,7 +68,6 @@ class State {
         self.pasteboardMonitor = PasteboardMonitor(pasteboard: NSPasteboard.general, changeCount: settings.pasteboardChangeCount, delegate: self.history)
         
         Self.monitorPastesRichText(state: self)
-        Self.monitorMousePosition(state: self)
     }
     
     // MARK: - Constructor Helpers
@@ -88,12 +86,11 @@ class State {
         }).disposed(by: state.disposeBag)
     }
     
-    static func monitorMousePosition(state: State) {
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { (_) in
-            let currentScreen = getCurrentScreen(forMouseLocation: NSEvent.mouseLocation)
-            if currentScreen != state.currentScreen.value {
-                state.currentScreen.accept(currentScreen)
-            }
+    /// Moves the panel to the screen containing the mouse. Called just before the panel is shown, rather than polling the mouse position.
+    func updateCurrentScreen() {
+        let screen = Self.getCurrentScreen(forMouseLocation: NSEvent.mouseLocation)
+        if screen != currentScreen.value {
+            currentScreen.accept(screen)
         }
     }
     

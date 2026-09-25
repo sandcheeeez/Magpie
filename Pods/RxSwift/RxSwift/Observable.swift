@@ -9,6 +9,9 @@
 /// A type-erased `ObservableType`. 
 ///
 /// It represents a push style sequence.
+
+public typealias RxObservable<Element> = RxSwift.Observable<Element>
+
 public class Observable<Element> : ObservableType {
     init() {
 #if TRACE_RESOURCES
@@ -20,22 +23,12 @@ public class Observable<Element> : ObservableType {
         rxAbstractMethod()
     }
     
-    public func asObservable() -> Observable<Element> {
-        return self
-    }
+    public func asObservable() -> Observable<Element> { self }
     
     deinit {
 #if TRACE_RESOURCES
         _ = Resources.decrementTotal()
 #endif
-    }
-
-    // this is kind of ugly I know :(
-    // Swift compiler reports "Not supported yet" when trying to override protocol extensions, so ¯\_(ツ)_/¯
-
-    /// Optimizations for map operator
-    internal func composeMap<Result>(_ transform: @escaping (Element) throws -> Result) -> Observable<Result> {
-        return _map(source: self, transform: transform)
     }
 }
 

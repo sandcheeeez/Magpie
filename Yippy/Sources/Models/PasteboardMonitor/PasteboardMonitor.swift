@@ -11,7 +11,8 @@ import Cocoa
 
 class PasteboardMonitor {
     
-    let intervalInSeconds: TimeInterval = 0.05
+    /// `NSPasteboard` has no change notification, so it must be polled. 0.25s is imperceptible for copy/paste, and the tolerance lets the system coalesce wake-ups to save energy.
+    let intervalInSeconds: TimeInterval = 0.25
     
     private var timer: Timer!
     private var lastChangeCount: Int!
@@ -35,6 +36,7 @@ class PasteboardMonitor {
         self.timer = Timer.scheduledTimer(withTimeInterval: intervalInSeconds, repeats: true) { (t) in
             self.checkIfPasteboardChanged()
         }
+        self.timer.tolerance = 0.1
     }
     
     // Called by NSWorkspace when any application becomes active or comes frontmost.

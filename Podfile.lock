@@ -1,24 +1,22 @@
 PODS:
   - Default (3.0.0)
-  - LoginServiceKit (2.5.0)
-  - RxBlocking (5.0.0):
-    - RxSwift (~> 5)
-  - RxCocoa (5.0.0):
-    - RxRelay (~> 5)
-    - RxSwift (~> 5)
-  - RxRelay (5.0.0):
-    - RxSwift (~> 5)
-  - RxSwift (5.0.0)
-  - RxTest (5.0.0):
-    - RxSwift (~> 5)
+  - RxBlocking (6.9.0):
+    - RxSwift (= 6.9.0)
+  - RxCocoa (6.9.0):
+    - RxRelay (= 6.9.0)
+    - RxSwift (= 6.9.0)
+  - RxRelay (6.9.0):
+    - RxSwift (= 6.9.0)
+  - RxSwift (6.9.0)
+  - RxTest (6.9.0):
+    - RxSwift (= 6.9.0)
 
 DEPENDENCIES:
   - Default
-  - LoginServiceKit (from `https://github.com/Clipy/LoginServiceKit.git`, tag `v2.5.0`)
-  - RxBlocking (~> 5)
-  - RxCocoa (~> 5)
-  - RxSwift (~> 5)
-  - RxTest (~> 5)
+  - RxBlocking (~> 6)
+  - RxCocoa (~> 6)
+  - RxSwift (~> 6)
+  - RxTest (~> 6)
 
 SPEC REPOS:
   trunk:
@@ -29,25 +27,14 @@ SPEC REPOS:
     - RxSwift
     - RxTest
 
-EXTERNAL SOURCES:
-  LoginServiceKit:
-    :git: https://github.com/Clipy/LoginServiceKit.git
-    :tag: v2.5.0
-
-CHECKOUT OPTIONS:
-  LoginServiceKit:
-    :git: https://github.com/Clipy/LoginServiceKit.git
-    :tag: v2.5.0
-
 SPEC CHECKSUMS:
   Default: df6f5067d92a350e908125bf269a7317df86b3bb
-  LoginServiceKit: 87c3d42ddb80d39ee8ea6b7a93f8c654ff58781b
-  RxBlocking: c67185d26498ea3cbe3e121917c3c16739e43123
-  RxCocoa: fcf32050ac00d801f34a7f71d5e8e7f23026dcd8
-  RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
-  RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
-  RxTest: 4349afe98f564e0a9bc19063368904622d17d49a
+  RxBlocking: 5d2b26d019b6ba9eb3f58638611f124609c44822
+  RxCocoa: ac16414696ae706516be3e1ab00fcce5bdc9be8a
+  RxRelay: 6b0c930e5cef57d5fe2032571e5e65b78e3cbdb1
+  RxSwift: 31649ace6aceeb422e16ff71c60804f9c3281ed9
+  RxTest: fa7749822359a10a19b9fa32b80dbe608e4ce44e
 
-PODFILE CHECKSUM: 5f64226a59e214997407797c088fa6c9668ac241
+PODFILE CHECKSUM: 0a1a841caa1a1220b1e09950224bd47ff3b04951
 
 COCOAPODS: 1.17.0
