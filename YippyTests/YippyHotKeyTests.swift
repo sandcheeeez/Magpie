@@ -1,14 +1,11 @@
 //
 //  YippyHotKeyTests.swift
-//  YippyTests
-//
-//  Created by Matthew Davidson on 27/9/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  MagpieTests
 //
 
 import XCTest
 import HotKey  // Normally this would be a @testable import, but this is not currently supported by the Swift Package Manager. See: https://stackoverflow.com/a/52672307
-@testable import Yippy
+@testable import Magpie
 
 class YippyHotKeyTests: XCTestCase {
     

@@ -1,9 +1,6 @@
 //
 //  Constants.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 7/8/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation
@@ -68,9 +65,9 @@ struct Constants {
     
     struct logging {
         
-        static let historyErrorDomain = "YippyHistoryErrorDomain"
+        static let historyErrorDomain = "MagpieHistoryErrorDomain"
         
-        static let historyWarningDomain = "YippyHistoryWarningDomain"
+        static let historyWarningDomain = "MagpieHistoryWarningDomain"
     }
     
     struct system {

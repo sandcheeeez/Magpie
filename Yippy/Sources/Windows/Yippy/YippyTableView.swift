@@ -1,9 +1,6 @@
 //
 //  YippyTableView.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 2/10/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation

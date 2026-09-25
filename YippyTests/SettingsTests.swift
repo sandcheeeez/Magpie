@@ -1,13 +1,10 @@
 //
 //  SettingsTests.swift
-//  YippyTests
-//
-//  Created by Matthew Davidson on 26/9/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  MagpieTests
 //
 
 import XCTest
-@testable import Yippy
+@testable import Magpie
 @testable import RxRelay
 @testable import RxTest
 @testable import RxSwift

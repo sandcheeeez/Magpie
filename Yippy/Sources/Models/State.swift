@@ -1,9 +1,6 @@
 //
 //  State.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 7/8/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation

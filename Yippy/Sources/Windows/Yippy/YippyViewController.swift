@@ -1,9 +1,6 @@
 //
 //  YippyViewController.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 26/7/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Cocoa
@@ -145,7 +142,7 @@ class YippyViewController: NSViewController {
     }
     
     private func styleHeader() {
-        if let title = view.subviews.compactMap({ $0 as? NSTextField }).first(where: { $0.stringValue == "Yippy" }) {
+        if let title = view.subviews.compactMap({ $0 as? NSTextField }).first(where: { $0.stringValue == "Magpie" }) {
             title.font = NSFont.systemFont(ofSize: 17, weight: .bold).rounded
         }
         itemCountLabel.font = .monospacedDigitSystemFont(ofSize: 11, weight: .medium)

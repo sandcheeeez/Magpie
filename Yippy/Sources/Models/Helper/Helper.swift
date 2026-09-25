@@ -1,9 +1,6 @@
 //
 //  Helper.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 25/9/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation

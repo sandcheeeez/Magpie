@@ -1381,9 +1381,9 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.Yippy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.Magpie;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Magpie;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1408,9 +1408,9 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.Yippy;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.Magpie;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Magpie;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1431,10 +1431,10 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Yippy.app/Contents/MacOS/Yippy";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Magpie.app/Contents/MacOS/Magpie";
 			};
 			name = Debug;
 		};
@@ -1453,10 +1453,10 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Yippy.app/Contents/MacOS/Yippy";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Magpie.app/Contents/MacOS/Magpie";
 			};
 			name = Release;
 		};
@@ -1474,7 +1474,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = Yippy;
@@ -1495,7 +1495,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = Yippy;
@@ -1583,9 +1583,9 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyBeta;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieBeta;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME) Beta";
+				PRODUCT_NAME = "Magpie Beta";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG BETA";
 				SWIFT_VERSION = 5.0;
@@ -1607,10 +1607,10 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Yippy.app/Contents/MacOS/Yippy";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Magpie.app/Contents/MacOS/Magpie";
 			};
 			name = "Beta Debug";
 		};
@@ -1628,7 +1628,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = Yippy;
@@ -1709,9 +1709,9 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyBeta;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieBeta;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME) Beta";
+				PRODUCT_NAME = "Magpie Beta";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = BETA;
 				SWIFT_VERSION = 5.0;
@@ -1733,10 +1733,10 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Yippy.app/Contents/MacOS/Yippy";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Magpie.app/Contents/MacOS/Magpie";
 			};
 			name = "Beta Release";
 		};
@@ -1754,7 +1754,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = Yippy;
@@ -1842,9 +1842,9 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyXCTest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieXCTest;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Magpie;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG XCTEST";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1866,10 +1866,10 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Yippy.app/Contents/MacOS/Yippy";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Magpie.app/Contents/MacOS/Magpie";
 			};
 			name = XCTest;
 		};
@@ -1887,7 +1887,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = MatthewDavidson.YippyUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = Yippy;

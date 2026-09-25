@@ -1,6 +1,6 @@
 //
 //  SettingsView.swift
-//  Yippy
+//  Magpie
 //
 
 import SwiftUI
@@ -118,7 +118,7 @@ struct GeneralSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Open Yippy when you log in", isOn: $model.launchAtLogin)
+                Toggle("Open Magpie when you log in", isOn: $model.launchAtLogin)
             }
             Section("Panel") {
                 Picker("Position", selection: $model.panelPosition) {
@@ -165,7 +165,7 @@ struct ShortcutsSettingsView: View {
 
     var body: some View {
         Form {
-            Section("Show Yippy") {
+            Section("Show Magpie") {
                 LabeledContent("Shortcut") {
                     if model.isRecording {
                         HStack {

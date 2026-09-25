@@ -1,9 +1,6 @@
 //
 //  KeyPressMock.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 30/9/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation
@@ -12,7 +9,7 @@ import HotKey
 
 struct KeyPressMock {
     
-    static let pasteboard = NSPasteboard(name: NSPasteboard.Name(rawValue: "Yippy.UITesting.KeyPress"))
+    static let pasteboard = NSPasteboard(name: NSPasteboard.Name(rawValue: "Magpie.UITesting.KeyPress"))
     
     static func keyPress(keyCode: CGKeyCode, flags: CGEventFlags) {
         pasteboard.declareTypes([.string], owner: nil)

@@ -1,13 +1,10 @@
 //
 //  ArrayFunctionalTests.swift
-//  YippyTests
-//
-//  Created by Matthew Davidson on 27/9/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  MagpieTests
 //
 
 import XCTest
-@testable import Yippy
+@testable import Magpie
 
 class ArrayFunctionalTests: XCTestCase {
     

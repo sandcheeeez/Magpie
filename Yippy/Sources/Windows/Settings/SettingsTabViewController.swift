@@ -1,9 +1,6 @@
 //
 //  SettingsTabViewController.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 12/4/20.
-//  Copyright © 2020 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation

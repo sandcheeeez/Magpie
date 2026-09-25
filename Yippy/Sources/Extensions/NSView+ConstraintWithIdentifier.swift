@@ -1,9 +1,6 @@
 //
 //  NSView+ConstraintWithIdentifier.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 5/10/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation

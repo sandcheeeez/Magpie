@@ -1,13 +1,10 @@
 //
 //  ErrorLoggerMock.swift
-//  YippyTests
-//
-//  Created by Matthew Davidson on 20/10/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  MagpieTests
 //
 
 import XCTest
-@testable import Yippy
+@testable import Magpie
 
 class ErrorLoggerMock: ErrorLogger {
     

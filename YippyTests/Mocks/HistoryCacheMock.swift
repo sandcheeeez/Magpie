@@ -1,13 +1,10 @@
 //
 //  HistoryCacheMock.swift
-//  YippyTests
-//
-//  Created by Matthew Davidson on 21/10/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  MagpieTests
 //
 
 import XCTest
-@testable import Yippy
+@testable import Magpie
 
 class HistoryCacheMock: HistoryCache {
     

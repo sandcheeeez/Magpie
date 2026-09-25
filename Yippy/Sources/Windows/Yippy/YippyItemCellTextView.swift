@@ -1,9 +1,6 @@
 //
 //  YippyItemCellTextView.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 11/10/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation

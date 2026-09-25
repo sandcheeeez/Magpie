@@ -1,9 +1,6 @@
 //
 //  HistoryItem.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 9/10/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation
@@ -96,7 +93,7 @@ class HistoryItem: NSObject {
         return cache.isItemRegistered(fsId)
     }
     
-    static let historyItemIdType = NSPasteboard.PasteboardType(rawValue: "MatthewDavidson.Yippy.historyItemId")
+    static let historyItemIdType = NSPasteboard.PasteboardType(rawValue: "com.sandcheeeez.Magpie.historyItemId")
     
     /// Static definition of whether the history items should write RTF data to the pasteboard.
     ///
@@ -259,7 +256,7 @@ class HistoryItem: NSObject {
     
     func getColor() -> NSColor? {
         guard let data = data(forType: .color) else { return nil }
-        let pasteboard = NSPasteboard(name: NSPasteboard.Name(rawValue: "YippyBeta.ColorTest"))
+        let pasteboard = NSPasteboard(name: NSPasteboard.Name(rawValue: "com.sandcheeeez.Magpie.ColorDecode"))
         pasteboard.declareTypes([.color], owner: nil)
         pasteboard.setData(data, forType: .color)
         return NSColor(from: pasteboard)

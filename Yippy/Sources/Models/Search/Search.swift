@@ -1,9 +1,6 @@
 //
 //  Search.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 6/9/20.
-//  Copyright © 2020 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation

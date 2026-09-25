@@ -1,6 +1,6 @@
 //
 //  SettingsWindowController.swift
-//  Yippy
+//  Magpie
 //
 
 import Foundation

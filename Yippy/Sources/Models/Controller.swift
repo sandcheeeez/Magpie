@@ -1,9 +1,6 @@
 //
 //  Controller.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 26/10/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation
@@ -66,10 +63,10 @@ class Controller {
     
     static func createMenu(settings: Settings, state: State, target: AnyObject?) -> NSMenu {
         let menu = NSMenu()
-            .with(menuItem: NSMenuItem(title: "About Yippy", action: #selector(showAboutWindow), keyEquivalent: "")
+            .with(menuItem: NSMenuItem(title: "About Magpie", action: #selector(showAboutWindow), keyEquivalent: "")
                 .with(accessibilityIdentifier: Accessibility.identifiers.aboutButton)
             )
-            .with(menuItem: NSMenuItem(title: "Yippy Help", action: #selector(showHelpWindow), keyEquivalent: "")
+            .with(menuItem: NSMenuItem(title: "Magpie Help", action: #selector(showHelpWindow), keyEquivalent: "")
                 .with(accessibilityIdentifier: Accessibility.identifiers.helpButton)
             )
             .with(menuItem: NSMenuItem.separator())

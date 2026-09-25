@@ -1,9 +1,6 @@
 //
 //  CellHeightCache.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 7/2/20.
-//  Copyright © 2020 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Foundation

@@ -1,55 +1,70 @@
-# Yippy
-macOS open source clipboard manager
+<p align="center"><img src="images/icon.png" width="128" alt="Magpie icon"></p>
 
-![screenshot](images/screenshot.jpg)
+# Magpie
 
-Follow progress at <a href="https://yippy.mattdavo.com" target="_blank">yippy.mattdavo.com</a>
+A fast, keyboard-first clipboard manager for macOS. Magpie keeps everything you copy (text, links, images, files and colours) and gets any of it back in a couple of keystrokes.
 
-Read about the progress and learnings at <a href="https://yippy.mattdavo.com/blog" target="_blank">yippy.mattdavo.com/blog</a>
+<p align="center"><img src="images/panel.png" width="720" alt="Magpie's history panel in light and dark mode"></p>
 
-Find all releases at <a href="https://yippy.mattdavo.com/releases" target="_blank">yippy.mattdavo.com/releases</a>
+## Features
 
-## Installation
-Downloaded from <a href="https://yippy.mattdavo.com" target="_blank">yippy.mattdavo.com</a> or install with [Homebrew Cask](https://github.com/Homebrew/homebrew-cask):
-```
-brew install --cask yippy
-```
+- **Native on Apple silicon**, with a Liquid Glass panel that slides in from any screen edge or floats in the centre
+- **Pinned items** that are never trimmed from history and survive Clear History (⌘P)
+- **Filters** for pinned items, text, links, images, files and colours (⌘← / ⌘→)
+- **Ranked search** across text, file names, the app something was copied from, and **text inside images**, recognised on-device with Vision
+- **Source app and time** shown on every item
+- **Paste as plain text** (⌥↩). For images, this pastes the recognised text
+- **Excluded apps**: nothing copied from them is saved. Password managers are excluded by default, and anything an app marks as a password or temporary is never saved
+- **Right-click actions**: paste, paste as plain text, pin, preview, copy recognised text, open link, show in Finder, delete
 
-For help with installation see: <a href="https://yippy.mattdavo.com/installation" target="_blank">yippy.mattdavo.com/installation</a>.
+## Keyboard shortcuts
 
-## Developing Yippy
-### Contributions
-All contributions are welcome, whether they are pull requests, bug reports, feature requests or general feedback.
+| Action | Shortcut |
+| --- | --- |
+| Show / hide Magpie | ⇧⌘V (configurable) |
+| Paste selected item | ↩ |
+| Paste as plain text | ⌥↩ |
+| Paste item 0–9 | ⌘0 – ⌘9 |
+| Pin / unpin | ⌘P |
+| Previous / next filter | ⌘← / ⌘→ |
+| Search | ⌘\\ |
+| Preview | ⌃Space |
+| Delete | ⌃⌫ |
+| Move panel | ⌃⌥⌘ + arrow |
 
-### Project Structure
-There are 3 different schemes:
-- Yippy
-- Yippy Beta
-- Yippy XCTest
+## Requirements
 
-__Yippy__ is used for running and archiving a production build of Yippy. __Yippy Beta__ is used for development and archiving a beta release. __Yippy XCTest__ is used exclusively for running the unit and UI tests.
+- macOS 26 or later
+- Accessibility access, which Magpie needs in order to paste into other apps
 
-### Using `create-installer.sh`
-First install <a href="https://github.com/andreyvit/create-dmg" target="_blank">create-dmg</a>. Then place `X.app` in the same folder as `create-installer.sh`. Execute script:
-```
-./create-installer.sh X
-```
+## Building
 
-You will find the installer disk image `X.dmg` in the same folder.
+1. Install [Xcode](https://developer.apple.com/xcode/) and [CocoaPods](https://cocoapods.org) (`brew install cocoapods`).
+2. Run `pod install`.
+3. Open `Yippy.xcworkspace` and run the **Yippy** scheme.
 
-### TODO
-- [ ] Support more types of pasteboard items
-- [ ] Allow setting preferences for keyboard shortcuts
-    - [x] Customize toggle hotkey
-- [ ] Automatic updates (maybe use Sparkle?)
-- [ ] Create a bug reporter, if places in code are reached that should not be possible create a unique error and a prompt to report the bug.
-- [ ] Don’t let any of the app be used until access is granted
-- [x] Toggle for attributed text
-- [x] Launch at login
-- [x] Convert history storage to storing each piece of data into a file organised by directory of indexes
-- [ ] Favourites
-- [ ] Search (https://github.com/krisk/fuse-swift)
-- [x] Max history length
-- [ ] Cell height cache improvements. Will improve window size changes and launch time.
-    - [ ] Find a cheap way to clear the cell height cache
-    - [ ] Store cell heights on disk
+The Xcode project, targets and some class names still use the original Yippy naming. They'll be renamed during the upcoming architecture update.
+
+### Build configurations
+
+- **Release / Debug**: the app (`com.sandcheeeez.Magpie`)
+- **Beta Release / Beta Debug**: a beta build with its own bundle id, orange icon and data
+- **XCTest**: tests and development tooling, with its own bundle id so they never touch your real history
+
+To render the UI with sample data into PNGs without touching your real history, run the XCTest build with `--snapshot=<output dir>`.
+
+### Regenerating the icon
+
+The app icon is drawn in code: `swift tools/make-icon.swift Yippy/Resources/Assets.xcassets/AppIcon.appiconset` (add `beta` for the beta icon).
+
+## Roadmap
+
+- [ ] Replace RxSwift with Swift Observation and async/await
+- [ ] Move history storage to SwiftData
+- [ ] iCloud sync of history and pins
+- [ ] Rename the Xcode project and types from Yippy to Magpie
+- [ ] Signed and notarised releases
+
+## Credits
+
+Magpie is a fork of [Yippy](https://github.com/mattDavo/Yippy) by Matthew Davidson, used under the MIT License. See [LICENSE](LICENSE).

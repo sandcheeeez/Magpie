@@ -1,6 +1,6 @@
 //
 //  HistoryItemMetadata.swift
-//  Yippy
+//  Magpie
 //
 
 import Foundation

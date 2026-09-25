@@ -1,9 +1,6 @@
 //
 //  AppDelegate.swift
-//  Yippy
-//
-//  Created by Matthew Davidson on 26/7/19.
-//  Copyright © 2019 MatthewDavidson. All rights reserved.
+//  Magpie
 //
 
 import Cocoa
@@ -57,7 +54,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func checkBuildFlags() {
         #if BETA
-        YippyStatusItem.statusItemButtonImage = NSImage(named: NSImage.Name("YippyBetaStatusBarIcon"))
+        YippyStatusItem.statusItemButtonImage = NSImage(systemSymbolName: "bird.fill", accessibilityDescription: "Magpie Beta")
         #endif
     }
     

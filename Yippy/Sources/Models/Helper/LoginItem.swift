@@ -1,6 +1,6 @@
 //
 //  LoginItem.swift
-//  Yippy
+//  Magpie
 //
 
 import Foundation

@@ -1,6 +1,6 @@
 //
 //  TextRecognizer.swift
-//  Yippy
+//  Magpie
 //
 
 import Foundation
