@@ -70,3 +70,4 @@ build-snap
 *.profraw
 build-test
 build-signed
+.backups/
