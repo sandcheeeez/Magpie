@@ -37,12 +37,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func checkLaunchArgs() {
         if CommandLine.arguments.contains("--uitesting") {
-            do {
-                try UITesting.setupUITestEnvironment(launchArgs: CommandLine.arguments, environment: ProcessInfo.processInfo.environment)
-            }
-            catch {
-                NSAlert(error: error).runModal()
-            }
+            UITesting.setupUITestEnvironment(launchArgs: CommandLine.arguments)
         }
     }
     

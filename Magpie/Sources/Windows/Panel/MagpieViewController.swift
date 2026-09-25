@@ -81,6 +81,7 @@ class MagpieViewController: NSViewController {
         magpieHistoryView.menu = makeContextMenu()
         
         searchBar.delegate = self
+        searchBar.setAccessibilityIdentifier(Accessibility.identifiers.searchField)
         
         render(previousSelection: nil)
         resetSelected()

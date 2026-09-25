@@ -15,19 +15,27 @@ extension XCUIApplication {
         return magpieTableView.cells
     }
     
-    func getYippyTableViewCell(at i: Int) -> XCUIElement {
+    func getMagpieTableViewCell(at i: Int) -> XCUIElement {
         return magpieTableViewItems.element(boundBy: i)
     }
     
-    func getYippyTableViewCellTextView(at i: Int) -> XCUIElement {
-        return getYippyTableViewCell(at: i).children(matching: .textView).matching(identifier: Accessibility.identifiers.magpieItemTextView).element
+    func getMagpieTableViewCellTextView(at i: Int) -> XCUIElement {
+        return getMagpieTableViewCell(at: i).children(matching: .textView).matching(identifier: Accessibility.identifiers.magpieItemTextView).element
     }
     
-    func getYippyTableViewItemString(at i: Int) -> String? {
-        return getYippyTableViewCellTextView(at: i).value as? String
+    func getMagpieTableViewItemString(at i: Int) -> String? {
+        return getMagpieTableViewCellTextView(at: i).value as? String
     }
     
-    func getYippyTableViewCellType(at i: Int) -> String {
-        return getYippyTableViewCell(at: i).label
+    var searchField: XCUIElement {
+        return magpieWindow.textFields[Accessibility.identifiers.searchField]
+    }
+    
+    func filterChip(_ title: String) -> XCUIElement {
+        return magpieWindow.buttons["filterChip.\(title)"]
+    }
+    
+    func getMagpieTableViewCellType(at i: Int) -> String {
+        return getMagpieTableViewCell(at: i).label
     }
 }

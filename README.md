@@ -84,7 +84,7 @@ Run the unit tests from Xcode with the **Magpie XCTest** scheme (⌘U), or from 
 xcodebuild -project Magpie.xcodeproj -scheme "Magpie XCTest" -destination 'platform=macOS' test -only-testing:MagpieTests
 ```
 
-History tests use an in-memory SwiftData store, so they never touch real data. The UI tests (`MagpieUITests`) predate the redesign and haven't been updated yet.
+History tests use an in-memory SwiftData store, so they never touch real data. UI tests (`MagpieUITests`, scheme **Magpie XCTest**) drive the app with the mouse and keyboard, so run them when you're not using the Mac. Quit your own Magpie first, because both would claim the ⇧⌘V shortcut. They seed their own history and never touch yours, but they do change the clipboard.
 
 ### Regenerating the icon
 

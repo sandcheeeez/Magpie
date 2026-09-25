@@ -37,7 +37,7 @@ Work happens on `main` in small commits. Each checked step has been built and co
 
 ### Phase 3: Tests
 - [x] Replace the outdated tests (Rx and file-storage based, and currently not compiling) with Swift Testing tests: history operations against an in-memory store, search ranking, settings decoding, filters
-- [ ] Update the UI tests (`MagpieUITests`) for the redesigned panel and settings (optional; they need Accessibility access to run)
+- [ ] Run the UI tests on a machine where it's fine for them to take over the mouse and keyboard, and fix any failures
 
 ### Phase 4: Naming
 - [x] Rename the internal `Yippy*` types, files, targets, schemes and project to Magpie
@@ -59,4 +59,4 @@ Work happens on `main` in small commits. Each checked step has been built and co
 - [x] **Storage settings.** Show total size, a breakdown by kind, and the largest items with delete buttons, plus bulk clearing per kind. Pinned items are protected.
 - [x] **Privacy.** Remove the unused WebKit-backed HTML parsing and the old website link. Add a test that fails if network APIs appear in the app. Document the local-only guarantee.
 - [x] **MCP server.** `Magpie --mcp` speaks MCP over stdio and reads the history store read-only. It is off until enabled in Settings, runs locally only, and only returns what Magpie already stored (excluded and concealed items never exist).
-- [ ] **UI tests.** Update `MagpieUITests` for the current UI.
+- [x] **UI tests.** Update `MagpieUITests` for the current UI: fixtures built in code, and new search, filter and pin tests. They compile but haven't been run yet. They take over the mouse and keyboard, and need the test runner to be allowed to control the computer.

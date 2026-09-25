@@ -73,7 +73,7 @@ class Controller {
             )
             .with(menuItem: NSMenuItem.separator())
             .with(menuItem: NSMenuItem(title: "Toggle Window", action: #selector(togglePopover), keyEquivalent: "V")
-                .with(accessibilityIdentifier: Accessibility.identifiers.toggleYippyWindowButton)
+                .with(accessibilityIdentifier: Accessibility.identifiers.toggleMagpieWindowButton)
             )
             .with(menuItem: NSMenuItem(title: "Launch at Login", action: #selector(launchAtLogin), keyEquivalent: "")
                 .with(accessibilityIdentifier: Accessibility.identifiers.launchAtLoginButton)

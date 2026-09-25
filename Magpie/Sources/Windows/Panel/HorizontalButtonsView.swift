@@ -73,6 +73,7 @@ class HorizontalButtonsView: NSScrollView {
             button.tag = $0
             button.toolTip = $1
             button.setAccessibilityLabel($1)
+            button.setAccessibilityIdentifier("filterChip.\($1)")
             if $0 < symbolNames.count {
                 button.image = NSImage(systemSymbolName: symbolNames[$0], accessibilityDescription: $1)
             }

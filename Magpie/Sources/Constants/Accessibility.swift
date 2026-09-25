@@ -14,7 +14,7 @@ class Accessibility {
         static let aboutWindow = "aboutWindow"
         
         static let statusItemButton = "statusItemButton"
-        static let toggleYippyWindowButton = "toggleWindowButton"
+        static let toggleMagpieWindowButton = "toggleWindowButton"
         static let launchAtLoginButton = "launchAtLoginButton"
         static let quitButton = "quitButton"
         static let helpButton = "helpButton"
@@ -36,6 +36,7 @@ class Accessibility {
         static let howToUseLabel = "howToUseLabel"
         
         static let magpieTableView = "magpieTableView"
+        static let searchField = "searchField"
         static let magpieItemTextView = "MagpieItemTextView"
         static let magpieTextCellView = "MagpieTextCellView"
         static let magpieColorCellView = "MagpieColorCellView"

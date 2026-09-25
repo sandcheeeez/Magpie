@@ -4,63 +4,67 @@
 //
 
 import Foundation
+import AppKit
 
+/// Sets up the app for UI tests: `--uitesting` mocks system access and resets settings and history; `--test-history=<name>` fills the history with a fixture.
+///
+/// Only the XCTest build (its own bundle id and data) honours this, so real history can never be wiped by a test.
 struct UITesting {
     
-    static func setupUITestEnvironment(launchArgs: [String], environment: [String: String]) throws {
+    static var isTestBuild: Bool {
+        return Bundle.main.bundleIdentifier?.hasSuffix("XCTest") == true
+    }
+    
+    static func setupUITestEnvironment(launchArgs: [String]) {
+        guard isTestBuild else {
+            NSLog("Magpie: ignoring --uitesting outside the XCTest build")
+            return
+        }
+        
         // Mock the access control and key pressing
         Helper.accessControlHelper = AccessControlHelperMock()
         Helper.keyPressHelper = KeyPressHelperMock()
         
-        // Remove the settings
+        // Remove the settings and history
         _ = UserDefaults.standard.blank()
+        try? FileManager.default.removeItem(at: Constants.urls.magpieAppSupport)
         
-        if let test = CommandLine.arguments.filter({$0.contains("--Settings.testData=")}).first {
-            if let settings = Settings.testData.from(test) {
-                Settings.main = settings
-            }
+        if let test = launchArgs.first(where: { $0.hasPrefix("--Settings.testData=") }), let settings = Settings.testData.from(test) {
+            Settings.main = settings
         }
         
-        try loadTestAppSupport(launchArgs: launchArgs, environment: environment)
+        if let name = launchArgs.first(where: { $0.hasPrefix("--test-history=") })?.dropFirst("--test-history=".count) {
+            seedHistory(fixture: String(name))
+        }
     }
     
-    static func loadTestAppSupport(launchArgs: [String], environment: [String: String]) throws {
-        guard let testData = launchArgs.first(where: {$0.contains("--test-dir=")}) else {
-            return
-        }
-        let pattern = "--test-dir=(.*)"
-        let regex = try! NSRegularExpression(pattern: pattern)
-        guard let firstMatch = regex.firstMatch(in: testData, range: NSRange(location: 0, length: testData.count)) else {
-            return
-        }
-        let groups = firstMatch.groups(testedString: testData)
-        if groups.count < 2 {
-            return
-        }
-        let test = groups[1]
-        
-        guard let srcroot = environment["SRCROOT"] else {
-            throw NSError(domain: "UITestError", code: 0, userInfo: [
-                NSLocalizedDescriptionKey: "Cannot load test app support directory because the SRCROOT environment variable is not set."
-            ])
-        }
-        guard let testDir = NSURL(fileURLWithPath: srcroot)
-            .appendingPathComponent("TestData", isDirectory: true)?
-            .appendingPathComponent(test, isDirectory: true) else {
-            throw NSError(domain: "UITestError", code: 0, userInfo: [
-                NSLocalizedDescriptionKey: "Failed to create test url for path srcroot/TestData/\(test)."
-            ])
-        }
-        if FileManager.default.fileExists(atPath: testDir.path) {
-            if FileManager.default.fileExists(atPath: Constants.urls.magpieAppSupport.path) {
-                try FileManager.default.removeItem(at: Constants.urls.magpieAppSupport)
+    /// Writes a fixture into the history store before the app loads it. Items are listed newest first.
+    private static func seedHistory(fixture: String) {
+        let items: [[NSPasteboard.PasteboardType: Data]]
+        switch fixture {
+        case "A":
+            items = ["1", "2", "3", "4"].map({ [.string: Data($0.utf8)] })
+        case "Types":
+            let color = try! NSKeyedArchiver.archivedData(withRootObject: NSColor.systemBlue, requiringSecureCoding: false)
+            let missingFile = URL(fileURLWithPath: "/tmp/magpie-ui-test-missing-file.xyz")
+            let image = NSImage(size: NSSize(width: 40, height: 20), flipped: false) { rect in
+                NSColor.systemPink.setFill()
+                rect.fill()
+                return true
             }
-            try FileManager.default.copyItem(at: testDir, to: Constants.urls.magpieAppSupport)
+            items = [
+                [.color: color],
+                [.fileURL: missingFile.dataRepresentation],
+                [.string: Data("func greet(name: String) -> String {\n    return \"Hello \\(name)\"\n}".utf8)],
+                [.tiff: image.tiffRepresentation!],
+            ]
+        default:
+            items = []
         }
-        else {
-            throw NSError(domain: "TestDirectoryError", code: 0, userInfo: [
-                NSLocalizedDescriptionKey: "Could not copy test directory \(test) because it doesn't exist."
-            ])
+        guard let container = try? HistoryStore.makeContainer() else { return }
+        let history = History(container: container, persistsSettings: false)
+        for data in items.reversed() {
+            history.insert(data: data, sourceBundleId: nil)
         }
     }
 }

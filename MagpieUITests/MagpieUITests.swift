@@ -6,21 +6,45 @@
 import XCTest
 import HotKey
 
+/// End-to-end tests of the history panel. They run the XCTest build, which has its own settings and history, so real data is never touched.
+///
+/// Note: like any copy, these tests change the system clipboard.
 class MagpieUITests: XCTestCase {
 
     var app: XCUIApplication!
     
     override func setUp() {
-        // Nothing to clean up after a failure
         continueAfterFailure = false
         
-        // Set full access control
+        // Pretend Accessibility access is granted, and capture simulated key presses instead of sending them.
         AccessControlMock.setControlGranted(true)
         
-        // UI tests must launch the application that they test. Doing this in setup will make sure it happens for each test method.
         app = XCUIApplication()
         app.launchArguments.append("--uitesting")
-        app.launchEnvironment["SRCROOT"] = ProcessInfo.processInfo.environment["SRCROOT"]
+    }
+    
+    override func tearDown() {
+        app.terminate()
+    }
+    
+    /// Copies text the way apps do, then launches with the given history fixture ("A" is the items 1, 2, 3, 4).
+    func launch(copying text: String? = "My latest copy", history fixture: String? = nil) {
+        if let text = text {
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(text, forType: .string)
+        }
+        else {
+            NSPasteboard.general.clearContents()
+        }
+        if let fixture = fixture {
+            app.launchArguments.append("--test-history=\(fixture)")
+        }
+        app.launch()
+    }
+    
+    func openPanel() {
+        app.pressHotKey()
+        XCTAssertTrue(app.magpieWindow.waitUntilDisplayed())
     }
     
     func assertCmdV() {
@@ -35,338 +59,213 @@ class MagpieUITests: XCTestCase {
         XCTAssertNil(KeyPressMock.handleKeyPress())
     }
     
-    func testYippyToggle() {
-        // Launch app
-        app.launch()
+    func strings() -> [String?] {
+        return (0..<app.magpieTableViewItems.count).map({ app.getMagpieTableViewItemString(at: $0) })
+    }
+    
+    // MARK: - Showing the panel
+    
+    func testToggleFromMenu() {
+        launch()
+        XCTAssertFalse(app.magpieWindow.isDisplayed)
         
-        // Check window isn't displayed
-        XCTAssertFalse(app.magpieWindow.exists)
-        
-        // Toggle window
         app.statusItemButton.click()
-        app.toggleYippyWindowButton.click()
+        app.toggleMagpieWindowButton.click()
+        XCTAssertTrue(app.magpieWindow.waitUntilDisplayed())
         
-        // Check window is displayed
-        XCTAssertTrue(app.magpieWindow.exists)
-        
-        // Toggle window
         app.statusItemButton.click()
-        app.toggleYippyWindowButton.click()
-        
-        // Check window isn't displayed
-        XCTAssertFalse(app.magpieWindow.exists)
+        app.toggleMagpieWindowButton.click()
+        XCTAssertTrue(app.magpieWindow.waitUntilHidden())
     }
     
     func testHotKeyToggle() {
-        // Launch app
-        app.launch()
-        
-        // Check window isn't displayed
+        launch()
         XCTAssertFalse(app.magpieWindow.isDisplayed)
         
-        // HotKey toggle
+        openPanel()
         app.pressHotKey()
+        XCTAssertTrue(app.magpieWindow.waitUntilHidden())
         
-        // Check window is displayed
-        XCTAssertTrue(app.magpieWindow.isDisplayed)
-        
-        // HotKey toggle
-        app.pressHotKey()
-        
-        // Check window isn't displayed
-        XCTAssertFalse(app.magpieWindow.isDisplayed)
-        
-        // HotKey toggle
-        app.pressHotKey()
-        
-        // Check window is displayed
-        XCTAssertTrue(app.magpieWindow.isDisplayed)
-        
-        // Type escape
-        app.typeKey(XCUIKeyboardKey.escape)
-        
-        // Check window isn't displayed
-        XCTAssertFalse(app.magpieWindow.isDisplayed)
+        openPanel()
+        app.typeKey(.escape)
+        XCTAssertTrue(app.magpieWindow.waitUntilHidden())
     }
     
-    func testYippyWindowPositions() {
-        // Launch app
-        app.launch()
+    func testWindowPositions() {
+        launch()
+        openPanel()
         
-        // Check window isn't displayed
-        XCTAssertFalse(app.magpieWindow.exists)
+        // XCUITest frames have their origin at the top left of the main screen; AppKit's is at the bottom left.
+        let screen = NSScreen.screens[0]
+        func expected(_ position: PanelPosition) -> CGRect {
+            let frame = position.getFrame(forScreen: screen)
+            return CGRect(x: frame.minX, y: screen.frame.height - frame.maxY, width: frame.width, height: frame.height)
+        }
+        func move(to position: PanelPosition, button: XCUIElement) {
+            app.statusItemButton.click()
+            app.positionButton.click()
+            button.click()
+            // Allow for the frame change.
+            _ = XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: NSPredicate(format: "frame == %@", NSValue(rect: expected(position))), object: app.magpieWindow)], timeout: 2)
+            XCTAssertEqual(app.magpieWindow.frame.midX, expected(position).midX, accuracy: 1)
+            XCTAssertEqual(app.magpieWindow.frame.midY, expected(position).midY, accuracy: 1)
+        }
         
-        // HotKey toggle
-        app.pressHotKey()
-        
-        // Check window is displayed
-        XCTAssertTrue(app.magpieWindow.exists)
-        
-        // Check window location is .right
-        XCTAssertEqual(app.magpieWindow.frame.midX, PanelPosition.right.getFrame(forScreen: NSScreen.main!).midX)
-        
-        // Change to position left
-        app.statusItemButton.click()
-        app.positionButton.click()
-        app.positionLeftButton.click()
-        
-        // Check window location is .left
-        XCTAssertEqual(app.magpieWindow.frame.midX, PanelPosition.left.getFrame(forScreen: NSScreen.main!).midX)
-        
-        // Change to position bottom
-        app.statusItemButton.click()
-        app.positionButton.click()
-        app.positionBottomButton.click()
-        
-        // Check window location is .bottom
-        let statusBarHeight = NSScreen.main!.frame.height - NSScreen.main!.visibleFrame.height
-        XCTAssertEqual(app.magpieWindow.frame.midY, NSScreen.main!.visibleFrame.height + statusBarHeight - Constants.panel.menuHeight/2)
-        
-        // Change to position top
-        app.statusItemButton.click()
-        app.positionButton.click()
-        app.positionTopButton.click()
-        
-        // Check window location is .top
-        XCTAssertEqual(app.magpieWindow.frame.midY, Constants.panel.menuHeight/2)
-        
-        // Change back to position right
-        app.statusItemButton.click()
-        app.positionButton.click()
-        app.positionRightButton.click()
-        
-        // Check window location is .right
-        XCTAssertEqual(app.magpieWindow.frame.midX, PanelPosition.right.getFrame(forScreen: NSScreen.main!).midX)
+        XCTAssertEqual(app.magpieWindow.frame.midX, expected(.right).midX, accuracy: 1)
+        move(to: .left, button: app.positionLeftButton)
+        move(to: .bottom, button: app.positionBottomButton)
+        move(to: .top, button: app.positionTopButton)
+        move(to: .right, button: app.positionRightButton)
     }
     
-    func testEmptyYippyHistory() {
-        // Empty app support directory
-        app.launchArguments.append("--test-dir=Empty")
-        
-        // Test no contents on pasteboard
-        NSPasteboard.general.clearContents()
-        
-        // Launch app
-        app.launch()
-        
-        // Open Yippy window
-        app.pressHotKey()
-        
-        // Check Yippy window displayed with no cells
-        XCTAssertTrue(app.magpieTableView.isDisplayed)
+    // MARK: - History
+    
+    func testEmptyHistory() {
+        launch(copying: nil)
+        openPanel()
         XCTAssertEqual(app.magpieTableViewItems.count, 0)
-        
-        // Close Yippy window
         app.pressHotKey()
+        XCTAssertTrue(app.magpieWindow.waitUntilHidden())
         
-        // Copy something
-        NSPasteboard.general.declareTypes([.string], owner: nil)
+        // Copy something while Magpie is running.
+        NSPasteboard.general.clearContents()
         NSPasteboard.general.setString("My first test!", forType: .string)
+        // Magpie checks the clipboard four times a second.
+        Thread.sleep(forTimeInterval: 0.6)
         
-        // Show the Yippy window
-        app.pressHotKey()
-        
-        // Check Yippy window displayed with 1 cell
-        XCTAssertTrue(app.magpieTableView.isDisplayed)
+        openPanel()
         XCTAssertEqual(app.magpieTableViewItems.count, 1)
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 0), "My first test!")
+        XCTAssertEqual(app.getMagpieTableViewItemString(at: 0), "My first test!")
     }
     
-    func testLoadFromDefinedSettings() {
-        // Copy something
-        NSPasteboard.general.declareTypes([.string], owner: nil)
-        NSPasteboard.general.setString("My latest copy", forType: .string)
-        
-        // Set settings environment
+    func testLoadsHistoryAndLatestCopy() {
         app.launchArguments.append("--Settings.testData=a")
-        
-        // Basic app support directory
-        app.launchArguments.append("--test-dir=A")
-        
-        // Launch app
-        app.launch()
-        
-        // Open Yippy window
-        app.pressHotKey()
-        
-        // Check Yippy window displayed with correct number of cells
-        XCTAssertTrue(app.magpieTableView.isDisplayed)
-        XCTAssertEqual(app.magpieTableViewItems.count, 5)
+        launch(history: "A")
+        openPanel()
+        XCTAssertEqual(strings(), ["My latest copy", "1", "2", "3", "4"])
     }
     
     func testEnterToPaste() {
-        // Copy something
-        NSPasteboard.general.declareTypes([.string], owner: nil)
-        NSPasteboard.general.setString("My latest copy", forType: .string)
-        
-        // Set settings environment
-        app.launchArguments.append("--Settings.testData=a")
-        
-        // Basic app support directory
-        app.launchArguments.append("--test-dir=A")
-        
-        // Launch app
-        app.launch()
-        
-        // Open Yippy window
-        app.pressHotKey()
+        launch(history: "A")
+        openPanel()
         app.typeKey(.return)
         
-        // Assert item was pasted
         assertCmdV()
-        
-        // Assert the Yippy window is closed
-        XCTAssertFalse(app.magpieWindow.isDisplayed)
+        XCTAssertTrue(app.magpieWindow.waitUntilHidden())
     }
     
     func testPasteFromHistory() {
-        // Copy something
-        NSPasteboard.general.declareTypes([.string], owner: nil)
-        NSPasteboard.general.setString("My latest copy", forType: .string)
-        
-        // Set settings environment
-        app.launchArguments.append("--Settings.testData=a")
-        
-        // Basic app support directory
-        app.launchArguments.append("--test-dir=A")
-        
-        // Launch app
-        app.launch()
-        
-        // Open Yippy window
-        app.pressHotKey()
-        // Select index 2
-        app.getYippyTableViewCell(at: 2).click()
+        launch(history: "A")
+        openPanel()
+        app.getMagpieTableViewCell(at: 2).click()
         app.typeKey(.return)
         
-        // Assert item was pasted
         assertCmdV()
-        
-        // Assert the Yippy window is closed
-        XCTAssertFalse(app.magpieWindow.isDisplayed)
-        
-        // Assert the pasteboard now contains the index 2 text (index 1 in history)
+        XCTAssertTrue(app.magpieWindow.waitUntilHidden())
         XCTAssertEqual(NSPasteboard.general.string(forType: .string), "2")
         
-        // Open Yippy window
-        app.pressHotKey()
-        
-        // Check that the items have been shuffled
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 0), "2")
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 1), "My latest copy")
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 2), "1")
+        // The pasted item moves to the top.
+        openPanel()
+        XCTAssertEqual(Array(strings().prefix(3)), ["2", "My latest copy", "1"])
     }
     
     func testPasteFromShortcut() {
-        // Copy something
-        NSPasteboard.general.declareTypes([.string], owner: nil)
-        NSPasteboard.general.setString("My latest copy", forType: .string)
-        
-        // Set settings environment
-        app.launchArguments.append("--Settings.testData=a")
-        
-        // Basic app support directory
-        app.launchArguments.append("--test-dir=A")
-        
-        // Launch app
-        app.launch()
-        
-        // Open Yippy window
-        app.pressHotKey()
-        // Use short cut for item index 2 (⌘ + 2)
+        launch(history: "A")
+        openPanel()
         app.typeKey("2", modifierFlags: .command)
         
-        // Assert item was pasted
         assertCmdV()
-        
-        // Assert the Yippy window is closed
-        XCTAssertFalse(app.magpieWindow.isDisplayed)
-        
-        // Assert the pasteboard now contains the index 2 text (index 1 in history)
+        XCTAssertTrue(app.magpieWindow.waitUntilHidden())
         XCTAssertEqual(NSPasteboard.general.string(forType: .string), "2")
         
-        // Open Yippy window
-        app.pressHotKey()
-        
-        // Check that the items have been shuffled
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 0), "2")
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 1), "My latest copy")
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 2), "1")
+        openPanel()
+        XCTAssertEqual(Array(strings().prefix(3)), ["2", "My latest copy", "1"])
     }
     
     func testDelete() {
-        // Copy something
-        NSPasteboard.general.declareTypes([.string], owner: nil)
-        NSPasteboard.general.setString("My latest copy", forType: .string)
+        launch(history: "A")
+        openPanel()
+        app.getMagpieTableViewCell(at: 2).click()
+        app.typeKey(.delete, modifierFlags: .control)
+        XCTAssertEqual(strings(), ["My latest copy", "1", "3", "4"])
         
-        // Set settings environment
-        app.launchArguments.append("--Settings.testData=a")
+        app.typeKey(.delete, modifierFlags: .control)
+        app.typeKey(.delete, modifierFlags: .control)
+        XCTAssertEqual(strings(), ["My latest copy", "1"])
         
-        // Basic app support directory
-        app.launchArguments.append("--test-dir=A")
+        app.getMagpieTableViewCell(at: 0).click()
+        app.typeKey(.delete, modifierFlags: .control)
+        XCTAssertEqual(strings(), ["1"])
         
-        // Launch app
-        app.launch()
-        
-        // Open Yippy window
-        app.pressHotKey()
-        // Select index 2
-        app.getYippyTableViewCell(at: 2).click()
-        // Delete
-        app.typeKey(.delete, modifierFlags: .command)
-        
-        // Check that the item is gone
-        XCTAssertEqual(app.magpieTableViewItems.count, 4)
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 0), "My latest copy")
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 1), "1")
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 2), "3")
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 3), "4")
-        
-        // Delete again
-        app.typeKey(.delete, modifierFlags: .command)
-        app.typeKey(.delete, modifierFlags: .command)
-        
-        // Check that the items are gone
-        XCTAssertEqual(app.magpieTableViewItems.count, 2)
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 0), "My latest copy")
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 1), "1")
-        
-        // Delete first item
-        app.getYippyTableViewCell(at: 0).click()
-        app.typeKey(.delete, modifierFlags: .command)
-        
-        // Check that the item is gone
-        XCTAssertEqual(app.magpieTableViewItems.count, 1)
-        XCTAssertEqual(app.getYippyTableViewItemString(at: 0), "1")
-        
-        // Delete final item
-        app.typeKey(.delete, modifierFlags: .command)
-        
-        // Check all items gone
+        app.typeKey(.delete, modifierFlags: .control)
         XCTAssertEqual(app.magpieTableViewItems.count, 0)
         
-        // Check pasteboard is empty
+        // Deleting the current clipboard item clears the clipboard.
         XCTAssertTrue(NSPasteboard.general.types?.isEmpty ?? true)
     }
     
-    func testTypes() {
-        // Copy something
-        NSPasteboard.general.declareTypes([.string], owner: nil)
-        NSPasteboard.general.setString("My latest copy", forType: .string)
+    func testCellTypes() {
+        launch(history: "Types")
+        openPanel()
+        XCTAssertEqual(app.getMagpieTableViewCellType(at: 0), Accessibility.identifiers.magpieTextCellView)
+        XCTAssertEqual(app.getMagpieTableViewCellType(at: 1), Accessibility.identifiers.magpieColorCellView)
+        XCTAssertEqual(app.getMagpieTableViewCellType(at: 2), Accessibility.identifiers.magpieFileIconCellView)
+        XCTAssertEqual(app.getMagpieTableViewCellType(at: 3), Accessibility.identifiers.magpieTextCellView)
+        XCTAssertEqual(app.getMagpieTableViewCellType(at: 4), Accessibility.identifiers.magpieTiffCellView)
+    }
+    
+    // MARK: - Search, filters and pins
+    
+    func testSearch() {
+        launch(history: "A")
+        openPanel()
+        app.typeKey("\\", modifierFlags: .command)
+        app.searchField.typeText("latest")
+        XCTAssertEqual(strings(), ["My latest copy"])
         
-        // Basic app support directory
-        app.launchArguments.append("--test-dir=Big")
+        // Deleting a search result deletes that item, not the one at the same position in the full history.
+        app.typeKey(.delete, modifierFlags: .control)
+        app.searchField.doubleClick()
+        app.searchField.typeKey(.delete, modifierFlags: [])
+        XCTAssertEqual(strings(), ["1", "2", "3", "4"])
+    }
+    
+    func testFilterChips() {
+        launch(history: "Types")
+        openPanel()
+        XCTAssertEqual(app.magpieTableViewItems.count, 5)
         
-        // Launch app
-        app.launch()
+        app.filterChip("Code").click()
+        XCTAssertEqual(app.magpieTableViewItems.count, 1)
         
-        // Open Yippy window
-        app.pressHotKey()
+        app.filterChip("Colors").click()
+        XCTAssertEqual(app.magpieTableViewItems.count, 1)
         
-        // Assert the types of items: Text, icon, thumbnail, tiff
-        XCTAssertEqual(app.getYippyTableViewCellType(at: 0), Accessibility.identifiers.magpieTextCellView)
-        XCTAssertEqual(app.getYippyTableViewCellType(at: 1), Accessibility.identifiers.magpieColorCellView)
-        XCTAssertEqual(app.getYippyTableViewCellType(at: 2), Accessibility.identifiers.magpieFileIconCellView)
-        XCTAssertEqual(app.getYippyTableViewCellType(at: 4), Accessibility.identifiers.magpieTiffCellView)
+        app.typeKey(.rightArrow, modifierFlags: .command)
+        app.typeKey(.rightArrow, modifierFlags: .command)
+        // Wrapped round from Colors to All, then on to Pinned.
+        XCTAssertEqual(app.magpieTableViewItems.count, 0)
+        
+        app.filterChip("All").click()
+        XCTAssertEqual(app.magpieTableViewItems.count, 5)
+    }
+    
+    func testPinning() {
+        launch(history: "A")
+        openPanel()
+        app.getMagpieTableViewCell(at: 3).click()
+        app.typeKey("p", modifierFlags: .command)
+        
+        app.filterChip("Pinned").click()
+        XCTAssertEqual(strings(), ["3"])
+        
+        // Pinned items survive clearing the history.
+        app.typeKey(.escape)
+        XCTAssertTrue(app.magpieWindow.waitUntilHidden())
+        app.statusItemButton.click()
+        app.menuItems["Clear history"].click()
+        openPanel()
+        app.filterChip("All").click()
+        XCTAssertEqual(strings(), ["3"])
     }
 }

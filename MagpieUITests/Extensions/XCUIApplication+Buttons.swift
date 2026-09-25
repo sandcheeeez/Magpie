@@ -15,8 +15,8 @@ extension XCUIApplication {
         return self.statusItems[Accessibility.identifiers.statusItemButton]
     }
     
-    var toggleYippyWindowButton: XCUIElement {
-        return self.menus.menuItems[Accessibility.identifiers.toggleYippyWindowButton]
+    var toggleMagpieWindowButton: XCUIElement {
+        return self.menus.menuItems[Accessibility.identifiers.toggleMagpieWindowButton]
     }
     
     var quitButton: XCUIElement {
