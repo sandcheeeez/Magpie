@@ -1372,7 +1372,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = "Yippy/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1399,7 +1399,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = "Yippy/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1422,9 +1422,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				INFOPLIST_FILE = YippyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1444,9 +1445,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				INFOPLIST_FILE = YippyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1465,9 +1467,10 @@
 			baseConfigurationReference = 04546907DC383E069F30ADBE /* Pods-YippyUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				INFOPLIST_FILE = YippyUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1486,9 +1489,10 @@
 			baseConfigurationReference = FEE6024221D8C9C221BBE212 /* Pods-YippyUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				INFOPLIST_FILE = YippyUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1574,7 +1578,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = "Yippy/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1598,9 +1602,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				INFOPLIST_FILE = YippyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1619,9 +1624,10 @@
 			baseConfigurationReference = C555279B4167FBDCA36E01CC /* Pods-YippyUITests.beta debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				INFOPLIST_FILE = YippyUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1700,7 +1706,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = "Yippy/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1724,9 +1730,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				INFOPLIST_FILE = YippyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1745,9 +1752,10 @@
 			baseConfigurationReference = D645D0527FE8FF6EF353F28D /* Pods-YippyUITests.beta release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				INFOPLIST_FILE = YippyUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1833,7 +1841,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 0;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = "Yippy/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1856,9 +1864,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = YippyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1878,9 +1887,10 @@
 			baseConfigurationReference = B7B2145CEF513C8B71E739A5 /* Pods-YippyUITests.xctest.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = HY8YZ2D6M7;
+				DEVELOPMENT_TEAM = 8ML4S57F6X;
 				INFOPLIST_FILE = YippyUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

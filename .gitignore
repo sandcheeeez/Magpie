@@ -68,3 +68,5 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 build-snap
 *.profraw
+build-test
+build-signed
