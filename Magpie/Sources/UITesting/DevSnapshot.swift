@@ -35,7 +35,7 @@ enum DevSnapshot {
         Controller.main.togglePopover()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             // Select the image, whose content runs to the card's edges.
-            (Controller.main.magpieWindowController.contentViewController as? MagpieViewController)?.selected = 3
+            (Controller.main.magpieWindowController.contentViewController as? MagpieViewController)?.selected = 0
         }
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
         
@@ -82,7 +82,8 @@ enum DevSnapshot {
         }
         
         return [
-            Sample(data: text("let greeting = \"Hello, Apple silicon!\"\nprint(greeting)"), app: "com.apple.dt.Xcode", age: 20),
+            Sample(data: text("func greet(_ name: String) -> String {\n    return \"Hello, \\(name)!\"\n}"), app: "com.apple.dt.Xcode", age: 20),
+            Sample(data: text("Call Jess on +1 (555) 201-8841 about the launch"), app: "com.apple.MobileSMS", age: 120),
             Sample(data: text("https://github.com/sandcheeeez/Magpie"), app: "com.apple.Safari", age: 300),
             Sample(data: text("Meeting notes: ship the glass redesign, then pinning and OCR search."), app: "com.apple.Notes", age: 3600, pinned: true),
             Sample(data: [.tiff: image.tiffRepresentation!], app: "com.apple.Preview", age: 7200),
