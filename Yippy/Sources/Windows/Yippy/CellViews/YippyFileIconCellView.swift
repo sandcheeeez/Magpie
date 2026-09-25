@@ -54,6 +54,7 @@ class YippyFileIconCellView: YippyItemBaseCellView, YippyItem {
     func setupCell(withYippyTableView yippyTableView: YippyTableView, forHistoryItem historyItem: HistoryItem, at i: Int) {
         iconView.image = historyItem.getFileIcon()
         setupShortcutTextView(at: i)
+        setupFooter(for: historyItem)
         itemTextView.attributedText = formatFileUrl(historyItem.getFileUrl()!)
         itemTextView.constraint(withIdentifier: "height")?.constant = Self.getFileNameTextViewHeight(withCellWidth: floor(yippyTableView.cellWidth), forHistoryItem: historyItem)
         setHighlight(isSelected: yippyTableView.isRowSelected(i))

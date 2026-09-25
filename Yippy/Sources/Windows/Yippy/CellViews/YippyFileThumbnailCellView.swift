@@ -58,6 +58,7 @@ class YippyFileThumbnailCellView: YippyItemBaseCellView, YippyItem {
         guard let url = historyItem.getFileUrl() else { return }
         itemTextView.attributedText = formatFileUrl(url)
         setupShortcutTextView(at: i)
+        setupFooter(for: historyItem)
         setHighlight(isSelected: yippyTableView.isRowSelected(i))
         
         DispatchQueue.global(qos: .background).async {

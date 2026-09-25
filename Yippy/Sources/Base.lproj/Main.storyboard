@@ -685,7 +685,7 @@
         <scene sceneID="YK8-4f-MXM">
             <objects>
                 <viewController storyboardIdentifier="QuotesViewController" id="Maf-jn-umO" customClass="YippyViewController" customModule="Yippy" customModuleProvider="target" sceneMemberID="viewController">
-                    <visualEffectView key="view" wantsLayer="YES" blendingMode="behindWindow" material="toolTip" state="active" id="EMV-Rg-IFx">
+                    <view key="view" id="EMV-Rg-IFx">
                         <rect key="frame" x="0.0" y="0.0" width="345" height="308"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -824,7 +824,7 @@
                             <constraint firstItem="RtE-1d-ash" firstAttribute="centerX" secondItem="EMV-Rg-IFx" secondAttribute="centerX" id="uHR-w9-04z"/>
                             <constraint firstItem="e6J-h8-BYZ" firstAttribute="leading" secondItem="EMV-Rg-IFx" secondAttribute="leading" id="wrx-et-rXU"/>
                         </constraints>
-                    </visualEffectView>
+                    </view>
                     <connections>
                         <outlet property="itemCountLabel" destination="zja-Rc-WlR" id="HRp-OV-FaZ"/>
                         <outlet property="itemGroupScrollView" destination="e6J-h8-BYZ" id="s4b-oM-7yo"/>

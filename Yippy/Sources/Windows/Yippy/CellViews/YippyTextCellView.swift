@@ -12,7 +12,7 @@ class YippyTextCellView: YippyItemBaseCellView, YippyItem {
     
     // MARK: - UI Constants
     
-    static let padding = NSEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+    static let padding = NSEdgeInsets(top: 12, left: 14, bottom: 6, right: 14)
     
     static let textInset = NSEdgeInsetsZero // NSEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
     
@@ -54,6 +54,7 @@ class YippyTextCellView: YippyItemBaseCellView, YippyItem {
         setHighlight(isSelected: yippyTableView.isRowSelected(i))
         
         setupShortcutTextView(at: i)
+        setupFooter(for: historyItem)
     }
     
     static func getTextContainerWidth(cellWidth: CGFloat) -> CGFloat {

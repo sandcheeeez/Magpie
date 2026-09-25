@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0562EBC4ABC1E46234F6DDB5 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08BBCA4AEAA6B36DC994A78 /* SettingsView.swift */; };
 		34010D2A234AB3F100C1218D /* YippyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34010D29234AB3F100C1218D /* YippyWindow.swift */; };
 		340D3CA72361957100C2B335 /* ObservableType+WithPrevious.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340D3CA62361957100C2B335 /* ObservableType+WithPrevious.swift */; };
 		340FB43B236407D70053D82C /* Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340FB43A236407D70053D82C /* Controller.swift */; };
@@ -146,6 +147,7 @@
 		764DF3758B5EB4CD5F35E6A2 /* HistoryItemMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = A09A2D3C7841CFB98A6BEDBD /* HistoryItemMetadata.swift */; };
 		A264A9577B701DDB6DE3BFBF /* Pods_Yippy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0ACFCB0B26BF8B8E6EF42EA /* Pods_Yippy.framework */; };
 		B8A057305B33D2028FC0EC05 /* Pods_YippyUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06717A6CF5535260A83784EF /* Pods_YippyUITests.framework */; };
+		C7317E5797295F4A49A5AA1A /* DevSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F52C876769BE8B8ECC4645 /* DevSnapshot.swift */; };
 		D104B1D4E210055A8E6424F0 /* Pods_YippyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1AA8E9C3FA65CDE7DA527C7 /* Pods_YippyTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -310,8 +312,10 @@
 		473D1B2417E6C47B92751AA6 /* Pods-YippyTests.beta debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyTests.beta debug.xcconfig"; path = "Target Support Files/Pods-YippyTests/Pods-YippyTests.beta debug.xcconfig"; sourceTree = "<group>"; };
 		497AE5F620140FB1A3632D80 /* Pods-YippyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyTests.debug.xcconfig"; path = "Target Support Files/Pods-YippyTests/Pods-YippyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6345AD4696DA11C3A58F38CB /* Pods-Yippy.beta debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yippy.beta debug.xcconfig"; path = "Target Support Files/Pods-Yippy/Pods-Yippy.beta debug.xcconfig"; sourceTree = "<group>"; };
+		73F52C876769BE8B8ECC4645 /* DevSnapshot.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DevSnapshot.swift; sourceTree = "<group>"; };
 		81B679C12318A792B1DFA689 /* TextRecognizer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		A09A2D3C7841CFB98A6BEDBD /* HistoryItemMetadata.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HistoryItemMetadata.swift; sourceTree = "<group>"; };
+		B08BBCA4AEAA6B36DC994A78 /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		B1AA8E9C3FA65CDE7DA527C7 /* Pods_YippyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YippyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7B2145CEF513C8B71E739A5 /* Pods-YippyUITests.xctest.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyUITests.xctest.xcconfig"; path = "Target Support Files/Pods-YippyUITests/Pods-YippyUITests.xctest.xcconfig"; sourceTree = "<group>"; };
 		C0ACFCB0B26BF8B8E6EF42EA /* Pods_Yippy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yippy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -488,6 +492,7 @@
 				344176782408640D0076BEDA /* HotKeySettingsViewController.swift */,
 				3496BADA2442B28A00D110AE /* SettingsTabViewController.swift */,
 				34417676240863930076BEDA /* SettingsWindowController.swift */,
+				B08BBCA4AEAA6B36DC994A78 /* SettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -509,6 +514,7 @@
 			children = (
 				348D525C238766220024A5C7 /* System Mocks */,
 				3426812B233EFD2900BA226A /* UITesting.swift */,
+				73F52C876769BE8B8ECC4645 /* DevSnapshot.swift */,
 			);
 			path = UITesting;
 			sourceTree = "<group>";
@@ -1156,6 +1162,8 @@
 				450DD275E227C6EAC455C70E /* LoginItem.swift in Sources */,
 				764DF3758B5EB4CD5F35E6A2 /* HistoryItemMetadata.swift in Sources */,
 				42B6F2330A4EE1A2D16DADE6 /* TextRecognizer.swift in Sources */,
+				C7317E5797295F4A49A5AA1A /* DevSnapshot.swift in Sources */,
+				0562EBC4ABC1E46234F6DDB5 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

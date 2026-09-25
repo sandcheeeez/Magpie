@@ -42,7 +42,9 @@ class YippyTableView: NSTableView {
         selectionHighlightStyle = .none
         allowsMultipleSelection = false
         
-        intercellSpacing = NSSize(width: 40, height: 5)
+        intercellSpacing = NSSize(width: 0, height: 2)
+        style = .plain
+        backgroundColor = .clear
         setAccessibilityIdentifier(Accessibility.identifiers.yippyTableView)
         
         delegate = self

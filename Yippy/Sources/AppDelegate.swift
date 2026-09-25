@@ -20,7 +20,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         checkBuildFlags()
         checkLaunchArgs()
+        #if XCTEST
+        let snapshotDirectory = DevSnapshot.outputDirectory
+        if snapshotDirectory != nil {
+            DevSnapshot.prepare()
+        }
+        #endif
         Controller.main = Controller(state: State.main, settings: Settings.main)
+        #if XCTEST
+        if let snapshotDirectory = snapshotDirectory {
+            setupHotKey()
+            DevSnapshot.run(outputDirectory: snapshotDirectory)
+            return
+        }
+        #endif
         
         showWelcomeIfNeeded()
 

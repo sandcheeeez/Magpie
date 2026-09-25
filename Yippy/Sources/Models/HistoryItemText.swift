@@ -29,6 +29,9 @@ struct HistoryItemText {
         else if let url = item.getFileUrl() {
             return url.path
         }
+        else if let color = item.getColor()?.usingColorSpace(.sRGB) {
+            return String(format: "#%02X%02X%02X", Int(round(color.redComponent * 255)), Int(round(color.greenComponent * 255)), Int(round(color.blueComponent * 255)))
+        }
         else {
             return "Unknown format"
         }

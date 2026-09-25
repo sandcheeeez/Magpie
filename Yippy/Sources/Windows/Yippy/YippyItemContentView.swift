@@ -17,14 +17,9 @@ class YippyItemContentView: NSView {
     override func updateLayer() {
         super.updateLayer()
         
+        // The card behind draws the background; only content with its own colour (e.g. colour swatches) fills this view.
         if usesDynamicBackgroundColor {
-            layer?.backgroundColor = NSColor(named: NSColor.Name("TextBackgroundColor"))?.cgColor
-        }
-        
-        if #available(OSX 10.14, *) {
-            layer?.borderColor = NSColor.controlAccentColor.cgColor
-        } else {
-            layer?.borderColor = NSColor.systemBlue.withAlphaComponent(0.7).cgColor
+            layer?.backgroundColor = NSColor.clear.cgColor
         }
     }
 }

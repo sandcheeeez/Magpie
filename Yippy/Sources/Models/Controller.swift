@@ -73,7 +73,7 @@ class Controller {
                 .with(accessibilityIdentifier: Accessibility.identifiers.helpButton)
             )
             .with(menuItem: NSMenuItem.separator())
-            .with(menuItem: NSMenuItem(title: "Preferences...", action: #selector(showSettings), keyEquivalent: "")
+            .with(menuItem: NSMenuItem(title: "Settings…", action: #selector(showSettings), keyEquivalent: ",")
                 .with(accessibilityIdentifier: "")
             )
             .with(menuItem: NSMenuItem.separator())

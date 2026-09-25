@@ -2,21 +2,34 @@
 //  SettingsWindowController.swift
 //  Yippy
 //
-//  Created by Matthew Davidson on 28/2/20.
-//  Copyright © 2020 MatthewDavidson. All rights reserved.
-//
 
 import Foundation
 import AppKit
+import SwiftUI
 
 class SettingsWindowController: NSWindowController {
     
     static func createSettingsWindowController() -> SettingsWindowController {
-        let storyboard = NSStoryboard(name: NSStoryboard.Name("Main"), bundle: nil)
-        let identifier = NSStoryboard.SceneIdentifier(stringLiteral: "SettingsWindowController")
-        guard let windowController = storyboard.instantiateController(withIdentifier: identifier) as? SettingsWindowController else {
-            fatalError("Failed to load SettingsWindowController of type SettingsWindowController from the Main storyboard.")
-        }
-        return windowController
+        let model = SettingsModel()
+        let tabs = NSTabViewController()
+        tabs.tabStyle = .toolbar
+        tabs.addTabViewItem(tab("General", symbol: "gearshape", view: GeneralSettingsView(model: model)))
+        tabs.addTabViewItem(tab("Shortcuts", symbol: "command", view: ShortcutsSettingsView(model: model)))
+        tabs.addTabViewItem(tab("Privacy", symbol: "hand.raised", view: PrivacySettingsView(model: model)))
+        
+        let window = NSWindow(contentViewController: tabs)
+        window.styleMask = [.titled, .closable]
+        window.toolbarStyle = .preference
+        window.isReleasedWhenClosed = false
+        return SettingsWindowController(window: window)
+    }
+    
+    private static func tab<V: View>(_ label: String, symbol: String, view: V) -> NSTabViewItem {
+        let controller = NSHostingController(rootView: view.frame(width: 500, height: 440))
+        controller.title = label
+        let item = NSTabViewItem(viewController: controller)
+        item.label = label
+        item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: label)
+        return item
     }
 }

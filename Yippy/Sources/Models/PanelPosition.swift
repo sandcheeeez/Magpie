@@ -20,16 +20,21 @@ enum PanelPosition: Int, Codable, CaseIterable {
     case centerLarge = 6
     case fullScreen = 7
     
+    /// Gap between the floating panel and the edges of the screen's visible area.
+    static let margin: CGFloat = 8
+    
     public func getFrame(forScreen screen: NSScreen) -> NSRect {
+        // Edge panels float inside the visible area, clear of the menu bar and Dock.
+        let area = screen.visibleFrame.insetBy(dx: Self.margin, dy: Self.margin)
         switch self {
         case .right:
-            return NSRect(x: screen.frame.maxX - Constants.panel.menuWidth, y: screen.frame.minY, width: Constants.panel.menuWidth, height: screen.frame.height)
+            return NSRect(x: area.maxX - Constants.panel.menuWidth, y: area.minY, width: Constants.panel.menuWidth, height: area.height)
         case .left:
-            return NSRect(x: screen.frame.minX, y: screen.frame.minY, width: Constants.panel.menuWidth, height: screen.frame.height)
+            return NSRect(x: area.minX, y: area.minY, width: Constants.panel.menuWidth, height: area.height)
         case .top:
-            return NSRect(x: screen.frame.minX, y: screen.frame.maxY - Constants.panel.menuHeight, width: screen.frame.width, height: Constants.panel.menuHeight)
+            return NSRect(x: area.minX, y: area.maxY - Constants.panel.menuHeight, width: area.width, height: Constants.panel.menuHeight)
         case .bottom:
-            return NSRect(x: screen.frame.minX, y: screen.frame.minY, width: screen.frame.width, height: Constants.panel.menuHeight)
+            return NSRect(x: area.minX, y: area.minY, width: area.width, height: Constants.panel.menuHeight)
         case .centerExtraSmall:
             let size = NSSize(width: screen.frame.width / 3, height: screen.frame.height / 3)
             return Self.centerRect(ofSize: size, inRect: screen.frame)
@@ -43,7 +48,18 @@ enum PanelPosition: Int, Codable, CaseIterable {
             let size = NSSize(width: screen.frame.width * 0.85, height: screen.frame.height * 0.85)
             return Self.centerRect(ofSize: size, inRect: screen.frame)
         case .fullScreen:
-            return screen.frame
+            return screen.visibleFrame.insetBy(dx: Self.margin, dy: Self.margin)
+        }
+    }
+    
+    /// The direction the panel slides in from when shown.
+    var slideOffset: NSPoint {
+        switch self {
+        case .right: return NSPoint(x: 24, y: 0)
+        case .left: return NSPoint(x: -24, y: 0)
+        case .top: return NSPoint(x: 0, y: 24)
+        case .bottom: return NSPoint(x: 0, y: -24)
+        default: return NSPoint(x: 0, y: -12)
         }
     }
     

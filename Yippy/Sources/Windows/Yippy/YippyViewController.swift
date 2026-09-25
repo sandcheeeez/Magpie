@@ -52,6 +52,9 @@ class YippyViewController: NSViewController {
         
         State.main.showsRichText.distinctUntilChanged().subscribe(onNext: onShowsRichText).disposed(by: disposeBag)
         
+        styleHeader()
+        itemGroupScrollView.symbolNames = HistoryFilter.allCases.map({ $0.symbolName })
+        itemGroupScrollView.innerPadding = 6
         itemGroupScrollView.bind(toData: itemGroups.asObservable()).disposed(by: disposeBag)
         itemGroupScrollView.bind(toSelected: filter.map({ $0.rawValue })).disposed(by: disposeBag)
         itemGroupScrollView.onSelect = { [weak self] in
@@ -141,8 +144,26 @@ class YippyViewController: NSViewController {
         searchBar.resignFirstResponder()
     }
     
+    private func styleHeader() {
+        if let title = view.subviews.compactMap({ $0 as? NSTextField }).first(where: { $0.stringValue == "Yippy" }) {
+            title.font = NSFont.systemFont(ofSize: 17, weight: .bold).rounded
+        }
+        itemCountLabel.font = .monospacedDigitSystemFont(ofSize: 11, weight: .medium)
+        itemCountLabel.textColor = .tertiaryLabelColor
+        
+        searchBar.font = .systemFont(ofSize: 13)
+        searchBar.bezelStyle = .roundedBezel
+        searchBar.placeholderAttributedString = NSAttributedString(string: "Search text, apps and images   ⌘\\", attributes: [
+            .foregroundColor: NSColor.placeholderTextColor,
+            .font: NSFont.systemFont(ofSize: 13),
+        ])
+    }
+    
     override func viewWillAppear() {
         super.viewWillAppear()
+        
+        // Refresh relative copy times ("2 min ago").
+        yippyHistoryView.redisplayVisible(yippyItems: yippyHistory.items)
         
         isPreviewShowing = false
         resetSelected()
