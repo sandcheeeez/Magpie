@@ -75,6 +75,14 @@ class History {
 
         do {
             let models = try context.fetch(FetchDescriptor<ClipItem>(sortBy: [SortDescriptor(\.position, order: .reverse)]))
+            // Items analysed by an older analyser (or before analysis existed) are analysed again.
+            let outdated = models.filter({ $0.analysisVersion < ClipAnalyzer.version })
+            for model in outdated {
+                model.apply(ClipAnalyzer.analyze(model.pasteboardData))
+            }
+            if !outdated.isEmpty {
+                try context.save()
+            }
             _items = models.map(HistoryItem.init(model:))
         }
         catch {

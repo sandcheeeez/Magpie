@@ -5,6 +5,7 @@
 
 import Foundation
 import SwiftData
+import AppKit
 
 /// A saved clipboard item.
 @Model
@@ -34,19 +35,51 @@ final class ClipItem {
     /// Case and diacritic folded text used for searching.
     var searchText: String
     
+    /// Detected tags, such as "Email" or a code language.
+    var tags: [String] = []
+    
+    var characterCount: Int?
+    
+    var lineCount: Int?
+    
+    var codeLanguage: String?
+    
+    /// Total size of the item's data.
+    var byteCount: Int = 0
+    
+    /// The `ClipAnalyzer.version` that produced the fields above.
+    var analysisVersion: Int = 0
+    
     /// The item's pasteboard data, one per type.
     @Relationship(deleteRule: .cascade, inverse: \ClipRepresentation.item)
     var representations: [ClipRepresentation] = []
     
-    init(id: UUID = UUID(), position: Double, copiedAt: Date, sourceBundleId: String?, isPinned: Bool = false, recognizedText: String? = nil, kind: HistoryItemKind, searchText: String) {
+    init(id: UUID = UUID(), position: Double, copiedAt: Date, sourceBundleId: String?, isPinned: Bool = false, recognizedText: String? = nil, analysis: ClipAnalysis) {
         self.id = id
         self.position = position
         self.copiedAt = copiedAt
         self.sourceBundleId = sourceBundleId
         self.isPinned = isPinned
         self.recognizedText = recognizedText
-        self.kindRaw = kind.rawValue
-        self.searchText = searchText
+        self.kindRaw = analysis.kind.rawValue
+        self.searchText = analysis.searchText
+        apply(analysis)
+    }
+    
+    /// The item's data keyed by pasteboard type.
+    var pasteboardData: [NSPasteboard.PasteboardType: Data] {
+        return Dictionary(representations.map({ (NSPasteboard.PasteboardType($0.type), $0.data) }), uniquingKeysWith: { first, _ in first })
+    }
+    
+    func apply(_ analysis: ClipAnalysis) {
+        kindRaw = analysis.kind.rawValue
+        searchText = analysis.searchText
+        tags = analysis.tags
+        characterCount = analysis.characterCount
+        lineCount = analysis.lineCount
+        codeLanguage = analysis.codeLanguage
+        byteCount = analysis.byteCount
+        analysisVersion = ClipAnalyzer.version
     }
 }
 

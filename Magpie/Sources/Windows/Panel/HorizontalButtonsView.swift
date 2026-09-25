@@ -55,6 +55,18 @@ class HorizontalButtonsView: NSScrollView {
         updateSelected(index)
     }
     
+    /// Changes one button's title, e.g. to show the chosen tag.
+    func setTitle(_ title: String, at index: Int) {
+        guard index < titles.count else { return }
+        titles[index] = title
+        buttons[index].toolTip = title
+        updateSelected(selectedIndex)
+    }
+    
+    func button(at index: Int) -> NSButton? {
+        return index < buttons.count ? buttons[index] : nil
+    }
+    
     private func createButtons(data: [String]) -> [NSButton] {
         return data.enumerated().map({
             let button = ChipButton(title: $1, target: self, action: #selector(buttonHandler(_:)))
@@ -91,7 +103,10 @@ class HorizontalButtonsView: NSScrollView {
         self.documentView = buttonsDocumentView
     }
     
+    private var selectedIndex: Int?
+    
     private func updateSelected(_ selected: Int?) {
+        selectedIndex = selected
         for (i, button) in buttons.enumerated() {
             guard let chip = button as? ChipButton else { continue }
             let isSelected = i == selected
@@ -171,7 +186,7 @@ class ChipButton: NSButton {
             .foregroundColor: isChipSelected ? NSColor.white : NSColor.secondaryLabelColor,
         ])
         let contentWidth = title.isEmpty ? 16 : attributedTitle.size().width + (image == nil ? 0 : 20)
-        setFrameSize(NSSize(width: ceil(contentWidth) + 22, height: Self.height))
+        setFrameSize(NSSize(width: ceil(contentWidth) + 16, height: Self.height))
         needsDisplay = true
     }
 }

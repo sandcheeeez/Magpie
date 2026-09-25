@@ -60,10 +60,10 @@ class MagpieHistory {
             guard let text = item.recognizedText, !text.isEmpty else { return nil }
             return text
         case .color:
-            return nil
+            return item.getPlainString()
         case .file:
             return item.getFileUrl()?.path
-        case .link, .text:
+        case .link, .text, .code:
             return item.getPlainString() ?? item.getRtfAttributedString()?.string ?? item.getUrl()?.absoluteString
         }
     }

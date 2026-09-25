@@ -27,7 +27,7 @@ class MagpieViewController: NSViewController {
     var filter = HistoryFilter.all {
         didSet {
             guard filter != oldValue else { return }
-            itemGroupScrollView.select(filter.rawValue)
+            updateFilterChips()
             runSearch()
         }
     }
@@ -62,12 +62,20 @@ class MagpieViewController: NSViewController {
         Magpie.observe({ AppState.main.showsRichText }, onChange: onShowsRichText)
         
         styleHeader()
-        itemGroupScrollView.symbolNames = HistoryFilter.allCases.map({ $0.symbolName })
-        itemGroupScrollView.innerPadding = 6
-        itemGroupScrollView.setTitles(HistoryFilter.allCases.map({ $0.title }))
-        itemGroupScrollView.select(filter.rawValue)
+        itemGroupScrollView.symbolNames = HistoryFilter.chips.map({ $0.symbolName }) + ["tag"]
+        itemGroupScrollView.innerPadding = 4
+        itemGroupScrollView.leftPadding = 12
+        itemGroupScrollView.rightPadding = 12
+        itemGroupScrollView.setTitles(HistoryFilter.chips.map({ $0.title }) + ["Tags"])
+        updateFilterChips()
         itemGroupScrollView.onSelect = { [weak self] in
-            self?.filter = HistoryFilter(rawValue: $0) ?? .all
+            guard let self = self else { return }
+            if $0 < HistoryFilter.chips.count {
+                self.filter = HistoryFilter.chips[$0]
+            }
+            else {
+                self.showTagsMenu()
+            }
         }
         
         magpieHistoryView.menu = makeContextMenu()
@@ -276,8 +284,56 @@ class MagpieViewController: NSViewController {
     }
     
     func cycleFilter(by offset: Int) {
-        let count = HistoryFilter.allCases.count
-        filter = HistoryFilter(rawValue: (filter.rawValue + offset + count) % count) ?? .all
+        let chips = HistoryFilter.chips
+        let current = chips.firstIndex(of: filter) ?? 0
+        filter = chips[(current + offset + chips.count) % chips.count]
+    }
+    
+    /// Highlights the chip for the current filter. A tag filter highlights the Tags chip, titled with the tag.
+    private func updateFilterChips() {
+        let tagsIndex = HistoryFilter.chips.count
+        if case .tag(let tag) = filter {
+            itemGroupScrollView.setTitle(tag, at: tagsIndex)
+            itemGroupScrollView.select(tagsIndex)
+        }
+        else {
+            itemGroupScrollView.setTitle("Tags", at: tagsIndex)
+            itemGroupScrollView.select(HistoryFilter.chips.firstIndex(of: filter) ?? 0)
+        }
+    }
+    
+    /// Lists the tags found in the history, with counts, below the Tags chip.
+    private func showTagsMenu() {
+        let menu = NSMenu()
+        let tags = HistoryFilter.tags(in: AppState.main.history.items)
+        if tags.isEmpty {
+            let item = NSMenuItem(title: "No tags yet", action: nil, keyEquivalent: "")
+            item.isEnabled = false
+            menu.addItem(item)
+            menu.addItem(NSMenuItem(title: "Code languages, emails, phone numbers and addresses are tagged automatically.", action: nil, keyEquivalent: ""))
+            menu.items.last?.isEnabled = false
+        }
+        for (tag, count) in tags {
+            let item = NSMenuItem(title: "\(tag)  \(count)", action: #selector(tagSelected(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = tag
+            item.state = filter == .tag(tag) ? .on : .off
+            menu.addItem(item)
+        }
+        if case .tag = filter {
+            menu.addItem(.separator())
+            let clear = NSMenuItem(title: "Show All", action: #selector(tagSelected(_:)), keyEquivalent: "")
+            clear.target = self
+            menu.addItem(clear)
+        }
+        if let chip = itemGroupScrollView.button(at: HistoryFilter.chips.count) {
+            menu.popUp(positioning: nil, at: NSPoint(x: 0, y: chip.bounds.maxY + 4), in: chip)
+        }
+        updateFilterChips()
+    }
+    
+    @objc private func tagSelected(_ sender: NSMenuItem) {
+        filter = (sender.representedObject as? String).map({ .tag($0) }) ?? .all
     }
     
     func deleteSelected() {

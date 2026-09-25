@@ -223,10 +223,35 @@ class MagpieItemBaseCellView: NSTableCellView {
         }
         let age = Date().timeIntervalSince(historyItem.copiedAt)
         parts.append(age < 60 ? "Just now" : Self.relativeDateFormatter.localizedString(for: historyItem.copiedAt, relativeTo: Date()))
+        if let detail = Self.contentDetail(for: historyItem) {
+            parts.append(detail)
+        }
         footerLabel.stringValue = parts.joined(separator: " · ")
         footerPinIcon.isHidden = !historyItem.isPinned
     }
 
+    private static let countFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+    
+    /// "Swift, 12 lines" for code, "245 characters" for text.
+    static func contentDetail(for item: HistoryItem) -> String? {
+        func count(_ n: Int, _ unit: String) -> String {
+            return "\(countFormatter.string(from: NSNumber(value: n)) ?? "\(n)") \(unit)\(n == 1 ? "" : "s")"
+        }
+        switch item.kind {
+        case .code:
+            let lines = item.lineCount.map({ count($0, "line") })
+            return [item.codeLanguage, lines].compactMap({ $0 }).joined(separator: ", ")
+        case .text:
+            return item.characterCount.map({ count($0, "character") })
+        default:
+            return nil
+        }
+    }
+    
     func getShortcutTextViewSize() -> NSSize {
         // Determine the size of the text in one line
         let bRect = shortcutTextView.attributedString().getSingleLineSize()

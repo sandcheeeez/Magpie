@@ -6,25 +6,27 @@
 import Foundation
 import Cocoa
 
-/// A quick filter shown above the history.
-enum HistoryFilter: Int, CaseIterable {
+/// A quick filter shown above the history: everything, pinned items, one kind of content, or a detected tag.
+enum HistoryFilter: Hashable {
     case all
     case pinned
-    case text
-    case links
-    case images
-    case files
-    case colors
+    case kind(HistoryItemKind)
+    case tag(String)
+    
+    /// The filters shown as chips, in order. Tags are chosen from a menu after these.
+    static let chips: [HistoryFilter] = [.all, .pinned, .kind(.text), .kind(.code), .kind(.link), .kind(.image), .kind(.file), .kind(.color)]
     
     var title: String {
         switch self {
         case .all: return "All"
         case .pinned: return "Pinned"
-        case .text: return "Text"
-        case .links: return "Links"
-        case .images: return "Images"
-        case .files: return "Files"
-        case .colors: return "Colors"
+        case .kind(.text): return "Text"
+        case .kind(.code): return "Code"
+        case .kind(.link): return "Links"
+        case .kind(.image): return "Images"
+        case .kind(.file): return "Files"
+        case .kind(.color): return "Colors"
+        case .tag(let tag): return tag
         }
     }
     
@@ -32,11 +34,13 @@ enum HistoryFilter: Int, CaseIterable {
         switch self {
         case .all: return "square.stack"
         case .pinned: return "pin"
-        case .text: return "text.alignleft"
-        case .links: return "link"
-        case .images: return "photo"
-        case .files: return "doc"
-        case .colors: return "paintpalette"
+        case .kind(.text): return "text.alignleft"
+        case .kind(.code): return "chevron.left.forwardslash.chevron.right"
+        case .kind(.link): return "link"
+        case .kind(.image): return "photo"
+        case .kind(.file): return "doc"
+        case .kind(.color): return "paintpalette"
+        case .tag: return "tag"
         }
     }
     
@@ -44,12 +48,20 @@ enum HistoryFilter: Int, CaseIterable {
         switch self {
         case .all: return true
         case .pinned: return item.isPinned
-        case .text: return item.kind == .text
-        case .links: return item.kind == .link
-        case .images: return item.kind == .image
-        case .files: return item.kind == .file
-        case .colors: return item.kind == .color
+        case .kind(let kind): return item.kind == kind
+        case .tag(let tag): return item.tags.contains(tag)
         }
+    }
+    
+    /// The tags present in `items`, most common first.
+    static func tags(in items: [HistoryItem]) -> [(tag: String, count: Int)] {
+        var counts = [String: Int]()
+        for item in items {
+            for tag in item.tags {
+                counts[tag, default: 0] += 1
+            }
+        }
+        return counts.map({ ($0.key, $0.value) }).sorted(by: { $0.count != $1.count ? $0.count > $1.count : $0.tag < $1.tag })
     }
 }
 

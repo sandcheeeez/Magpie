@@ -10,6 +10,7 @@ import Quartz
 /// The broad kind of content an item holds, used for filtering and display.
 enum HistoryItemKind: String, CaseIterable {
     case text
+    case code
     case link
     case image
     case file
@@ -36,6 +37,18 @@ class HistoryItem: NSObject {
     let searchableText: String
 
     let copiedAt: Date
+    
+    /// Detected tags, such as "Email" or a code language.
+    let tags: [String]
+    
+    let characterCount: Int?
+    
+    let lineCount: Int?
+    
+    let codeLanguage: String?
+    
+    /// Total size of the item's data.
+    let byteCount: Int
 
     let sourceBundleId: String?
 
@@ -69,20 +82,24 @@ class HistoryItem: NSObject {
         self.kind = HistoryItemKind(rawValue: model.kindRaw) ?? .text
         self.searchableText = model.searchText
         self.copiedAt = model.copiedAt
+        self.tags = model.tags
+        self.characterCount = model.characterCount
+        self.lineCount = model.lineCount
+        self.codeLanguage = model.codeLanguage
+        self.byteCount = model.byteCount
         self.sourceBundleId = model.sourceBundleId
         self.isPinned = model.isPinned
         self.recognizedText = model.recognizedText
     }
 
-    /// Creates a model for new pasteboard data, working out its kind and search text.
+    /// Creates a model for new pasteboard data, analysing its content.
     static func makeModel(data: [NSPasteboard.PasteboardType: Data], position: Double, copiedAt: Date = Date(), sourceBundleId: String?) -> ClipItem {
-        let kind = Self.kind(of: data)
-        let model = ClipItem(position: position, copiedAt: copiedAt, sourceBundleId: sourceBundleId, kind: kind, searchText: Self.searchText(of: data, kind: kind))
+        let model = ClipItem(position: position, copiedAt: copiedAt, sourceBundleId: sourceBundleId, analysis: ClipAnalyzer.analyze(data))
         model.representations = data.map({ ClipRepresentation(type: $0.key.rawValue, data: $0.value) })
         return model
     }
-
-
+    
+    
     // MARK: - Data
 
     /// Returns the data for given type, or `nil` if the item doesn't have it or has been removed.
@@ -94,49 +111,8 @@ class HistoryItem: NSObject {
     }
 
 
-    // MARK: - Classification
-
-    static func kind(of data: [NSPasteboard.PasteboardType: Data]) -> HistoryItemKind {
-        if data[.fileURL] != nil {
-            return .file
-        }
-        if data[.color] != nil {
-            return .color
-        }
-        if data[.tiff] != nil || data[.png] != nil {
-            return .image
-        }
-        if data[.URL] != nil {
-            return .link
-        }
-        if let str = data[.string].flatMap({ String(data: $0, encoding: .utf8) }), isLink(str) {
-            return .link
-        }
-        return .text
-    }
-
-    static func searchText(of data: [NSPasteboard.PasteboardType: Data], kind: HistoryItemKind) -> String {
-        var parts = [String]()
-        switch kind {
-        case .file:
-            if let url = data[.fileURL].flatMap({ URL(dataRepresentation: $0, relativeTo: nil) }) {
-                parts.append(url.lastPathComponent)
-                parts.append(url.path)
-            }
-        case .image, .color:
-            break
-        case .link, .text:
-            if let str = data[.string].flatMap({ String(data: $0, encoding: .utf8) })
-                ?? data[.rtf].flatMap({ NSAttributedString(rtf: $0, documentAttributes: nil)?.string }) {
-                parts.append(String(str.prefix(maxSearchableLength)))
-            }
-            else if let url = data[.URL].flatMap({ URL(dataRepresentation: $0, relativeTo: nil) }) {
-                parts.append(url.absoluteString)
-            }
-        }
-        return foldForSearch(parts.joined(separator: "\n"))
-    }
-
+    // MARK: - Search
+    
     /// Limits how much of very long text is searched, keeping search fast.
     static let maxSearchableLength = 20_000
 
@@ -182,11 +158,6 @@ class HistoryItem: NSObject {
         return String(data: data, encoding: .utf8)
     }
 
-    func getHtmlAttributedString() -> NSAttributedString? {
-        guard let data = data(forType: .html) else { return nil }
-        return NSAttributedString(html: data, options: [NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
-    }
-
     func getUrl() -> URL? {
         guard let data = data(forType: .URL) else { return nil }
         return URL(dataRepresentation: data, relativeTo: nil)
@@ -226,8 +197,11 @@ class HistoryItem: NSObject {
         return NSWorkspace.shared.icon(forFile: url.path)
     }
 
+    /// The item's colour, from a native colour on the pasteboard or from colour text such as `#598CF2`.
     func getColor() -> NSColor? {
-        guard let data = data(forType: .color) else { return nil }
+        guard let data = data(forType: .color) else {
+            return kind == .color ? getPlainString().flatMap(ClipAnalyzer.color(fromText:)) : nil
+        }
         let pasteboard = NSPasteboard(name: NSPasteboard.Name(rawValue: "com.sandcheeeez.Magpie.ColorDecode"))
         pasteboard.declareTypes([.color], owner: nil)
         pasteboard.setData(data, forType: .color)

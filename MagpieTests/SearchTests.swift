@@ -61,7 +61,7 @@ import AppKit
     }
     
     @Test func filtersByKind() async {
-        #expect(await search("", filter: .links) == ["https://apple.com"])
+        #expect(await search("", filter: .kind(.link)) == ["https://apple.com"])
         #expect(await search("", filter: .pinned) == ["quack"])
     }
     

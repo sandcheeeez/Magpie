@@ -79,6 +79,7 @@ enum DevSnapshot {
             Sample(data: text("https://github.com/sandcheeeez/Magpie"), app: "com.apple.Safari", age: 300),
             Sample(data: text("Meeting notes: ship the glass redesign, then pinning and OCR search."), app: "com.apple.Notes", age: 3600, pinned: true),
             Sample(data: [.tiff: image.tiffRepresentation!], app: "com.apple.Preview", age: 7200),
+            Sample(data: text("#FF6B35"), app: "com.apple.Safari", age: 40000),
             Sample(data: [.color: colorData], app: "com.apple.DigitalColorMeter", age: 86400),
             Sample(data: [.fileURL: URL(fileURLWithPath: "/System/Applications/Calculator.app").dataRepresentation], app: "com.apple.finder", age: 172800),
         ]
