@@ -25,11 +25,11 @@ enum DevSnapshot {
     static func run(outputDirectory: URL) {
         let history = AppState.main.history!
         history.clear()
-        for (i, sample) in samples().enumerated().reversed() {
-            let item = HistoryItem(unsavedData: sample.data, cache: history.cache)
-            item.metadata = HistoryItemMetadata(copiedAt: Date().addingTimeInterval(-sample.age), sourceBundleId: sample.app, isPinned: sample.pinned, recognizedText: sample.pinned ? nil : "")
-            history.insertItem(item, at: 0)
-            _ = i
+        for sample in samples().reversed() {
+            history.insert(data: sample.data, copiedAt: Date().addingTimeInterval(-sample.age), sourceBundleId: sample.app)
+            if sample.pinned {
+                history.setPinned(true, forItemAt: 0)
+            }
         }
         
         Controller.main.togglePopover()

@@ -61,7 +61,7 @@ The app icon is drawn in code: `swift tools/make-icon.swift Yippy/Resources/Asse
 ## Roadmap
 
 - [x] Replace RxSwift with Swift Observation and async/await
-- [ ] Move history storage to SwiftData
+- [x] Move history storage to SwiftData
 - [ ] iCloud sync of history and pins
 - [ ] Rename the Xcode project and types from Yippy to Magpie
 - [ ] Signed and notarised releases

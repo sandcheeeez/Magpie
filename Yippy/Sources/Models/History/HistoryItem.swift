@@ -7,253 +7,225 @@ import Foundation
 import Cocoa
 import Quartz
 
-/// Interface for an item that was on the pasteboard
+/// The broad kind of content an item holds, used for filtering and display.
+enum HistoryItemKind: String, CaseIterable {
+    case text
+    case link
+    case image
+    case file
+    case color
+}
+
+/// An item in the history, as used by the UI and the pasteboard. Wraps the stored `ClipItem`.
+///
+/// The small fields are copied from the model, so an item that has been deleted from the store can still be displayed safely (for example by a preview that is closing). Its data is no longer available once `isRemoved` is set.
 class HistoryItem: NSObject {
-    
-    // MARK: - Private attributes
-    
-    /// Private variable for data that hasn't yet been saved to disk.
-    private var _unsavedData: [NSPasteboard.PasteboardType: Data]?
-    
-    
-    // MARK: - Public attributes
-    
+
+    // MARK: - Attributes
+
+    let model: ClipItem
+
+    let id: UUID
+
     /// The types of pasteboard data the item contains.
     let types: [NSPasteboard.PasteboardType]
-    
-    /// Data for the item that hasn't yet been saved to disk.
-    ///
-    /// This will be become `nil` when `startCaching()` is called to release it from memory.
-    ///
-    /// If you expect to need the items data after a call to `stopCaching(unsavedData:)` and the data is not saved to disk then you should should provide the data as an argument to `stopCaching(unsavedData:)`.
-    var unsavedData: [NSPasteboard.PasteboardType: Data]? {
-        return _unsavedData
+
+    let kind: HistoryItemKind
+
+    /// Case and diacritic folded text used for searching, excluding recognised text.
+    let searchableText: String
+
+    let copiedAt: Date
+
+    let sourceBundleId: String?
+
+    /// Pinned items are never removed when the history exceeds its limit. Change it through `History`.
+    var isPinned: Bool {
+        didSet { if !isRemoved { model.isPinned = isPinned } }
     }
-    
-    /// The cache to load data from when requesting data and using caching.
-    var cache: HistoryCache
-    
-    /// File system id. Unique name of the folder contains the data for this item
-    let fsId: UUID
-    
-    /// Copy time, source app, pinned state and recognised text.
-    var metadata = HistoryItemMetadata(copiedAt: Date())
-    
-    /// The broad kind of content, derived from the pasteboard types and data.
-    lazy var kind: HistoryItemKind = {
-        if types.contains(.fileURL) {
+
+    /// Text recognised in an image. `""` means recognition ran and found nothing. Change it through `History`.
+    var recognizedText: String? {
+        didSet { if !isRemoved { model.recognizedText = recognizedText } }
+    }
+
+    /// Set by `History` just before the model is deleted. Data can't be read after this.
+    var isRemoved = false
+
+    static let historyItemIdType = NSPasteboard.PasteboardType(rawValue: "com.sandcheeeez.Magpie.historyItemId")
+
+    /// Static definition of whether the history items should write RTF data to the pasteboard.
+    ///
+    /// This value is used when determining the writable types for an item.
+    static var pastesRichText = true
+
+
+    // MARK: - Constructors
+
+    init(model: ClipItem) {
+        self.model = model
+        self.id = model.id
+        self.types = model.representations.map({ NSPasteboard.PasteboardType($0.type) })
+        self.kind = HistoryItemKind(rawValue: model.kindRaw) ?? .text
+        self.searchableText = model.searchText
+        self.copiedAt = model.copiedAt
+        self.sourceBundleId = model.sourceBundleId
+        self.isPinned = model.isPinned
+        self.recognizedText = model.recognizedText
+    }
+
+    /// Creates a model for new pasteboard data, working out its kind and search text.
+    static func makeModel(data: [NSPasteboard.PasteboardType: Data], position: Double, copiedAt: Date = Date(), sourceBundleId: String?) -> ClipItem {
+        let kind = Self.kind(of: data)
+        let model = ClipItem(position: position, copiedAt: copiedAt, sourceBundleId: sourceBundleId, kind: kind, searchText: Self.searchText(of: data, kind: kind))
+        model.representations = data.map({ ClipRepresentation(type: $0.key.rawValue, data: $0.value) })
+        return model
+    }
+
+
+    // MARK: - Data
+
+    /// Returns the data for given type, or `nil` if the item doesn't have it or has been removed.
+    func data(forType type: NSPasteboard.PasteboardType) -> Data? {
+        guard !isRemoved, types.contains(type) else {
+            return nil
+        }
+        return model.representations.first(where: { $0.type == type.rawValue })?.data
+    }
+
+
+    // MARK: - Classification
+
+    static func kind(of data: [NSPasteboard.PasteboardType: Data]) -> HistoryItemKind {
+        if data[.fileURL] != nil {
             return .file
         }
-        if types.contains(.color) {
+        if data[.color] != nil {
             return .color
         }
-        if types.contains(.tiff) || types.contains(.png) {
+        if data[.tiff] != nil || data[.png] != nil {
             return .image
         }
-        if types.contains(.URL) {
+        if data[.URL] != nil {
             return .link
         }
-        if let str = getPlainString(), Self.isLink(str) {
+        if let str = data[.string].flatMap({ String(data: $0, encoding: .utf8) }), isLink(str) {
             return .link
         }
         return .text
-    }()
-    
-    /// Case and diacritic folded text used for searching, excluding recognised text which can change.
-    lazy var searchableText: String = {
+    }
+
+    static func searchText(of data: [NSPasteboard.PasteboardType: Data], kind: HistoryItemKind) -> String {
         var parts = [String]()
         switch kind {
         case .file:
-            if let url = getFileUrl() {
+            if let url = data[.fileURL].flatMap({ URL(dataRepresentation: $0, relativeTo: nil) }) {
                 parts.append(url.lastPathComponent)
                 parts.append(url.path)
             }
         case .image, .color:
             break
         case .link, .text:
-            if let str = getPlainString() ?? getRtfAttributedString()?.string {
-                parts.append(String(str.prefix(Self.maxSearchableLength)))
+            if let str = data[.string].flatMap({ String(data: $0, encoding: .utf8) })
+                ?? data[.rtf].flatMap({ NSAttributedString(rtf: $0, documentAttributes: nil)?.string }) {
+                parts.append(String(str.prefix(maxSearchableLength)))
             }
-            else if let url = getUrl() {
+            else if let url = data[.URL].flatMap({ URL(dataRepresentation: $0, relativeTo: nil) }) {
                 parts.append(url.absoluteString)
             }
         }
-        return Self.foldForSearch(parts.joined(separator: "\n"))
-    }()
-    
+        return foldForSearch(parts.joined(separator: "\n"))
+    }
+
     /// Limits how much of very long text is searched, keeping search fast.
     static let maxSearchableLength = 20_000
-    
+
     static func foldForSearch(_ str: String) -> String {
         return str.folding(options: [.caseInsensitive, .diacriticInsensitive, .widthInsensitive], locale: nil)
     }
-    
-    /// Whether the item is being cached.
-    var isCached: Bool {
-        return cache.isItemRegistered(fsId)
-    }
-    
-    static let historyItemIdType = NSPasteboard.PasteboardType(rawValue: "com.sandcheeeez.Magpie.historyItemId")
-    
-    /// Static definition of whether the history items should write RTF data to the pasteboard.
-    ///
-    /// This value is used when determining the writable types for an item.
-    static var pastesRichText = true
-    
-    
-    // MARK: - Constructors
-    
-    /// Creates a `HistoryItem` for an item that has not been saved to disk yet.
-    ///
-    /// It will be initialised with a unique id.
-    ///
-    /// - Parameter unsavedData: Pastebaord data that has not yet been saved to disk.
-    /// - Parameter cache: `HistoryCache` to use for caching if this item starts using caching.
-    init(unsavedData: [NSPasteboard.PasteboardType: Data], cache: HistoryCache) {
-        self._unsavedData = unsavedData
-        self.types = unsavedData.keys.map({$0})
-        self.cache = cache
-        self.fsId = UUID()
-    }
-    
-    /// Creates a `HistoryItem` for an item that is saved to disk.
-    ///
-    /// - Parameter fsId: The unique id of the item.
-    /// - Parameter types: The types of pasteboard data that this item contains.
-    /// - Parameter cache: `HistoryCache` to use for caching.
-    init(fsId: UUID, types: [NSPasteboard.PasteboardType], cache: HistoryCache) {
-        self.fsId = fsId
-        self._unsavedData = nil
-        self.types = types
-        self.cache = cache
-        self.cache.registerItem(withId: fsId)
-    }
-    
-    
-    // MARK: - Public methods
-    
-    /// Returns the data for given type.
-    ///
-    /// If the data is available in `unsavedData` it will be returned.
-    /// Otherwise if the item is not being cached, the data will be loaded from disk using the cache, but it will not be cached.
-    /// Otherwise it will use the cache to get the data.
-    ///
-    /// - Parameter type: The type of pasteboard data to get.
-    /// - Returns: The data if successful, otherwise `nil`.
-    ///
-    func data(forType type: NSPasteboard.PasteboardType) -> Data? {
-        if !types.contains(type) {
-            return nil
+
+    /// Whether the string is a single URL (rather than text containing one).
+    static func isLink(_ string: String) -> Bool {
+        let trimmed = string.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, trimmed.count < 2048, trimmed.rangeOfCharacter(from: .whitespacesAndNewlines) == nil,
+              let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else {
+            return false
         }
-        if let data = unsavedData, data.keys.contains(type) {
-            return data[type]
-        }
-        return cache.data(withId: fsId, forType: type)
+        let range = NSRange(trimmed.startIndex..., in: trimmed)
+        return detector.firstMatch(in: trimmed, options: [], range: range)?.range == range
     }
-    
-    /// Requests all the data for the item.
-    ///
-    /// - Returns: A dictionary of all the data by calling `data(forType:)`.
-    func allData() -> [NSPasteboard.PasteboardType: Data?] {
-        var data = [NSPasteboard.PasteboardType: Data?]()
-        for type in types {
-            data[type] = self.data(forType: type)
-        }
-        return data
-    }
-    
-    /// Starts caching the item.
-    ///
-    /// Deallocates the `unsavedData`. Assumes that the data has been saved to disk.
-    func startCaching() {
-        _unsavedData = nil
-        cache.registerItem(withId: fsId)
-    }
-    
-    /// Stops caching the item.
-    ///
-    /// - Parameter unsavedData: If the item's data is writen to disk this parameter can be ignored. But if itsn't then the `unsavedData` should be provided so it isn't lost.
-    func stopCaching(unsavedData: [NSPasteboard.PasteboardType: Data]? = nil) {
-        self._unsavedData = unsavedData
-        cache.unregisterItem(withId: fsId)
-    }
-    
+
+
+    // MARK: - Typed accessors
+
     func getImage() -> NSImage? {
-        if let image = getTiffImage() {
-            return image
-        }
-        if let image = getPng() {
-            return image
-        }
-        return nil
+        return getTiffImage() ?? getPng()
     }
-    
+
     func getTiffImage() -> NSImage? {
         guard let tiffData = data(forType: .tiff) else { return nil }
         return NSImage(data: tiffData)
     }
-    
+
     func getPlainString() -> String? {
         guard let data = data(forType: .string) else { return nil }
         return String(data: data, encoding: .utf8)
     }
-    
+
     func getRtfAttributedString() -> NSAttributedString? {
         guard let data = data(forType: .rtf) else { return nil }
         return NSAttributedString(rtf: data, documentAttributes: nil)
     }
-    
+
     func getHtmlRawString() -> String? {
         guard let data = data(forType: .html) else { return nil }
         return String(data: data, encoding: .utf8)
     }
-    
+
     func getHtmlAttributedString() -> NSAttributedString? {
         guard let data = data(forType: .html) else { return nil }
         return NSAttributedString(html: data, options: [NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil)
     }
-    
+
     func getUrl() -> URL? {
         guard let data = data(forType: .URL) else { return nil }
         return URL(dataRepresentation: data, relativeTo: nil)
     }
-    
+
     func getFileUrl() -> URL? {
         guard let data = data(forType: .fileURL) else { return nil }
         return URL(dataRepresentation: data, relativeTo: nil)
     }
-    
+
     func getPdf() -> PDFDocument? {
         guard let data = data(forType: .pdf) else { return nil }
         return PDFDocument(data: data)
     }
-    
+
     func getPng() -> NSImage? {
         guard let data = data(forType: .png) else { return nil }
         return NSImage(data: data)
     }
-    
+
     func getThumbnailImage() -> NSImage? {
         var image: NSImage?
         DispatchQueue.global(qos: .userInteractive).sync {
             guard let url = getFileUrl() else { return }
             let ref = QLThumbnailCreate(kCFAllocatorDefault, url as CFURL, CGSize(width: 300, height: 300), [kQLThumbnailOptionIconModeKey: true] as CFDictionary)
-            
+
             guard let thumbnail = ref?.takeRetainedValue() else { return }
             let cgImageRef = QLThumbnailCopyImage(thumbnail)
             guard let cgImage = cgImageRef?.takeRetainedValue() else { return }
             image = NSImage(cgImage: cgImage, size: CGSize(width: cgImage.width, height: cgImage.height))
         }
         return image
-        
-        
     }
-    
+
     func getFileIcon() -> NSImage? {
         guard let url = getFileUrl() else { return nil }
         return NSWorkspace.shared.icon(forFile: url.path)
     }
-    
+
     func getColor() -> NSColor? {
         guard let data = data(forType: .color) else { return nil }
         let pasteboard = NSPasteboard(name: NSPasteboard.Name(rawValue: "com.sandcheeeez.Magpie.ColorDecode"))
@@ -261,17 +233,7 @@ class HistoryItem: NSObject {
         pasteboard.setData(data, forType: .color)
         return NSColor(from: pasteboard)
     }
-    
-    private func isStringLink(string: String) -> Bool {
-        let types: NSTextCheckingResult.CheckingType = [.link]
-        let detector = try? NSDataDetector(types: types.rawValue)
-        guard (detector != nil && string.count > 0) else { return false }
-        if detector!.numberOfMatches(in: string, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSMakeRange(0, string.count)) > 0 {
-            return true
-        }
-        return false
-    }
-    
+
     private let richTextPasteboardTypes = [
         NSPasteboard.PasteboardType.rtf.rawValue,
         NSPasteboard.PasteboardType.html.rawValue,
@@ -287,14 +249,14 @@ extension HistoryItem: NSPasteboardWriting {
             HistoryItem.pastesRichText || !richTextPasteboardTypes.contains($0.rawValue)
         } + [Self.historyItemIdType]
     }
-    
+
     func pasteboardPropertyList(forType type: NSPasteboard.PasteboardType) -> Any? {
         if type == Self.historyItemIdType {
-            return fsId.uuidString
+            return id.uuidString
         }
         return data(forType: type)
     }
-    
+
     func writingOptions(forType type: NSPasteboard.PasteboardType, pasteboard: NSPasteboard) -> NSPasteboard.WritingOptions {
         return .promised
     }

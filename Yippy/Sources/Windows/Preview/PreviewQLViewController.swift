@@ -30,7 +30,7 @@ class PreviewQLViewController: NSViewController, PreviewViewController {
             panel.reloadData()
         }
         else {
-            let error = YippyError(localizedDescription: "Failed to show preview for item '\(item.fsId)' because shared QLPreviewPanel is nil.")
+            let error = YippyError(localizedDescription: "Failed to show preview for item '\(item.id)' because shared QLPreviewPanel is nil.")
             error.log(with: ErrorLogger.general)
             error.show(with: Alerter.general)
         }

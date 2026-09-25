@@ -5,34 +5,31 @@
 
 import Foundation
 import Cocoa
+import SwiftData
 
-/// Representation of all the history
+/// All of the clipboard history, most recent first, stored with SwiftData.
+///
+/// `items` mirrors the stored `ClipItem`s ordered by position. Every change is saved immediately and reported to subscribers, which use the `Change` to keep their selection stable.
 class History {
 
     private var _items = [HistoryItem]()
 
+    var items: [HistoryItem] {
+        return _items
+    }
+
+    let context: ModelContext
+
     /// The last change count for which the items on the pasteboard have been added to the history. Saved so copies aren't re-added after relaunching.
     private(set) var lastRecordedChangeCount = -1 {
-        didSet { Settings.main.pasteboardChangeCount = lastRecordedChangeCount }
+        didSet { if persistsSettings { Settings.main.pasteboardChangeCount = lastRecordedChangeCount } }
     }
-    
-    /// The file manager for the storage of pasteboard history.
-    var historyFM: HistoryFileManager
-
-    /// The store for item metadata (copy time, source app, pinned state, recognised text).
-    var metadataStore: HistoryMetadataStore
-
-    /// The cache for the history item.
-    var cache: HistoryCache
 
     /// The most unpinned items kept. Pinned items don't count towards it.
     private(set) var maxItems: Int
 
-    var items: [HistoryItem] {
-        get {
-            return self._items
-        }
-    }
+    /// Whether changes to the change count and limit are written to `Settings`. Off for tests.
+    private let persistsSettings: Bool
 
     enum Change {
         case initial
@@ -67,38 +64,35 @@ class History {
         "dyn.ah62d4rv4gu8zg55zsmv0nvperf4g86varvu0635zqfx0nkdsqf00nkduqf31k3pcr7u1e3basv61a3k",
     ].map({NSPasteboard.PasteboardType(rawValue: $0)}));
 
-    init(historyFM: HistoryFileManager = .default, metadataStore: HistoryMetadataStore = .default, cache: HistoryCache, items: [HistoryItem], maxItems: Int = Constants.system.maxHistoryItems) {
-        self.historyFM = historyFM
-        self.metadataStore = metadataStore
-        self.cache = cache
-        self._items = items
+
+    // MARK: - Loading
+
+    init(container: ModelContainer, maxItems: Int = Constants.system.maxHistoryItems, persistsSettings: Bool = true) {
+        self.context = ModelContext(container)
+        self.context.autosaveEnabled = false
         self.maxItems = maxItems
+        self.persistsSettings = persistsSettings
 
-        if unpinnedCount > maxItems {
-            reduceHistory(to: maxItems)
+        do {
+            let models = try context.fetch(FetchDescriptor<ClipItem>(sortBy: [SortDescriptor(\.position, order: .reverse)]))
+            _items = models.map(HistoryItem.init(model:))
+        }
+        catch {
+            YippyError(localizedDescription: "Failed to load the history: \(error.localizedDescription)").log(with: ErrorLogger.general)
         }
     }
 
-    static func load(historyFM: HistoryFileManager = .default, cache: HistoryCache) -> History {
-        let history = historyFM.loadHistory(cache: cache)
-        history.restoreMetadata()
-        return history
-    }
-
-    /// Applies saved metadata to the loaded items. Items saved before metadata existed use their folder's creation date.
-    private func restoreMetadata() {
-        let stored = metadataStore.load()
-        for item in _items {
-            if let metadata = stored[item.fsId] {
-                item.metadata = metadata
-            }
-            else {
-                let path = historyFM.getUrl(forItemWithId: item.fsId).path
-                let created = (try? FileManager.default.attributesOfItem(atPath: path))?[.creationDate] as? Date
-                item.metadata = HistoryItemMetadata(copiedAt: created ?? Date())
-            }
+    /// Opens the history saved on disk. If the store can't be opened, the history is kept in memory for this session.
+    static func load() -> History {
+        do {
+            return History(container: try HistoryStore.makeContainer())
         }
-        metadataStore.save(_items)
+        catch {
+            let historyError = YippyError(localizedDescription: "Your clipboard history couldn't be opened, so this session's history won't be saved. \(error.localizedDescription)")
+            historyError.log(with: ErrorLogger.general)
+            historyError.show(with: Alerter.general)
+            return History(container: try! HistoryStore.makeContainer(inMemory: true))
+        }
     }
 
     func subscribe(onNext: @escaping SubscribeHandler) {
@@ -110,58 +104,67 @@ class History {
         subscribers.forEach({$0(_items, change)})
     }
 
-    private var unpinnedCount: Int {
-        return _items.reduce(0, { $0 + ($1.metadata.isPinned ? 0 : 1) })
+    private func save() {
+        do {
+            try context.save()
+        }
+        catch {
+            YippyError(localizedDescription: "Failed to save the history: \(error.localizedDescription)").log(with: ErrorLogger.general)
+        }
     }
 
-    func insertItem(_ item: HistoryItem, at i: Int) {
-        _items.insert(item, at: i)
-        notify(.insert(index: i))
-        historyFM.insertItem(newHistory: _items, at: i)
-        metadataStore.save(_items)
+    private var unpinnedCount: Int {
+        return _items.reduce(0, { $0 + ($1.isPinned ? 0 : 1) })
+    }
+
+
+    // MARK: - Changes
+
+    /// Adds new pasteboard data to the top of the history.
+    @discardableResult
+    func insert(data: [NSPasteboard.PasteboardType: Data], copiedAt: Date = Date(), sourceBundleId: String?) -> HistoryItem {
+        let model = HistoryItem.makeModel(data: data, position: (_items.first?.model.position ?? 0) + 1, copiedAt: copiedAt, sourceBundleId: sourceBundleId)
+        context.insert(model)
+        let item = HistoryItem(model: model)
+        _items.insert(item, at: 0)
+        save()
+        notify(.insert(index: 0))
 
         if unpinnedCount > maxItems {
             reduceHistory(to: maxItems)
         }
+        return item
     }
 
     func deleteItem(at i: Int) {
         let removed = _items.remove(at: i)
+        delete([removed])
+        save()
         notify(.delete(deletedItem: removed))
-        historyFM.deleteItem(newHistory: _items, deleted: removed)
-        metadataStore.save(_items)
     }
 
+    /// Removes everything except pinned items.
     func clear() {
-        // Pinned items survive clearing the history.
-        let pinned = _items.filter({ $0.metadata.isPinned })
-        if pinned.isEmpty {
-            _items.forEach({$0.stopCaching()})
-            _items = []
-            notify(.clear)
-            historyFM.clearHistory()
-        }
-        else {
-            let removed = _items.filter({ !$0.metadata.isPinned })
-            _items = pinned
-            notify(.itemLimitDecreased(deletedItems: removed))
-            historyFM.deleteItems(newHistory: _items, deleted: removed)
-        }
-        metadataStore.save(_items)
+        let removed = _items.filter({ !$0.isPinned })
+        _items.removeAll(where: { !$0.isPinned })
+        delete(removed)
+        save()
+        notify(_items.isEmpty ? .clear : .itemLimitDecreased(deletedItems: removed))
     }
 
     func moveItem(at i: Int, to j: Int) {
         let item = _items.remove(at: i)
         _items.insert(item, at: j)
+        item.model.position = position(forItemAt: j)
+        save()
         notify(.move(from: i, to: j))
-        historyFM.moveItem(newHistory: _items, from: i, to: j)
     }
 
     func setPinned(_ isPinned: Bool, forItemAt i: Int) {
-        guard _items[i].metadata.isPinned != isPinned else { return }
-        _items[i].metadata.isPinned = isPinned
+        guard _items[i].isPinned != isPinned else { return }
+        _items[i].isPinned = isPinned
+        save()
         notify(.update(index: i))
-        metadataStore.save(_items)
 
         if !isPinned && unpinnedCount > maxItems {
             reduceHistory(to: maxItems)
@@ -170,9 +173,9 @@ class History {
 
     func setRecognizedText(_ text: String, for item: HistoryItem) {
         guard let i = _items.firstIndex(of: item) else { return }
-        item.metadata.recognizedText = text
+        item.recognizedText = text
+        save()
         notify(.update(index: i))
-        metadataStore.save(_items)
     }
 
     func recordPasteboardChange(withCount changeCount: Int) {
@@ -184,7 +187,48 @@ class History {
             reduceHistory(to: maxItems)
         }
         self.maxItems = maxItems
-        Settings.main.maxHistory = maxItems
+        if persistsSettings {
+            Settings.main.maxHistory = maxItems
+        }
+    }
+
+
+    // MARK: - Helpers
+
+    /// Deletes the items' models. Marks them removed first, so any UI still holding them stops reading their data.
+    private func delete(_ items: [HistoryItem]) {
+        for item in items {
+            item.isRemoved = true
+            context.delete(item.model)
+        }
+    }
+
+    /// Chooses a position for the item at `index` between its neighbours in `_items`.
+    private func position(forItemAt index: Int) -> Double {
+        let above = index > 0 ? _items[index - 1].model.position : nil
+        let below = index < _items.count - 1 ? _items[index + 1].model.position : nil
+        switch (above, below) {
+        case (nil, nil):
+            return 0
+        case (nil, let below?):
+            return below + 1
+        case (let above?, nil):
+            return above - 1
+        case (let above?, let below?):
+            let middle = (above + below) / 2
+            // Repeated moves between the same neighbours eventually exhaust Double precision; spread everything out again.
+            if middle <= below || middle >= above {
+                renumberPositions()
+                return _items[index].model.position
+            }
+            return middle
+        }
+    }
+
+    private func renumberPositions() {
+        for (i, item) in _items.enumerated() {
+            item.model.position = Double(_items.count - i)
+        }
     }
 
     /// Removes the oldest unpinned items until there are at most `maxItems` unpinned items.
@@ -194,20 +238,20 @@ class History {
             return;
         }
         var deletedItems = [HistoryItem]()
-        for i in _items.indices.reversed() where excess > 0 && !_items[i].metadata.isPinned {
+        for i in _items.indices.reversed() where excess > 0 && !_items[i].isPinned {
             deletedItems.append(_items.remove(at: i))
             excess -= 1
         }
-        historyFM.deleteItems(newHistory: _items, deleted: deletedItems)
-        metadataStore.save(_items)
+        delete(deletedItems)
+        save()
         notify(.itemLimitDecreased(deletedItems: deletedItems))
     }
 
     /// Recognises text in image items that haven't been processed yet, one at a time in the background.
     func recognizeTextInExistingImages() {
-        let pending = _items.filter({ $0.kind == .image && $0.metadata.recognizedText == nil })
+        let pending = _items.filter({ $0.kind == .image && $0.recognizedText == nil })
         Task { @MainActor in
-            for item in pending {
+            for item in pending where !item.isRemoved {
                 guard let text = await TextRecognizer.recognizeText(in: item) else { continue }
                 setRecognizedText(text, for: item)
             }
@@ -245,7 +289,7 @@ extension History: PasteboardMonitorDelegate {
                 for type in filteredTypes {
                     if let d = item.data(forType: type) {
                         let firstData = self._items.first?.data(forType: type)
-                        let isNewData = firstData == nil || firstData?.hashValue != d.hashValue
+                        let isNewData = firstData == nil || firstData != d
                         if isNewData {
                             data[type] = d
                         }
@@ -255,9 +299,7 @@ extension History: PasteboardMonitorDelegate {
                     }
                 }
                 if !data.isEmpty {
-                    let historyItem = HistoryItem(unsavedData: data, cache: cache)
-                    historyItem.metadata = HistoryItemMetadata(copiedAt: Date(), sourceBundleId: originBundleId)
-                    insertItem(historyItem, at: 0)
+                    let historyItem = insert(data: data, sourceBundleId: originBundleId)
 
                     if historyItem.kind == .image {
                         Task { @MainActor in

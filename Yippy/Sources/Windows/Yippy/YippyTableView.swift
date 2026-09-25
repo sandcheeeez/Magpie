@@ -153,7 +153,7 @@ extension YippyTableView: NSTableViewDataSource {
             return false
         }
         
-        guard let originalIndex = yippyItems.map({ $0.fsId }).firstIndex(of: droppedId) else {
+        guard let originalIndex = yippyItems.map({ $0.id }).firstIndex(of: droppedId) else {
             return false
         }
         
@@ -190,13 +190,13 @@ extension YippyTableView: NSTableViewDelegate {
         let historyItem = yippyItems[row]
         let itemType = historyItem.getTableViewItemType()
         
-        if let height = cellHeightsCache.cellHeight(forId: historyItem.fsId, withCellIdentifier: itemType.identifier.rawValue, cellWidth: cellWidth, isRichText: isRichText) {
+        if let height = cellHeightsCache.cellHeight(forId: historyItem.id, withCellIdentifier: itemType.identifier.rawValue, cellWidth: cellWidth, isRichText: isRichText) {
             return height
         }
         
         let height = historyItem.getTableViewItemType().getItemHeight(withYippyTableView: tableView as! YippyTableView, forHistoryItem: historyItem)
         
-        cellHeightsCache.storeCellHeight(height, forId: historyItem.fsId, withCellIdentifier: itemType.identifier.rawValue, cellWidth: cellWidth, isRichText: isRichText)
+        cellHeightsCache.storeCellHeight(height, forId: historyItem.id, withCellIdentifier: itemType.identifier.rawValue, cellWidth: cellWidth, isRichText: isRichText)
         
         return height
     }

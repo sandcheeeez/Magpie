@@ -211,9 +211,8 @@ class YippyItemBaseCellView: NSTableCellView {
 
     /// Shows the source app, copy time and pinned state. Called by subclasses from `setupCell`.
     func setupFooter(for historyItem: HistoryItem) {
-        let metadata = historyItem.metadata
         var parts = [String]()
-        if let bundleId = metadata.sourceBundleId, let name = AppInfo.name(forBundleId: bundleId) {
+        if let bundleId = historyItem.sourceBundleId, let name = AppInfo.name(forBundleId: bundleId) {
             parts.append(name)
             footerAppIcon.image = AppInfo.icon(forBundleId: bundleId)
             footerAppIcon.contentTintColor = nil
@@ -222,10 +221,10 @@ class YippyItemBaseCellView: NSTableCellView {
             footerAppIcon.image = NSImage(systemSymbolName: "doc.on.clipboard", accessibilityDescription: nil)
             footerAppIcon.contentTintColor = .tertiaryLabelColor
         }
-        let age = Date().timeIntervalSince(metadata.copiedAt)
-        parts.append(age < 60 ? "Just now" : Self.relativeDateFormatter.localizedString(for: metadata.copiedAt, relativeTo: Date()))
+        let age = Date().timeIntervalSince(historyItem.copiedAt)
+        parts.append(age < 60 ? "Just now" : Self.relativeDateFormatter.localizedString(for: historyItem.copiedAt, relativeTo: Date()))
         footerLabel.stringValue = parts.joined(separator: " · ")
-        footerPinIcon.isHidden = !metadata.isPinned
+        footerPinIcon.isHidden = !historyItem.isPinned
     }
 
     func getShortcutTextViewSize() -> NSSize {

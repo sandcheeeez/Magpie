@@ -25,7 +25,7 @@ enum TextRecognizer {
                     .joined(separator: "\n")
             }
             catch {
-                YippyWarning(localizedDescription: "Text recognition failed for item \(item.fsId): \(error.localizedDescription)").log(with: WarningLogger.general)
+                YippyWarning(localizedDescription: "Text recognition failed for item \(item.id): \(error.localizedDescription)").log(with: WarningLogger.general)
                 return nil
             }
         }.value

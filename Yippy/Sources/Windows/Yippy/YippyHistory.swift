@@ -57,7 +57,7 @@ class YippyHistory {
     static func plainText(for item: HistoryItem) -> String? {
         switch item.kind {
         case .image:
-            guard let text = item.metadata.recognizedText, !text.isEmpty else { return nil }
+            guard let text = item.recognizedText, !text.isEmpty else { return nil }
             return text
         case .color:
             return nil
@@ -70,7 +70,7 @@ class YippyHistory {
     
     func togglePin(selected: Int) {
         guard let i = historyIndex(ofSelected: selected) else { return }
-        history.setPinned(!history.items[i].metadata.isPinned, forItemAt: i)
+        history.setPinned(!history.items[i].isPinned, forItemAt: i)
     }
     
     private func executePaste(startTime: Date) {

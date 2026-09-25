@@ -55,7 +55,6 @@ class AppState {
     }
     
     // History
-    @ObservationIgnored var historyCache: HistoryCache!
     @ObservationIgnored var history: History!
     
     /// Monitors the pasteboard, here it can be controlled in the future if needed.
@@ -74,8 +73,7 @@ class AppState {
         HistoryItem.pastesRichText = settings.pastesRichText
         
         // Setup history
-        historyCache = HistoryCache()
-        history = History.load(cache: historyCache)
+        history = History.load()
         history.recordPasteboardChange(withCount: settings.pasteboardChangeCount)
         history.setMaxItems(settings.maxHistory)
         history.excludedBundleIds = Set(settings.excludedBundleIds)

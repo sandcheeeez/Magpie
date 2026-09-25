@@ -42,16 +42,9 @@ struct Constants {
             return applicationSupport.appendingPathComponent(Bundle.main.bundleIdentifier!, isDirectory: true)
         }
         
-        static var history: URL {
-            return yippyAppSupport.appendingPathComponent("history", isDirectory: true)
-        }
-        
-        static var historyOrder: URL {
-            return history.appendingPathComponent("order.xml", isDirectory: false)
-        }
-        
-        static var historyMetadata: URL {
-            return yippyAppSupport.appendingPathComponent("history-metadata.json", isDirectory: false)
+        /// The SwiftData store holding the history.
+        static var historyStore: URL {
+            return yippyAppSupport.appendingPathComponent("History.store", isDirectory: false)
         }
 
         static var errorLog: URL {

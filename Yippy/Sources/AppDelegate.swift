@@ -34,7 +34,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        AppState.main.history.metadataStore.flush()
     }
     
     func checkLaunchArgs() {

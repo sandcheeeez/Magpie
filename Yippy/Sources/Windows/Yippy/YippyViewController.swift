@@ -333,7 +333,7 @@ class YippyViewController: NSViewController {
             isPreviewShowing = true
             AppState.main.previewHistoryItem = item
         case .copyRecognizedText:
-            guard let text = item.metadata.recognizedText else { return }
+            guard let text = item.recognizedText else { return }
             NSPasteboard.general.clearContents()
             NSPasteboard.general.setString(text, forType: .string)
         case .openLink:
@@ -424,9 +424,9 @@ extension YippyViewController: NSMenuDelegate {
         if YippyHistory.plainText(for: item) != nil {
             menu.addItem(menuItem(item.kind == .image ? "Paste Recognized Text" : "Paste as Plain Text", symbol: "textformat", action: .pastePlainText))
         }
-        menu.addItem(menuItem(item.metadata.isPinned ? "Unpin" : "Pin", symbol: item.metadata.isPinned ? "pin.slash" : "pin", action: .togglePin))
+        menu.addItem(menuItem(item.isPinned ? "Unpin" : "Pin", symbol: item.isPinned ? "pin.slash" : "pin", action: .togglePin))
         menu.addItem(menuItem("Preview", symbol: "eye", action: .preview))
-        if let text = item.metadata.recognizedText, !text.isEmpty {
+        if let text = item.recognizedText, !text.isEmpty {
             menu.addItem(menuItem("Copy Recognized Text", symbol: "text.viewfinder", action: .copyRecognizedText))
         }
         if item.kind == .link {

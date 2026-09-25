@@ -43,7 +43,7 @@ enum HistoryFilter: Int, CaseIterable {
     func includes(_ item: HistoryItem) -> Bool {
         switch self {
         case .all: return true
-        case .pinned: return item.metadata.isPinned
+        case .pinned: return item.isPinned
         case .text: return item.kind == .text
         case .links: return item.kind == .link
         case .images: return item.kind == .image
@@ -78,10 +78,10 @@ class SearchEngine {
         // Read everything that touches item data on the main queue.
         let haystacks = candidates.map({ item -> String in
             var text = item.searchableText
-            if let recognized = item.metadata.recognizedText, !recognized.isEmpty {
+            if let recognized = item.recognizedText, !recognized.isEmpty {
                 text += "\n" + HistoryItem.foldForSearch(recognized)
             }
-            if let bundleId = item.metadata.sourceBundleId, let name = AppInfo.name(forBundleId: bundleId) {
+            if let bundleId = item.sourceBundleId, let name = AppInfo.name(forBundleId: bundleId) {
                 text += "\n" + HistoryItem.foldForSearch(name)
             }
             return text
