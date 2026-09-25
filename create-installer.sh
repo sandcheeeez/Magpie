@@ -11,7 +11,7 @@ appName="$1.app"
 
 test -f "$dmgName" && rm "$dmgName"
 create-dmg \
---volname "Yippy Installer" \
+--volname "Magpie Installer" \
 --window-pos 200 120 \
 --window-size 800 400 \
 --icon-size 100 \

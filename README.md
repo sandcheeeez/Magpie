@@ -40,11 +40,10 @@ A fast, keyboard-first clipboard manager for macOS. Magpie keeps everything you 
 ## Building
 
 1. Install [Xcode](https://developer.apple.com/xcode/).
-2. Open `Yippy.xcodeproj` and run the **Yippy** scheme. The only dependency, [HotKey](https://github.com/mattDavo/HotKey), is fetched by Swift Package Manager.
+2. Open `Magpie.xcodeproj` and run the **Magpie** scheme. The only dependency, [HotKey](https://github.com/mattDavo/HotKey), is fetched by Swift Package Manager.
 
 To sign your own builds, set your team under Signing & Capabilities.
 
-The Xcode project, targets and some class names still use the original Yippy naming. They'll be renamed during the upcoming architecture update.
 
 ### Build configurations
 
@@ -56,24 +55,24 @@ To render the UI with sample data into PNGs without touching your real history, 
 
 ### Tests
 
-Run the unit tests from Xcode with the **Yippy XCTest** scheme (⌘U), or from the command line:
+Run the unit tests from Xcode with the **Magpie XCTest** scheme (⌘U), or from the command line:
 
 ```
-xcodebuild -project Yippy.xcodeproj -scheme "Yippy XCTest" -destination 'platform=macOS' test -only-testing:YippyTests
+xcodebuild -project Magpie.xcodeproj -scheme "Magpie XCTest" -destination 'platform=macOS' test -only-testing:MagpieTests
 ```
 
-History tests use an in-memory SwiftData store, so they never touch real data. The UI tests (`YippyUITests`) predate the redesign and haven't been updated yet.
+History tests use an in-memory SwiftData store, so they never touch real data. The UI tests (`MagpieUITests`) predate the redesign and haven't been updated yet.
 
 ### Regenerating the icon
 
-The app icon is drawn in code: `swift tools/make-icon.swift Yippy/Resources/Assets.xcassets/AppIcon.appiconset` (add `beta` for the beta icon).
+The app icon is drawn in code: `swift tools/make-icon.swift Magpie/Resources/Assets.xcassets/AppIcon.appiconset` (add `beta` for the beta icon).
 
 ## Roadmap
 
 - [x] Replace RxSwift with Swift Observation and async/await
 - [x] Move history storage to SwiftData
 - [ ] iCloud sync of history and pins
-- [ ] Rename the Xcode project and types from Yippy to Magpie
+- [x] Rename the Xcode project and types from Yippy to Magpie
 - [ ] Signed and notarised releases
 
 ## Credits

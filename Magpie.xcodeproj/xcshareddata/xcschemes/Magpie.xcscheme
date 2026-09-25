@@ -8,22 +8,22 @@
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "34ACFBBA22EB0B0F004E6E63"
-               BuildableName = "Yippy.app"
-               BlueprintName = "Yippy"
-               ReferencedContainer = "container:Yippy.xcodeproj">
+               BuildableName = "Magpie.app"
+               BlueprintName = "Magpie"
+               ReferencedContainer = "container:Magpie.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "XCTest"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
@@ -32,36 +32,16 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "34ACFBBA22EB0B0F004E6E63"
-            BuildableName = "Yippy.app"
-            BlueprintName = "Yippy"
-            ReferencedContainer = "container:Yippy.xcodeproj">
+            BuildableName = "Magpie.app"
+            BlueprintName = "Magpie"
+            ReferencedContainer = "container:Magpie.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "34ACFBCC22EB0B11004E6E63"
-               BuildableName = "YippyTests.xctest"
-               BlueprintName = "YippyTests"
-               ReferencedContainer = "container:Yippy.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "34ACFBD722EB0B11004E6E63"
-               BuildableName = "YippyUITests.xctest"
-               BlueprintName = "YippyUITests"
-               ReferencedContainer = "container:Yippy.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "XCTest"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -70,22 +50,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "34ACFBBA22EB0B0F004E6E63"
-            BuildableName = "Yippy.app"
-            BlueprintName = "Yippy"
-            ReferencedContainer = "container:Yippy.xcodeproj">
+            BuildableName = "Magpie.app"
+            BlueprintName = "Magpie"
+            ReferencedContainer = "container:Magpie.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "SRCROOT"
-            value = "${SRCROOT}"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -93,9 +67,19 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "34ACFBBA22EB0B0F004E6E63"
+            BuildableName = "Magpie.app"
+            BlueprintName = "Magpie"
+            ReferencedContainer = "container:Magpie.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "XCTest">
+      buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
