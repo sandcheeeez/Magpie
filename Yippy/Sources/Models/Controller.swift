@@ -21,7 +21,7 @@ class Controller {
     var statusItem: NSStatusItem!
     
     // Window Controllers
-    var yippyWindowController: YippyWindowController!
+    var magpieWindowController: MagpieWindowController!
     var previewWindowController: PreviewWindowController!
     
     lazy var welcomeWindowController: WelcomeWindowController = {
@@ -46,11 +46,11 @@ class Controller {
     init(state: AppState, settings: Settings) {
         self.state = state
         // Setup status item
-        self.statusItem = YippyStatusItem.create()
+        self.statusItem = MagpieStatusItem.create()
         self.statusItem.menu = Self.createMenu(settings: settings, state: state, target: self)
         
         // Create yippy window controller
-        self.yippyWindowController = Self.createYippyWindowController(state: state)
+        self.magpieWindowController = Self.createYippyWindowController(state: state)
        
         // Create preview window controllers
         self.previewWindowController = Self.createPreviewWindowController(state: state)
@@ -144,8 +144,8 @@ class Controller {
         }
     }
     
-    static func createYippyWindowController(state: AppState) -> YippyWindowController {
-        let controller = YippyWindowController.createYippyWindowController()
+    static func createYippyWindowController(state: AppState) -> MagpieWindowController {
+        let controller = MagpieWindowController.createYippyWindowController()
         controller.observe(state: state)
         return controller
     }
@@ -163,7 +163,7 @@ class Controller {
             state.panelPosition = position
         }
         else {
-            YippyError(localizedDescription: "Received invalid panel position from \(sender)").log(with: ErrorLogger.general)
+            MagpieError(localizedDescription: "Received invalid panel position from \(sender)").log(with: ErrorLogger.general)
         }
     }
 
@@ -175,7 +175,7 @@ class Controller {
     }
     
     @objc func deleteSelectedClicked() {
-        YippyHotKeys.ctrlDelete.simulateOnDown()
+        MagpieHotKeys.ctrlDelete.simulateOnDown()
     }
     
     @objc func clearHistoryClicked() {

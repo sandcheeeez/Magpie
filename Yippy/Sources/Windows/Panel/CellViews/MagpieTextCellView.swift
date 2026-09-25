@@ -1,11 +1,11 @@
 //
-//  YippyTextCellView.swift
+//  MagpieTextCellView.swift
 //  Magpie
 //
 
 import Cocoa
 
-class YippyTextCellView: YippyItemBaseCellView, YippyItem {
+class MagpieTextCellView: MagpieItemBaseCellView, MagpieItem {
     
     // MARK: - UI Constants
     
@@ -14,7 +14,7 @@ class YippyTextCellView: YippyItemBaseCellView, YippyItem {
     static let textInset = NSEdgeInsetsZero // NSEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
     
     override class var identifier: NSUserInterfaceItemIdentifier {
-        return NSUserInterfaceItemIdentifier(Accessibility.identifiers.yippyTextCellView)
+        return NSUserInterfaceItemIdentifier(Accessibility.identifiers.magpieTextCellView)
     }
     
     // MARK: - Methods
@@ -45,10 +45,10 @@ class YippyTextCellView: YippyItemBaseCellView, YippyItem {
         contentView.addConstraint(NSLayoutConstraint(item: contentView!, attribute: .bottom, relatedBy: .equal, toItem: itemTextView, attribute: .bottom, multiplier: 1, constant: Self.padding.bottom))
     }
     
-    func setupCell(withYippyTableView yippyTableView: YippyTableView, forHistoryItem historyItem: HistoryItem, at i: Int) {
-        itemTextView.attributedText = HistoryItemText.getAttributedString(forItem: historyItem, usingItemRtf: yippyTableView.isRichText)
+    func setupCell(withYippyTableView magpieTableView: MagpieTableView, forHistoryItem historyItem: HistoryItem, at i: Int) {
+        itemTextView.attributedText = HistoryItemText.getAttributedString(forItem: historyItem, usingItemRtf: magpieTableView.isRichText)
         
-        setHighlight(isSelected: yippyTableView.isRowSelected(i))
+        setHighlight(isSelected: magpieTableView.isRowSelected(i))
         
         setupShortcutTextView(at: i)
         setupFooter(for: historyItem)
@@ -69,31 +69,31 @@ class YippyTextCellView: YippyItemBaseCellView, YippyItem {
         return min(estTextHeight, maxTextContainerHeight) + Self.padding.top + Self.padding.bottom + Self.textInset.yTotal + Self.contentViewInsets.yTotal
     }
     
-    static func calculateCellHeight(yippyTableView: YippyTableView, historyItem: HistoryItem) -> CGFloat {
+    static func calculateCellHeight(magpieTableView: MagpieTableView, historyItem: HistoryItem) -> CGFloat {
         // Calculate the width of the cell
-        let cellWidth = floor(yippyTableView.cellWidth)
+        let cellWidth = floor(magpieTableView.cellWidth)
         
         // Calculate the width of the text container
-        let width = YippyTextCellView.getTextContainerWidth(cellWidth: cellWidth)
+        let width = MagpieTextCellView.getTextContainerWidth(cellWidth: cellWidth)
         
         // Create an attributed string of the text
-        let attrStr = HistoryItemText.getAttributedString(forItem: historyItem, usingItemRtf: yippyTableView.isRichText)
+        let attrStr = HistoryItemText.getAttributedString(forItem: historyItem, usingItemRtf: magpieTableView.isRichText)
         
         // Determine the height of the text
         let estTextHeight = attrStr.calculateSize(withMaxWidth: width).height
         
         // Add the padding back to get the height of the cell
-        let height = YippyTextCellView.getCellHeight(estTextHeight: estTextHeight)
+        let height = MagpieTextCellView.getCellHeight(estTextHeight: estTextHeight)
         
         return ceil(height)
     }
     
-    static func getItemHeight(withYippyTableView yippyTableView: YippyTableView, forHistoryItem historyItem: HistoryItem) -> CGFloat {
+    static func getItemHeight(withYippyTableView magpieTableView: MagpieTableView, forHistoryItem historyItem: HistoryItem) -> CGFloat {
         
-        return calculateCellHeight(yippyTableView: yippyTableView, historyItem: historyItem)
+        return calculateCellHeight(magpieTableView: magpieTableView, historyItem: historyItem)
     }
     
-    class func makeItem() -> YippyItem {
-        return YippyTextCellView(frame: .zero)
+    class func makeItem() -> MagpieItem {
+        return MagpieTextCellView(frame: .zero)
     }
 }

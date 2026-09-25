@@ -19,7 +19,7 @@ extension XCUIApplication {
         return windows[Accessibility.identifiers.aboutWindow]
     }
     
-    var yippyWindow: XCUIElement {
-        return windows[Accessibility.identifiers.yippyWindow]
+    var magpieWindow: XCUIElement {
+        return windows[Accessibility.identifiers.magpieWindow]
     }
 }

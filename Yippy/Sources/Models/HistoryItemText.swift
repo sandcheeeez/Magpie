@@ -9,7 +9,7 @@ import Cocoa
 struct HistoryItemText {
     
     static let itemStringAttributes: [NSAttributedString.Key: Any] = [
-        .font: Constants.fonts.yippyPlainText,
+        .font: Constants.fonts.magpiePlainText,
         .foregroundColor: NSColor.textColor
     ]
     

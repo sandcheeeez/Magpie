@@ -78,7 +78,7 @@ enum HistoryStore {
             configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         }
         else {
-            try FileManager.default.createDirectory(at: Constants.urls.yippyAppSupport, withIntermediateDirectories: true)
+            try FileManager.default.createDirectory(at: Constants.urls.magpieAppSupport, withIntermediateDirectories: true)
             configuration = ModelConfiguration(schema: schema, url: Constants.urls.historyStore)
         }
         return try ModelContainer(for: schema, configurations: [configuration])

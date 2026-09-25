@@ -1,11 +1,11 @@
 //
-//  YippyWarning.swift
+//  MagpieWarning.swift
 //  Magpie
 //
 
 import Foundation
 
-struct YippyWarning: Loggable {
+struct MagpieWarning: Loggable {
     
     var localizedDescription: String
     

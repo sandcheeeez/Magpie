@@ -1,12 +1,12 @@
 //
-//  YippyUITests.swift
+//  MagpieUITests.swift
 //  MagpieUITests
 //
 
 import XCTest
 import HotKey
 
-class YippyUITests: XCTestCase {
+class MagpieUITests: XCTestCase {
 
     var app: XCUIApplication!
     
@@ -40,21 +40,21 @@ class YippyUITests: XCTestCase {
         app.launch()
         
         // Check window isn't displayed
-        XCTAssertFalse(app.yippyWindow.exists)
+        XCTAssertFalse(app.magpieWindow.exists)
         
         // Toggle window
         app.statusItemButton.click()
         app.toggleYippyWindowButton.click()
         
         // Check window is displayed
-        XCTAssertTrue(app.yippyWindow.exists)
+        XCTAssertTrue(app.magpieWindow.exists)
         
         // Toggle window
         app.statusItemButton.click()
         app.toggleYippyWindowButton.click()
         
         // Check window isn't displayed
-        XCTAssertFalse(app.yippyWindow.exists)
+        XCTAssertFalse(app.magpieWindow.exists)
     }
     
     func testHotKeyToggle() {
@@ -62,31 +62,31 @@ class YippyUITests: XCTestCase {
         app.launch()
         
         // Check window isn't displayed
-        XCTAssertFalse(app.yippyWindow.isDisplayed)
+        XCTAssertFalse(app.magpieWindow.isDisplayed)
         
         // HotKey toggle
         app.pressHotKey()
         
         // Check window is displayed
-        XCTAssertTrue(app.yippyWindow.isDisplayed)
+        XCTAssertTrue(app.magpieWindow.isDisplayed)
         
         // HotKey toggle
         app.pressHotKey()
         
         // Check window isn't displayed
-        XCTAssertFalse(app.yippyWindow.isDisplayed)
+        XCTAssertFalse(app.magpieWindow.isDisplayed)
         
         // HotKey toggle
         app.pressHotKey()
         
         // Check window is displayed
-        XCTAssertTrue(app.yippyWindow.isDisplayed)
+        XCTAssertTrue(app.magpieWindow.isDisplayed)
         
         // Type escape
         app.typeKey(XCUIKeyboardKey.escape)
         
         // Check window isn't displayed
-        XCTAssertFalse(app.yippyWindow.isDisplayed)
+        XCTAssertFalse(app.magpieWindow.isDisplayed)
     }
     
     func testYippyWindowPositions() {
@@ -94,16 +94,16 @@ class YippyUITests: XCTestCase {
         app.launch()
         
         // Check window isn't displayed
-        XCTAssertFalse(app.yippyWindow.exists)
+        XCTAssertFalse(app.magpieWindow.exists)
         
         // HotKey toggle
         app.pressHotKey()
         
         // Check window is displayed
-        XCTAssertTrue(app.yippyWindow.exists)
+        XCTAssertTrue(app.magpieWindow.exists)
         
         // Check window location is .right
-        XCTAssertEqual(app.yippyWindow.frame.midX, PanelPosition.right.getFrame(forScreen: NSScreen.main!).midX)
+        XCTAssertEqual(app.magpieWindow.frame.midX, PanelPosition.right.getFrame(forScreen: NSScreen.main!).midX)
         
         // Change to position left
         app.statusItemButton.click()
@@ -111,7 +111,7 @@ class YippyUITests: XCTestCase {
         app.positionLeftButton.click()
         
         // Check window location is .left
-        XCTAssertEqual(app.yippyWindow.frame.midX, PanelPosition.left.getFrame(forScreen: NSScreen.main!).midX)
+        XCTAssertEqual(app.magpieWindow.frame.midX, PanelPosition.left.getFrame(forScreen: NSScreen.main!).midX)
         
         // Change to position bottom
         app.statusItemButton.click()
@@ -120,7 +120,7 @@ class YippyUITests: XCTestCase {
         
         // Check window location is .bottom
         let statusBarHeight = NSScreen.main!.frame.height - NSScreen.main!.visibleFrame.height
-        XCTAssertEqual(app.yippyWindow.frame.midY, NSScreen.main!.visibleFrame.height + statusBarHeight - Constants.panel.menuHeight/2)
+        XCTAssertEqual(app.magpieWindow.frame.midY, NSScreen.main!.visibleFrame.height + statusBarHeight - Constants.panel.menuHeight/2)
         
         // Change to position top
         app.statusItemButton.click()
@@ -128,7 +128,7 @@ class YippyUITests: XCTestCase {
         app.positionTopButton.click()
         
         // Check window location is .top
-        XCTAssertEqual(app.yippyWindow.frame.midY, Constants.panel.menuHeight/2)
+        XCTAssertEqual(app.magpieWindow.frame.midY, Constants.panel.menuHeight/2)
         
         // Change back to position right
         app.statusItemButton.click()
@@ -136,7 +136,7 @@ class YippyUITests: XCTestCase {
         app.positionRightButton.click()
         
         // Check window location is .right
-        XCTAssertEqual(app.yippyWindow.frame.midX, PanelPosition.right.getFrame(forScreen: NSScreen.main!).midX)
+        XCTAssertEqual(app.magpieWindow.frame.midX, PanelPosition.right.getFrame(forScreen: NSScreen.main!).midX)
     }
     
     func testEmptyYippyHistory() {
@@ -153,8 +153,8 @@ class YippyUITests: XCTestCase {
         app.pressHotKey()
         
         // Check Yippy window displayed with no cells
-        XCTAssertTrue(app.yippyTableView.isDisplayed)
-        XCTAssertEqual(app.yippyTableViewItems.count, 0)
+        XCTAssertTrue(app.magpieTableView.isDisplayed)
+        XCTAssertEqual(app.magpieTableViewItems.count, 0)
         
         // Close Yippy window
         app.pressHotKey()
@@ -167,8 +167,8 @@ class YippyUITests: XCTestCase {
         app.pressHotKey()
         
         // Check Yippy window displayed with 1 cell
-        XCTAssertTrue(app.yippyTableView.isDisplayed)
-        XCTAssertEqual(app.yippyTableViewItems.count, 1)
+        XCTAssertTrue(app.magpieTableView.isDisplayed)
+        XCTAssertEqual(app.magpieTableViewItems.count, 1)
         XCTAssertEqual(app.getYippyTableViewItemString(at: 0), "My first test!")
     }
     
@@ -190,8 +190,8 @@ class YippyUITests: XCTestCase {
         app.pressHotKey()
         
         // Check Yippy window displayed with correct number of cells
-        XCTAssertTrue(app.yippyTableView.isDisplayed)
-        XCTAssertEqual(app.yippyTableViewItems.count, 5)
+        XCTAssertTrue(app.magpieTableView.isDisplayed)
+        XCTAssertEqual(app.magpieTableViewItems.count, 5)
     }
     
     func testEnterToPaste() {
@@ -216,7 +216,7 @@ class YippyUITests: XCTestCase {
         assertCmdV()
         
         // Assert the Yippy window is closed
-        XCTAssertFalse(app.yippyWindow.isDisplayed)
+        XCTAssertFalse(app.magpieWindow.isDisplayed)
     }
     
     func testPasteFromHistory() {
@@ -243,7 +243,7 @@ class YippyUITests: XCTestCase {
         assertCmdV()
         
         // Assert the Yippy window is closed
-        XCTAssertFalse(app.yippyWindow.isDisplayed)
+        XCTAssertFalse(app.magpieWindow.isDisplayed)
         
         // Assert the pasteboard now contains the index 2 text (index 1 in history)
         XCTAssertEqual(NSPasteboard.general.string(forType: .string), "2")
@@ -280,7 +280,7 @@ class YippyUITests: XCTestCase {
         assertCmdV()
         
         // Assert the Yippy window is closed
-        XCTAssertFalse(app.yippyWindow.isDisplayed)
+        XCTAssertFalse(app.magpieWindow.isDisplayed)
         
         // Assert the pasteboard now contains the index 2 text (index 1 in history)
         XCTAssertEqual(NSPasteboard.general.string(forType: .string), "2")
@@ -316,7 +316,7 @@ class YippyUITests: XCTestCase {
         app.typeKey(.delete, modifierFlags: .command)
         
         // Check that the item is gone
-        XCTAssertEqual(app.yippyTableViewItems.count, 4)
+        XCTAssertEqual(app.magpieTableViewItems.count, 4)
         XCTAssertEqual(app.getYippyTableViewItemString(at: 0), "My latest copy")
         XCTAssertEqual(app.getYippyTableViewItemString(at: 1), "1")
         XCTAssertEqual(app.getYippyTableViewItemString(at: 2), "3")
@@ -327,7 +327,7 @@ class YippyUITests: XCTestCase {
         app.typeKey(.delete, modifierFlags: .command)
         
         // Check that the items are gone
-        XCTAssertEqual(app.yippyTableViewItems.count, 2)
+        XCTAssertEqual(app.magpieTableViewItems.count, 2)
         XCTAssertEqual(app.getYippyTableViewItemString(at: 0), "My latest copy")
         XCTAssertEqual(app.getYippyTableViewItemString(at: 1), "1")
         
@@ -336,14 +336,14 @@ class YippyUITests: XCTestCase {
         app.typeKey(.delete, modifierFlags: .command)
         
         // Check that the item is gone
-        XCTAssertEqual(app.yippyTableViewItems.count, 1)
+        XCTAssertEqual(app.magpieTableViewItems.count, 1)
         XCTAssertEqual(app.getYippyTableViewItemString(at: 0), "1")
         
         // Delete final item
         app.typeKey(.delete, modifierFlags: .command)
         
         // Check all items gone
-        XCTAssertEqual(app.yippyTableViewItems.count, 0)
+        XCTAssertEqual(app.magpieTableViewItems.count, 0)
         
         // Check pasteboard is empty
         XCTAssertTrue(NSPasteboard.general.types?.isEmpty ?? true)
@@ -364,9 +364,9 @@ class YippyUITests: XCTestCase {
         app.pressHotKey()
         
         // Assert the types of items: Text, icon, thumbnail, tiff
-        XCTAssertEqual(app.getYippyTableViewCellType(at: 0), Accessibility.identifiers.yippyTextCellView)
-        XCTAssertEqual(app.getYippyTableViewCellType(at: 1), Accessibility.identifiers.yippyColorCellView)
-        XCTAssertEqual(app.getYippyTableViewCellType(at: 2), Accessibility.identifiers.yippyFileIconCellView)
-        XCTAssertEqual(app.getYippyTableViewCellType(at: 4), Accessibility.identifiers.yippyTiffCellView)
+        XCTAssertEqual(app.getYippyTableViewCellType(at: 0), Accessibility.identifiers.magpieTextCellView)
+        XCTAssertEqual(app.getYippyTableViewCellType(at: 1), Accessibility.identifiers.magpieColorCellView)
+        XCTAssertEqual(app.getYippyTableViewCellType(at: 2), Accessibility.identifiers.magpieFileIconCellView)
+        XCTAssertEqual(app.getYippyTableViewCellType(at: 4), Accessibility.identifiers.magpieTiffCellView)
     }
 }

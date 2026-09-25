@@ -1,5 +1,5 @@
 //
-//  YippyHotKey.swift
+//  MagpieHotKey.swift
 //  Magpie
 //
 
@@ -7,7 +7,7 @@ import Foundation
 import Cocoa
 import HotKey
 
-class YippyHotKey {
+class MagpieHotKey {
     
     // MARK: - Types
     

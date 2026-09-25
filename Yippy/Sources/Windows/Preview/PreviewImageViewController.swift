@@ -1,5 +1,5 @@
 //
-//  PreviewTiffViewController.swift
+//  PreviewImageViewController.swift
 //  Magpie
 //
 

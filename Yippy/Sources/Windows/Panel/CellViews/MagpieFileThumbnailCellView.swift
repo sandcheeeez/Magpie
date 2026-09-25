@@ -1,5 +1,5 @@
 //
-//  YippyFileThumbnailCellView.swift
+//  MagpieFileThumbnailCellView.swift
 //  Magpie
 //
 
@@ -7,10 +7,10 @@ import Foundation
 import QuickLook
 import Quartz
 
-class YippyFileThumbnailCellView: YippyItemBaseCellView, YippyItem {
+class MagpieFileThumbnailCellView: MagpieItemBaseCellView, MagpieItem {
     
     override class var identifier: NSUserInterfaceItemIdentifier {
-        NSUserInterfaceItemIdentifier(Accessibility.identifiers.yippyFileThumbnailCellView)
+        NSUserInterfaceItemIdentifier(Accessibility.identifiers.magpieFileThumbnailCellView)
     }
     
     static let fileNamePadding = NSEdgeInsets(top: 10, left: 5, bottom: 10, right: 5)
@@ -51,12 +51,12 @@ class YippyFileThumbnailCellView: YippyItemBaseCellView, YippyItem {
         contentView.addConstraint(NSLayoutConstraint(item: contentView!, attribute: .bottom, relatedBy: .equal, toItem: itemTextView, attribute: .bottom, multiplier: 1, constant: Self.fileNamePadding.bottom))
     }
     
-    func setupCell(withYippyTableView yippyTableView: YippyTableView, forHistoryItem historyItem: HistoryItem, at i: Int) {
+    func setupCell(withYippyTableView magpieTableView: MagpieTableView, forHistoryItem historyItem: HistoryItem, at i: Int) {
         guard let url = historyItem.getFileUrl() else { return }
         itemTextView.attributedText = formatFileUrl(url)
         setupShortcutTextView(at: i)
         setupFooter(for: historyItem)
-        setHighlight(isSelected: yippyTableView.isRowSelected(i))
+        setHighlight(isSelected: magpieTableView.isRowSelected(i))
         
         DispatchQueue.global(qos: .background).async {
             let cgImageRef = QLThumbnailImageCreate(kCFAllocatorDefault, url as CFURL, CGSize(width: 200, height: 200), [kQLThumbnailOptionIconModeKey: false, kQLThumbnailOptionScaleFactorKey: 4] as CFDictionary)
@@ -67,16 +67,16 @@ class YippyFileThumbnailCellView: YippyItemBaseCellView, YippyItem {
                     self.previewView.image = image
                 }
                 else {
-                    ErrorLogger.general.log(YippyError(localizedDescription: "Failed to create thumbnail for file with url '\(url.path)'"))
+                    ErrorLogger.general.log(MagpieError(localizedDescription: "Failed to create thumbnail for file with url '\(url.path)'"))
                     self.previewView.image = nil
                 }
             }
         }
     }
     
-    static func getItemHeight(withYippyTableView yippyTableView: YippyTableView, forHistoryItem historyItem: HistoryItem) -> CGFloat {
+    static func getItemHeight(withYippyTableView magpieTableView: MagpieTableView, forHistoryItem historyItem: HistoryItem) -> CGFloat {
         // Calculate the width of the cell
-        let cellWidth = floor(yippyTableView.cellWidth)
+        let cellWidth = floor(magpieTableView.cellWidth)
         
         // Calculate the text container width
         let textContainerWidth = cellWidth - contentViewInsets.xTotal - fileNamePadding.xTotal
@@ -93,7 +93,7 @@ class YippyFileThumbnailCellView: YippyItemBaseCellView, YippyItem {
         return ceil(height)
     }
     
-    static func makeItem() -> YippyItem {
-        return YippyFileThumbnailCellView(frame: .zero)
+    static func makeItem() -> MagpieItem {
+        return MagpieFileThumbnailCellView(frame: .zero)
     }
 }

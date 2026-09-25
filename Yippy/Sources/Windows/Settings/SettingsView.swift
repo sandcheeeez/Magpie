@@ -42,7 +42,7 @@ final class SettingsModel {
 
     func saveRecordedHotKey() {
         guard let hotKey = recordedHotKey else { return }
-        YippyHotKeys.toggle.changeHotKey(keyCombo: hotKey)
+        MagpieHotKeys.toggle.changeHotKey(keyCombo: hotKey)
         Settings.main.toggleHotKey = hotKey
         toggleHotKey = hotKey
         isRecording = false

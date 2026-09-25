@@ -10,12 +10,12 @@ func formatFileUrl(_ url: URL) -> NSAttributedString {
     let str = NSMutableAttributedString(string: url.path)
     
     let lastComponentAttributes: [NSAttributedString.Key: Any] = [
-        .font: Constants.fonts.yippyFileNameText,
+        .font: Constants.fonts.magpieFileNameText,
         .foregroundColor: NSColor.textColor
     ]
     
     let pathAttributes: [NSAttributedString.Key: Any] = [
-        .font: Constants.fonts.yippyFileNameText,
+        .font: Constants.fonts.magpieFileNameText,
         .foregroundColor: NSColor.secondaryLabelColor
     ]
     

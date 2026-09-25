@@ -78,7 +78,7 @@ class History {
             _items = models.map(HistoryItem.init(model:))
         }
         catch {
-            YippyError(localizedDescription: "Failed to load the history: \(error.localizedDescription)").log(with: ErrorLogger.general)
+            MagpieError(localizedDescription: "Failed to load the history: \(error.localizedDescription)").log(with: ErrorLogger.general)
         }
     }
 
@@ -88,7 +88,7 @@ class History {
             return History(container: try HistoryStore.makeContainer())
         }
         catch {
-            let historyError = YippyError(localizedDescription: "Your clipboard history couldn't be opened, so this session's history won't be saved. \(error.localizedDescription)")
+            let historyError = MagpieError(localizedDescription: "Your clipboard history couldn't be opened, so this session's history won't be saved. \(error.localizedDescription)")
             historyError.log(with: ErrorLogger.general)
             historyError.show(with: Alerter.general)
             return History(container: try! HistoryStore.makeContainer(inMemory: true))
@@ -109,7 +109,7 @@ class History {
             try context.save()
         }
         catch {
-            YippyError(localizedDescription: "Failed to save the history: \(error.localizedDescription)").log(with: ErrorLogger.general)
+            MagpieError(localizedDescription: "Failed to save the history: \(error.localizedDescription)").log(with: ErrorLogger.general)
         }
     }
 

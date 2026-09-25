@@ -1,12 +1,12 @@
 //
-//  YippyWindowController.swift
+//  MagpieWindowController.swift
 //  Magpie
 //
 
 import Foundation
 import Cocoa
 
-class YippyWindowController: NSWindowController {
+class MagpieWindowController: NSWindowController {
     
     static let cornerRadius: CGFloat = 24
     
@@ -14,7 +14,7 @@ class YippyWindowController: NSWindowController {
         super.windowDidLoad()
         
         window?.level = NSWindow.Level(NSWindow.Level.mainMenu.rawValue - 2)
-        window?.setAccessibilityIdentifier(Accessibility.identifiers.yippyWindow)
+        window?.setAccessibilityIdentifier(Accessibility.identifiers.magpieWindow)
         window?.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         
         wrapContentInGlass()
@@ -33,11 +33,11 @@ class YippyWindowController: NSWindowController {
         glass.contentView = content
     }
     
-    static func createYippyWindowController() -> YippyWindowController {
+    static func createYippyWindowController() -> MagpieWindowController {
         let storyboard = NSStoryboard(name: NSStoryboard.Name("Main"), bundle: nil)
-        let identifier = NSStoryboard.SceneIdentifier(stringLiteral: "YippyWindowController")
-        guard let windowController = storyboard.instantiateController(withIdentifier: identifier) as? YippyWindowController else {
-            fatalError("Failed to load YippyWindowController of type YippyWindowController from the Main storyboard.")
+        let identifier = NSStoryboard.SceneIdentifier(stringLiteral: "MagpieWindowController")
+        guard let windowController = storyboard.instantiateController(withIdentifier: identifier) as? MagpieWindowController else {
+            fatalError("Failed to load MagpieWindowController of type MagpieWindowController from the Main storyboard.")
         }
         
         return windowController

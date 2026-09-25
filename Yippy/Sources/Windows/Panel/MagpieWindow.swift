@@ -1,12 +1,12 @@
 //
-//  YippyWindow.swift
+//  MagpieWindow.swift
 //  Magpie
 //
 
 import Foundation
 import Cocoa
 
-class YippyWindow: NSPanel {
+class MagpieWindow: NSPanel {
     
     /**
      Override to allow us to use setFrame to set the window frame such that it extends outside of the visible frame (under the menu bar if it is visible).

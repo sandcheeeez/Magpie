@@ -1,12 +1,12 @@
 //
-//  YippyStatusItem.swift
+//  MagpieStatusItem.swift
 //  Magpie
 //
 
 import Foundation
 import Cocoa
 
-class YippyStatusItem {
+class MagpieStatusItem {
     
     static var statusItemButtonImage = NSImage(systemSymbolName: "bird", accessibilityDescription: "Magpie")
     

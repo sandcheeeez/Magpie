@@ -1,5 +1,5 @@
 //
-//  XCUIApplication+Yippy.swift
+//  XCUIApplication+Magpie.swift
 //  MagpieUITests
 //
 
@@ -7,20 +7,20 @@ import XCTest
 
 extension XCUIApplication {
     
-    var yippyTableView: XCUIElement {
-        return yippyWindow.tables[Accessibility.identifiers.yippyTableView]
+    var magpieTableView: XCUIElement {
+        return magpieWindow.tables[Accessibility.identifiers.magpieTableView]
     }
     
-    var yippyTableViewItems: XCUIElementQuery {
-        return yippyTableView.cells
+    var magpieTableViewItems: XCUIElementQuery {
+        return magpieTableView.cells
     }
     
     func getYippyTableViewCell(at i: Int) -> XCUIElement {
-        return yippyTableViewItems.element(boundBy: i)
+        return magpieTableViewItems.element(boundBy: i)
     }
     
     func getYippyTableViewCellTextView(at i: Int) -> XCUIElement {
-        return getYippyTableViewCell(at: i).children(matching: .textView).matching(identifier: Accessibility.identifiers.yippyItemTextView).element
+        return getYippyTableViewCell(at: i).children(matching: .textView).matching(identifier: Accessibility.identifiers.magpieItemTextView).element
     }
     
     func getYippyTableViewItemString(at i: Int) -> String? {

@@ -30,7 +30,7 @@ class PreviewQLViewController: NSViewController, PreviewViewController {
             panel.reloadData()
         }
         else {
-            let error = YippyError(localizedDescription: "Failed to show preview for item '\(item.id)' because shared QLPreviewPanel is nil.")
+            let error = MagpieError(localizedDescription: "Failed to show preview for item '\(item.id)' because shared QLPreviewPanel is nil.")
             error.log(with: ErrorLogger.general)
             error.show(with: Alerter.general)
         }
@@ -42,7 +42,7 @@ class PreviewQLViewController: NSViewController, PreviewViewController {
         super.viewWillDisappear()
         
         guard let panel = QLPreviewPanel.shared() else {
-            let error = YippyError(localizedDescription: "Failed to close preview because shared QLPreviewPanel is nil.")
+            let error = MagpieError(localizedDescription: "Failed to close preview because shared QLPreviewPanel is nil.")
             error.log(with: ErrorLogger.general)
             error.show(with: Alerter.general)
             return

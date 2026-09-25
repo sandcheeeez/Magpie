@@ -25,7 +25,7 @@ enum LoginItem {
             return true
         }
         catch {
-            YippyError(localizedDescription: "Failed to \(enabled ? "enable" : "disable") launch at login: \(error.localizedDescription)").log(with: ErrorLogger.general)
+            MagpieError(localizedDescription: "Failed to \(enabled ? "enable" : "disable") launch at login: \(error.localizedDescription)").log(with: ErrorLogger.general)
             return false
         }
     }

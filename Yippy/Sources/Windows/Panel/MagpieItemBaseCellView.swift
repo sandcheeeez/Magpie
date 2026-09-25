@@ -1,5 +1,5 @@
 //
-//  YippyItemBaseCellView.swift
+//  MagpieItemBaseCellView.swift
 //  Magpie
 //
 
@@ -11,7 +11,7 @@ import Cocoa
 /// Each item is drawn as a rounded card. Subclasses lay out their content in `contentView`, which fills the card above the footer. The footer shows the source app, when the item was copied and whether it is pinned.
 ///
 /// Handles highlight changes.
-class YippyItemBaseCellView: NSTableCellView {
+class MagpieItemBaseCellView: NSTableCellView {
 
     /// Gap between the card and the edges of the row.
     static let cardInsets = NSEdgeInsets(top: 4, left: 12, bottom: 4, right: 12)
@@ -24,15 +24,15 @@ class YippyItemBaseCellView: NSTableCellView {
     static let contentViewInsets = NSEdgeInsets(top: cardInsets.top, left: cardInsets.left, bottom: cardInsets.bottom + footerHeight, right: cardInsets.right)
 
     class var identifier: NSUserInterfaceItemIdentifier {
-        NSUserInterfaceItemIdentifier("YippyItemBaseCellView")
+        NSUserInterfaceItemIdentifier("MagpieItemBaseCellView")
     }
 
     var cardView: NSView!
     /// Draws the card's outline above the content, so edge-to-edge content like images can't cover the selection border.
     private var borderView: PassthroughView!
-    var contentView: YippyItemContentView!
-    var shortcutTextView: YippyItemCellTextView!
-    var itemTextView: YippyItemCellTextView!
+    var contentView: MagpieItemContentView!
+    var shortcutTextView: MagpieItemCellTextView!
+    var itemTextView: MagpieItemCellTextView!
 
     private var footerAppIcon: NSImageView!
     private var footerLabel: NSTextField!
@@ -95,15 +95,15 @@ class YippyItemBaseCellView: NSTableCellView {
         cardView.layer?.masksToBounds = true
         addSubview(cardView)
 
-        contentView = YippyItemContentView(frame: .zero)
+        contentView = MagpieItemContentView(frame: .zero)
         addSubview(contentView)
-        itemTextView = YippyItemCellTextView(frame: .zero)
+        itemTextView = MagpieItemCellTextView(frame: .zero)
         contentView.addSubview(itemTextView)
-        shortcutTextView = YippyItemCellTextView(frame: .zero)
+        shortcutTextView = MagpieItemCellTextView(frame: .zero)
         cardView.addSubview(shortcutTextView)
 
         itemTextView.drawsBackground = false
-        itemTextView.setAccessibilityIdentifier(Accessibility.identifiers.yippyItemTextView)
+        itemTextView.setAccessibilityIdentifier(Accessibility.identifiers.magpieItemTextView)
 
         borderView = PassthroughView(frame: .zero)
         borderView.wantsLayer = true

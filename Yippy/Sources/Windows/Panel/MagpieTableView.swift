@@ -1,16 +1,16 @@
 //
-//  YippyTableView.swift
+//  MagpieTableView.swift
 //  Magpie
 //
 
 import Foundation
 import Cocoa
 
-class YippyTableView: NSTableView {
+class MagpieTableView: NSTableView {
     
-    var yippyItems = [HistoryItem]()
+    var magpieItems = [HistoryItem]()
     
-    var yippyDelegate: YippyTableViewDelegate?
+    var magpieDelegate: MagpieTableViewDelegate?
     
     var cellWidth: CGFloat {
         return tableColumns[0].width
@@ -42,7 +42,7 @@ class YippyTableView: NSTableView {
         intercellSpacing = NSSize(width: 0, height: 2)
         style = .plain
         backgroundColor = .clear
-        setAccessibilityIdentifier(Accessibility.identifiers.yippyTableView)
+        setAccessibilityIdentifier(Accessibility.identifiers.magpieTableView)
         
         delegate = self
         dataSource = self
@@ -68,33 +68,33 @@ class YippyTableView: NSTableView {
         reloadData(forRowIndexes: IndexSet(arrayLiteral: i), columnIndexes: IndexSet(arrayLiteral: 0))
     }
     
-    func redisplayVisible(yippyItems: [HistoryItem]) {
+    func redisplayVisible(magpieItems: [HistoryItem]) {
         let vis = visibleRect
         let range = rows(in: vis)
         for row in range.location..<range.location+range.length {
-            guard let cell = view(atColumn: 0, row: row, makeIfNecessary: false) as? YippyItem else { continue }
-            cell.setupCell(withYippyTableView: self, forHistoryItem: yippyItems[row], at: row)
+            guard let cell = view(atColumn: 0, row: row, makeIfNecessary: false) as? MagpieItem else { continue }
+            cell.setupCell(withYippyTableView: self, forHistoryItem: magpieItems[row], at: row)
         }
     }
     
     func reloadData(_ data: [HistoryItem], isRichText: Bool) {
-        yippyItems = data
+        magpieItems = data
         self.isRichText = isRichText
         reloadData()
     }
 }
 
-extension YippyTableView: NSTableViewDataSource {
+extension MagpieTableView: NSTableViewDataSource {
     
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return yippyItems.count
+        return magpieItems.count
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
-        let historyItem = yippyItems[row]
+        let historyItem = magpieItems[row]
         let itemType = historyItem.getTableViewItemType()
-        let cell = tableView.makeView(withIdentifier: itemType.identifier, owner: nil) as? YippyItem ?? itemType.makeItem()
+        let cell = tableView.makeView(withIdentifier: itemType.identifier, owner: nil) as? MagpieItem ?? itemType.makeItem()
         cell.setupCell(withYippyTableView: self, forHistoryItem: historyItem, at: row)
         if let cell = cell as? NSTableCellView {
             cell.setAccessibilityLabel(itemType.identifier.rawValue)
@@ -104,21 +104,21 @@ extension YippyTableView: NSTableViewDataSource {
     }
     
     func tableViewSelectionIsChanging(_ notification: Notification) {
-        if let delegate = yippyDelegate {
-            delegate.yippyTableView(self, selectedDidChange: selected)
+        if let delegate = magpieDelegate {
+            delegate.magpieTableView(self, selectedDidChange: selected)
         }
     }
     
     func tableViewColumnDidResize(_ notification: Notification) {
         NSAnimationContext.beginGrouping()
         NSAnimationContext.current.duration = 0
-        noteHeightOfRows(withIndexesChanged: IndexSet(integersIn: 0..<yippyItems.count))
+        noteHeightOfRows(withIndexesChanged: IndexSet(integersIn: 0..<magpieItems.count))
         NSAnimationContext.endGrouping()
-        redisplayVisible(yippyItems: yippyItems)
+        redisplayVisible(magpieItems: magpieItems)
     }
     
     func tableView(_ tableView: NSTableView, pasteboardWriterForRow row: Int) -> NSPasteboardWriting? {
-        return yippyItems[row]
+        return magpieItems[row]
     }
     
     override func draggingSession(_ session: NSDraggingSession, sourceOperationMaskFor context: NSDraggingContext) -> NSDragOperation {
@@ -153,7 +153,7 @@ extension YippyTableView: NSTableViewDataSource {
             return false
         }
         
-        guard let originalIndex = yippyItems.map({ $0.id }).firstIndex(of: droppedId) else {
+        guard let originalIndex = magpieItems.map({ $0.id }).firstIndex(of: droppedId) else {
             return false
         }
         
@@ -166,16 +166,16 @@ extension YippyTableView: NSTableViewDataSource {
         CATransaction.begin()
         CATransaction.setCompletionBlock({
             self.reloadData(forRowIndexes: IndexSet(integersIn: 0..<10), columnIndexes: IndexSet(arrayLiteral: 0))
-            if let delegate = self.yippyDelegate {
-                delegate.yippyTableView(self, didMoveItem: originalIndex, to: newIndex)
+            if let delegate = self.magpieDelegate {
+                delegate.magpieTableView(self, didMoveItem: originalIndex, to: newIndex)
             }
         })
         tableView.beginUpdates()
         
-        let removed = yippyItems.remove(at: originalIndex)
+        let removed = magpieItems.remove(at: originalIndex)
         
         tableView.moveRow(at: originalIndex, to: newIndex)
-        yippyItems.insert(removed, at: newIndex)
+        magpieItems.insert(removed, at: newIndex)
         
         tableView.endUpdates()
         CATransaction.commit()
@@ -184,17 +184,17 @@ extension YippyTableView: NSTableViewDataSource {
     }
 }
 
-extension YippyTableView: NSTableViewDelegate {
+extension MagpieTableView: NSTableViewDelegate {
     
     func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
-        let historyItem = yippyItems[row]
+        let historyItem = magpieItems[row]
         let itemType = historyItem.getTableViewItemType()
         
         if let height = cellHeightsCache.cellHeight(forId: historyItem.id, withCellIdentifier: itemType.identifier.rawValue, cellWidth: cellWidth, isRichText: isRichText) {
             return height
         }
         
-        let height = historyItem.getTableViewItemType().getItemHeight(withYippyTableView: tableView as! YippyTableView, forHistoryItem: historyItem)
+        let height = historyItem.getTableViewItemType().getItemHeight(withYippyTableView: tableView as! MagpieTableView, forHistoryItem: historyItem)
         
         cellHeightsCache.storeCellHeight(height, forId: historyItem.id, withCellIdentifier: itemType.identifier.rawValue, cellWidth: cellWidth, isRichText: isRichText)
         

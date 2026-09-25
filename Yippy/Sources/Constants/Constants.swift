@@ -24,11 +24,11 @@ struct Constants {
     
     struct fonts {
         
-        static var yippyPlainText: NSFont {
+        static var magpiePlainText: NSFont {
             return NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
         }
         
-        static var yippyFileNameText: NSFont {
+        static var magpieFileNameText: NSFont {
             return NSFont.systemFont(ofSize: 12, weight: .medium)
         }
     }
@@ -38,21 +38,21 @@ struct Constants {
             return FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         }
         
-        static var yippyAppSupport: URL {
+        static var magpieAppSupport: URL {
             return applicationSupport.appendingPathComponent(Bundle.main.bundleIdentifier!, isDirectory: true)
         }
         
         /// The SwiftData store holding the history.
         static var historyStore: URL {
-            return yippyAppSupport.appendingPathComponent("History.store", isDirectory: false)
+            return magpieAppSupport.appendingPathComponent("History.store", isDirectory: false)
         }
 
         static var errorLog: URL {
-            return yippyAppSupport.appendingPathComponent("error.log", isDirectory: false)
+            return magpieAppSupport.appendingPathComponent("error.log", isDirectory: false)
         }
         
         static var warningLog: URL {
-            return yippyAppSupport.appendingPathComponent("warning.log", isDirectory: false)
+            return magpieAppSupport.appendingPathComponent("warning.log", isDirectory: false)
         }
     }
     

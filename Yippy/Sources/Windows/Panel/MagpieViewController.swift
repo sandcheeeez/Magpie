@@ -1,5 +1,5 @@
 //
-//  YippyViewController.swift
+//  MagpieViewController.swift
 //  Magpie
 //
 
@@ -11,16 +11,16 @@ struct Results {
     let isSearchResult: Bool
 }
 
-class YippyViewController: NSViewController {
+class MagpieViewController: NSViewController {
     
-    @IBOutlet var yippyHistoryView: YippyTableView!
+    @IBOutlet var magpieHistoryView: MagpieTableView!
     
     @IBOutlet var itemGroupScrollView: HorizontalButtonsView!
     @IBOutlet var itemCountLabel: NSTextField!
     
     @IBOutlet var searchBar: NSTextField!
     
-    var yippyHistory = YippyHistory(history: AppState.main.history, items: [])
+    var magpieHistory = MagpieHistory(history: AppState.main.history, items: [])
     
     let searchEngine = SearchEngine()
     
@@ -50,12 +50,12 @@ class YippyViewController: NSViewController {
     }
     
     /// Hotkeys that only act while the panel is shown.
-    private var panelHotKeys = [YippyHotKey]()
+    private var panelHotKeys = [MagpieHotKey]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        yippyHistoryView.yippyDelegate = self
+        magpieHistoryView.magpieDelegate = self
         
         AppState.main.history.subscribe(onNext: onHistoryChange)
         
@@ -70,73 +70,73 @@ class YippyViewController: NSViewController {
             self?.filter = HistoryFilter(rawValue: $0) ?? .all
         }
         
-        yippyHistoryView.menu = makeContextMenu()
+        magpieHistoryView.menu = makeContextMenu()
         
         searchBar.delegate = self
         
         render(previousSelection: nil)
         resetSelected()
         
-        YippyHotKeys.downArrow.onDown(goToNextItem)
-        YippyHotKeys.downArrow.onLong(goToNextItem)
-        YippyHotKeys.pageDown.onDown(goToNextItem)
-        YippyHotKeys.pageDown.onLong(goToNextItem)
-        YippyHotKeys.upArrow.onDown(goToPreviousItem)
-        YippyHotKeys.upArrow.onLong(goToPreviousItem)
-        YippyHotKeys.pageUp.onDown(goToPreviousItem)
-        YippyHotKeys.pageUp.onLong(goToPreviousItem)
-        YippyHotKeys.escape.onDown(close)
-        YippyHotKeys.return.onDown(pasteSelected)
-        YippyHotKeys.ctrlAltCmdLeftArrow.onDown { AppState.main.panelPosition = .left }
-        YippyHotKeys.ctrlAltCmdRightArrow.onDown { AppState.main.panelPosition = .right }
-        YippyHotKeys.ctrlAltCmdDownArrow.onDown { AppState.main.panelPosition = .bottom }
-        YippyHotKeys.ctrlAltCmdUpArrow.onDown { AppState.main.panelPosition = .top }
-        YippyHotKeys.ctrlDelete.onDown(deleteSelected)
-        YippyHotKeys.ctrlSpace.onDown(togglePreview)
-        YippyHotKeys.cmdBackslash.onDown(focusSearchBar)
-        YippyHotKeys.optionReturn.onDown(pasteSelectedAsPlainText)
-        YippyHotKeys.cmdP.onDown(togglePinSelected)
-        YippyHotKeys.cmdLeftArrow.onDown { self.cycleFilter(by: -1) }
-        YippyHotKeys.cmdRightArrow.onDown { self.cycleFilter(by: 1) }
+        MagpieHotKeys.downArrow.onDown(goToNextItem)
+        MagpieHotKeys.downArrow.onLong(goToNextItem)
+        MagpieHotKeys.pageDown.onDown(goToNextItem)
+        MagpieHotKeys.pageDown.onLong(goToNextItem)
+        MagpieHotKeys.upArrow.onDown(goToPreviousItem)
+        MagpieHotKeys.upArrow.onLong(goToPreviousItem)
+        MagpieHotKeys.pageUp.onDown(goToPreviousItem)
+        MagpieHotKeys.pageUp.onLong(goToPreviousItem)
+        MagpieHotKeys.escape.onDown(close)
+        MagpieHotKeys.return.onDown(pasteSelected)
+        MagpieHotKeys.ctrlAltCmdLeftArrow.onDown { AppState.main.panelPosition = .left }
+        MagpieHotKeys.ctrlAltCmdRightArrow.onDown { AppState.main.panelPosition = .right }
+        MagpieHotKeys.ctrlAltCmdDownArrow.onDown { AppState.main.panelPosition = .bottom }
+        MagpieHotKeys.ctrlAltCmdUpArrow.onDown { AppState.main.panelPosition = .top }
+        MagpieHotKeys.ctrlDelete.onDown(deleteSelected)
+        MagpieHotKeys.ctrlSpace.onDown(togglePreview)
+        MagpieHotKeys.cmdBackslash.onDown(focusSearchBar)
+        MagpieHotKeys.optionReturn.onDown(pasteSelectedAsPlainText)
+        MagpieHotKeys.cmdP.onDown(togglePinSelected)
+        MagpieHotKeys.cmdLeftArrow.onDown { self.cycleFilter(by: -1) }
+        MagpieHotKeys.cmdRightArrow.onDown { self.cycleFilter(by: 1) }
         
         // Paste hot keys
-        YippyHotKeys.cmd0.onDown { self.shortcutPressed(key: 0) }
-        YippyHotKeys.cmd1.onDown { self.shortcutPressed(key: 1) }
-        YippyHotKeys.cmd2.onDown { self.shortcutPressed(key: 2) }
-        YippyHotKeys.cmd3.onDown { self.shortcutPressed(key: 3) }
-        YippyHotKeys.cmd4.onDown { self.shortcutPressed(key: 4) }
-        YippyHotKeys.cmd5.onDown { self.shortcutPressed(key: 5) }
-        YippyHotKeys.cmd6.onDown { self.shortcutPressed(key: 6) }
-        YippyHotKeys.cmd7.onDown { self.shortcutPressed(key: 7) }
-        YippyHotKeys.cmd8.onDown { self.shortcutPressed(key: 8) }
-        YippyHotKeys.cmd9.onDown { self.shortcutPressed(key: 9) }
+        MagpieHotKeys.cmd0.onDown { self.shortcutPressed(key: 0) }
+        MagpieHotKeys.cmd1.onDown { self.shortcutPressed(key: 1) }
+        MagpieHotKeys.cmd2.onDown { self.shortcutPressed(key: 2) }
+        MagpieHotKeys.cmd3.onDown { self.shortcutPressed(key: 3) }
+        MagpieHotKeys.cmd4.onDown { self.shortcutPressed(key: 4) }
+        MagpieHotKeys.cmd5.onDown { self.shortcutPressed(key: 5) }
+        MagpieHotKeys.cmd6.onDown { self.shortcutPressed(key: 6) }
+        MagpieHotKeys.cmd7.onDown { self.shortcutPressed(key: 7) }
+        MagpieHotKeys.cmd8.onDown { self.shortcutPressed(key: 8) }
+        MagpieHotKeys.cmd9.onDown { self.shortcutPressed(key: 9) }
         
-        panelHotKeys.append(YippyHotKeys.downArrow)
-        panelHotKeys.append(YippyHotKeys.upArrow)
-        panelHotKeys.append(YippyHotKeys.return)
-        panelHotKeys.append(YippyHotKeys.escape)
-        panelHotKeys.append(YippyHotKeys.pageDown)
-        panelHotKeys.append(YippyHotKeys.pageUp)
-        panelHotKeys.append(YippyHotKeys.ctrlAltCmdLeftArrow)
-        panelHotKeys.append(YippyHotKeys.ctrlAltCmdRightArrow)
-        panelHotKeys.append(YippyHotKeys.ctrlAltCmdDownArrow)
-        panelHotKeys.append(YippyHotKeys.ctrlAltCmdUpArrow)
-        panelHotKeys.append(YippyHotKeys.cmd0)
-        panelHotKeys.append(YippyHotKeys.cmd1)
-        panelHotKeys.append(YippyHotKeys.cmd2)
-        panelHotKeys.append(YippyHotKeys.cmd3)
-        panelHotKeys.append(YippyHotKeys.cmd4)
-        panelHotKeys.append(YippyHotKeys.cmd5)
-        panelHotKeys.append(YippyHotKeys.cmd6)
-        panelHotKeys.append(YippyHotKeys.cmd7)
-        panelHotKeys.append(YippyHotKeys.cmd8)
-        panelHotKeys.append(YippyHotKeys.cmd9)
-        panelHotKeys.append(YippyHotKeys.ctrlDelete)
-        panelHotKeys.append(YippyHotKeys.ctrlSpace)
-        panelHotKeys.append(YippyHotKeys.optionReturn)
-        panelHotKeys.append(YippyHotKeys.cmdP)
-        panelHotKeys.append(YippyHotKeys.cmdLeftArrow)
-        panelHotKeys.append(YippyHotKeys.cmdRightArrow)
+        panelHotKeys.append(MagpieHotKeys.downArrow)
+        panelHotKeys.append(MagpieHotKeys.upArrow)
+        panelHotKeys.append(MagpieHotKeys.return)
+        panelHotKeys.append(MagpieHotKeys.escape)
+        panelHotKeys.append(MagpieHotKeys.pageDown)
+        panelHotKeys.append(MagpieHotKeys.pageUp)
+        panelHotKeys.append(MagpieHotKeys.ctrlAltCmdLeftArrow)
+        panelHotKeys.append(MagpieHotKeys.ctrlAltCmdRightArrow)
+        panelHotKeys.append(MagpieHotKeys.ctrlAltCmdDownArrow)
+        panelHotKeys.append(MagpieHotKeys.ctrlAltCmdUpArrow)
+        panelHotKeys.append(MagpieHotKeys.cmd0)
+        panelHotKeys.append(MagpieHotKeys.cmd1)
+        panelHotKeys.append(MagpieHotKeys.cmd2)
+        panelHotKeys.append(MagpieHotKeys.cmd3)
+        panelHotKeys.append(MagpieHotKeys.cmd4)
+        panelHotKeys.append(MagpieHotKeys.cmd5)
+        panelHotKeys.append(MagpieHotKeys.cmd6)
+        panelHotKeys.append(MagpieHotKeys.cmd7)
+        panelHotKeys.append(MagpieHotKeys.cmd8)
+        panelHotKeys.append(MagpieHotKeys.cmd9)
+        panelHotKeys.append(MagpieHotKeys.ctrlDelete)
+        panelHotKeys.append(MagpieHotKeys.ctrlSpace)
+        panelHotKeys.append(MagpieHotKeys.optionReturn)
+        panelHotKeys.append(MagpieHotKeys.cmdP)
+        panelHotKeys.append(MagpieHotKeys.cmdLeftArrow)
+        panelHotKeys.append(MagpieHotKeys.cmdRightArrow)
         
         Magpie.observe({ AppState.main.isHistoryPanelShown }) { [weak self] isShown in
             self?.panelHotKeys.forEach({ $0.isPaused = !isShown })
@@ -164,14 +164,14 @@ class YippyViewController: NSViewController {
         super.viewWillAppear()
         
         // Refresh relative copy times ("2 min ago").
-        yippyHistoryView.redisplayVisible(yippyItems: yippyHistory.items)
+        magpieHistoryView.redisplayVisible(magpieItems: magpieHistory.items)
         
         isPreviewShowing = false
         resetSelected()
     }
     
     func resetSelected() {
-        if yippyHistory.items.count > 0 {
+        if magpieHistory.items.count > 0 {
             selected = 0
         }
         else {
@@ -189,8 +189,8 @@ class YippyViewController: NSViewController {
             if isFiltered {
                 runSearch()
             }
-            if let row = yippyHistory.items.firstIndex(of: history[i]) {
-                yippyHistoryView.reloadItem(row)
+            if let row = magpieHistory.items.firstIndex(of: history[i]) {
+                magpieHistoryView.reloadItem(row)
             }
             return
         }
@@ -214,7 +214,7 @@ class YippyViewController: NSViewController {
     func render(previousSelection: Int?) {
         let results = self.results
         let selected = (previousSelection, self.selected)
-        if results.items != self.yippyHistory.items {
+        if results.items != self.magpieHistory.items {
                 if results.isSearchResult {
                     self.itemCountLabel.stringValue = "\(results.items.count) \(results.items.count == 1 ? "match" : "matches")"
                 }
@@ -222,31 +222,31 @@ class YippyViewController: NSViewController {
                     self.itemCountLabel.stringValue = "\(results.items.count) items"
                 }
                 
-                self.yippyHistory = YippyHistory(history: AppState.main.history, items: results.items)
-                self.yippyHistoryView.allowsReordering = !results.isSearchResult
-                self.yippyHistoryView.reloadData(self.yippyHistory.items, isRichText: self.isRichText)
+                self.magpieHistory = MagpieHistory(history: AppState.main.history, items: results.items)
+                self.magpieHistoryView.allowsReordering = !results.isSearchResult
+                self.magpieHistoryView.reloadData(self.magpieHistory.items, isRichText: self.isRichText)
             }
         
         if let previous = selected.0 {
-            self.yippyHistoryView.deselectItem(previous)
-            self.yippyHistoryView.reloadItem(previous)
+            self.magpieHistoryView.deselectItem(previous)
+            self.magpieHistoryView.reloadItem(previous)
         }
-        if let selected = selected.1, selected < self.yippyHistory.items.count {
-            let currentSelection = self.yippyHistoryView.selected
+        if let selected = selected.1, selected < self.magpieHistory.items.count {
+            let currentSelection = self.magpieHistoryView.selected
             if currentSelection == nil || currentSelection != selected {
-                self.yippyHistoryView.selectItem(selected)
+                self.magpieHistoryView.selectItem(selected)
             }
-            self.yippyHistoryView.reloadItem(selected)
+            self.magpieHistoryView.reloadItem(selected)
             
-            if self.isPreviewShowing && selected < self.yippyHistory.items.count {
-                AppState.main.previewHistoryItem = self.yippyHistory.items[selected]
+            if self.isPreviewShowing && selected < self.magpieHistory.items.count {
+                AppState.main.previewHistoryItem = self.magpieHistory.items[selected]
             }
         }
     }
     
     func onShowsRichText(_ showsRichText: Bool) {
         isRichText = showsRichText
-        yippyHistoryView.reloadData(yippyHistory.items, isRichText: isRichText)
+        magpieHistoryView.reloadData(magpieHistory.items, isRichText: isRichText)
     }
     
     func goToNextItem() {
@@ -258,20 +258,20 @@ class YippyViewController: NSViewController {
     }
     
     func pasteSelected() {
-        if let selected = self.yippyHistoryView.selected {
+        if let selected = self.magpieHistoryView.selected {
             paste(selected: selected)
         }
     }
     
     func pasteSelectedAsPlainText() {
-        if let selected = self.yippyHistoryView.selected {
+        if let selected = self.magpieHistoryView.selected {
             paste(selected: selected, asPlainText: true)
         }
     }
     
     func togglePinSelected() {
-        if let selected = self.yippyHistoryView.selected {
-            yippyHistory.togglePin(selected: selected)
+        if let selected = self.magpieHistoryView.selected {
+            magpieHistory.togglePin(selected: selected)
         }
     }
     
@@ -281,8 +281,8 @@ class YippyViewController: NSViewController {
     }
     
     func deleteSelected() {
-        if let selected = self.yippyHistoryView.selected {
-            self.selected = yippyHistory.delete(selected: selected)
+        if let selected = self.magpieHistoryView.selected {
+            self.selected = magpieHistory.delete(selected: selected)
         }
     }
     
@@ -318,16 +318,16 @@ class YippyViewController: NSViewController {
     }
     
     @objc private func contextMenuAction(_ sender: NSMenuItem) {
-        let row = yippyHistoryView.clickedRow
-        guard row >= 0, row < yippyHistory.items.count, let action = MenuAction(rawValue: sender.tag) else { return }
-        let item = yippyHistory.items[row]
+        let row = magpieHistoryView.clickedRow
+        guard row >= 0, row < magpieHistory.items.count, let action = MenuAction(rawValue: sender.tag) else { return }
+        let item = magpieHistory.items[row]
         switch action {
         case .paste:
             paste(selected: row)
         case .pastePlainText:
             paste(selected: row, asPlainText: true)
         case .togglePin:
-            yippyHistory.togglePin(selected: row)
+            magpieHistory.togglePin(selected: row)
         case .preview:
             selected = row
             isPreviewShowing = true
@@ -346,7 +346,7 @@ class YippyViewController: NSViewController {
                 NSWorkspace.shared.activateFileViewerSelecting([url])
             }
         case .delete:
-            let next = yippyHistory.delete(selected: row)
+            let next = magpieHistory.delete(selected: row)
             if !isFiltered {
                 selected = next
             }
@@ -354,10 +354,10 @@ class YippyViewController: NSViewController {
     }
     
     func togglePreview() {
-        if let selected = yippyHistoryView.selected {
+        if let selected = magpieHistoryView.selected {
             isPreviewShowing = !isPreviewShowing
             if isPreviewShowing {
-                AppState.main.previewHistoryItem = yippyHistory.items[selected]
+                AppState.main.previewHistoryItem = magpieHistory.items[selected]
             }
             else {
                 AppState.main.previewHistoryItem = nil
@@ -382,19 +382,19 @@ class YippyViewController: NSViewController {
     
     private func incrementSelected() {
         guard let s = selected else {
-            if yippyHistory.items.count > 0 {
+            if magpieHistory.items.count > 0 {
                 selected = 0
             }
             return
         }
-        if s < yippyHistory.items.count - 1 {
+        if s < magpieHistory.items.count - 1 {
             selected = s + 1
         }
     }
     
     private func decrementSelected() {
         guard let s = selected else {
-            if yippyHistory.items.count > 0 {
+            if magpieHistory.items.count > 0 {
                 selected = 0
             }
             return
@@ -405,23 +405,23 @@ class YippyViewController: NSViewController {
     }
     
     private func paste(selected: Int, asPlainText: Bool = false) {
-        guard selected < yippyHistory.items.count else { return }
-        let yippyHistory = self.yippyHistory
+        guard selected < magpieHistory.items.count else { return }
+        let magpieHistory = self.magpieHistory
         self.close()
-        yippyHistory.paste(selected: selected, asPlainText: asPlainText)
+        magpieHistory.paste(selected: selected, asPlainText: asPlainText)
     }
 }
 
-extension YippyViewController: NSMenuDelegate {
+extension MagpieViewController: NSMenuDelegate {
     
     func menuNeedsUpdate(_ menu: NSMenu) {
         menu.removeAllItems()
-        let row = yippyHistoryView.clickedRow
-        guard row >= 0, row < yippyHistory.items.count else { return }
-        let item = yippyHistory.items[row]
+        let row = magpieHistoryView.clickedRow
+        guard row >= 0, row < magpieHistory.items.count else { return }
+        let item = magpieHistory.items[row]
         
         menu.addItem(menuItem("Paste", symbol: "doc.on.clipboard", action: .paste))
-        if YippyHistory.plainText(for: item) != nil {
+        if MagpieHistory.plainText(for: item) != nil {
             menu.addItem(menuItem(item.kind == .image ? "Paste Recognized Text" : "Paste as Plain Text", symbol: "textformat", action: .pastePlainText))
         }
         menu.addItem(menuItem(item.isPinned ? "Unpin" : "Pin", symbol: item.isPinned ? "pin.slash" : "pin", action: .togglePin))
@@ -440,19 +440,19 @@ extension YippyViewController: NSMenuDelegate {
     }
 }
 
-extension YippyViewController: NSTextFieldDelegate {
+extension MagpieViewController: NSTextFieldDelegate {
     func controlTextDidChange(_ obj: Notification) {
         runSearch()
     }
 }
 
-extension YippyViewController: YippyTableViewDelegate {
-    func yippyTableView(_ yippyTableView: YippyTableView, selectedDidChange selected: Int?) {
+extension MagpieViewController: MagpieTableViewDelegate {
+    func magpieTableView(_ magpieTableView: MagpieTableView, selectedDidChange selected: Int?) {
         self.selected = selected
     }
     
-    func yippyTableView(_ yippyTableView: YippyTableView, didMoveItem from: Int, to: Int) {
-        yippyHistory.move(from: from, to: to)
+    func magpieTableView(_ magpieTableView: MagpieTableView, didMoveItem from: Int, to: Int) {
+        magpieHistory.move(from: from, to: to)
         selected = to
     }
 }

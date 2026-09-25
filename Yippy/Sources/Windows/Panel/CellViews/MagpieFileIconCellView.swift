@@ -1,15 +1,15 @@
 //
-//  YippyFileIconCellView.swift
+//  MagpieFileIconCellView.swift
 //  Magpie
 //
 
 import Foundation
 import Cocoa
 
-class YippyFileIconCellView: YippyItemBaseCellView, YippyItem {
+class MagpieFileIconCellView: MagpieItemBaseCellView, MagpieItem {
     
     override class var identifier: NSUserInterfaceItemIdentifier {
-        NSUserInterfaceItemIdentifier(Accessibility.identifiers.yippyFileIconCellView)
+        NSUserInterfaceItemIdentifier(Accessibility.identifiers.magpieFileIconCellView)
     }
     static let textContainerInset = NSEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
     static let iconViewPadding = NSEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
@@ -48,18 +48,18 @@ class YippyFileIconCellView: YippyItemBaseCellView, YippyItem {
         itemTextView.heightAnchor.constraint(equalToConstant: 0, withIdentifier: "height")?.isActive = true
     }
     
-    func setupCell(withYippyTableView yippyTableView: YippyTableView, forHistoryItem historyItem: HistoryItem, at i: Int) {
+    func setupCell(withYippyTableView magpieTableView: MagpieTableView, forHistoryItem historyItem: HistoryItem, at i: Int) {
         iconView.image = historyItem.getFileIcon()
         setupShortcutTextView(at: i)
         setupFooter(for: historyItem)
         itemTextView.attributedText = formatFileUrl(historyItem.getFileUrl()!)
-        itemTextView.constraint(withIdentifier: "height")?.constant = Self.getFileNameTextViewHeight(withCellWidth: floor(yippyTableView.cellWidth), forHistoryItem: historyItem)
-        setHighlight(isSelected: yippyTableView.isRowSelected(i))
+        itemTextView.constraint(withIdentifier: "height")?.constant = Self.getFileNameTextViewHeight(withCellWidth: floor(magpieTableView.cellWidth), forHistoryItem: historyItem)
+        setHighlight(isSelected: magpieTableView.isRowSelected(i))
     }
     
-    static func getItemHeight(withYippyTableView yippyTableView: YippyTableView, forHistoryItem historyItem: HistoryItem) -> CGFloat {
+    static func getItemHeight(withYippyTableView magpieTableView: MagpieTableView, forHistoryItem historyItem: HistoryItem) -> CGFloat {
         // Calculate the width of the cell
-        let cellWidth = floor(yippyTableView.cellWidth)
+        let cellWidth = floor(magpieTableView.cellWidth)
         
         // Calculate the text view height
         let textViewHeight = getFileNameTextViewHeight(withCellWidth: cellWidth, forHistoryItem: historyItem)
@@ -89,7 +89,7 @@ class YippyFileIconCellView: YippyItemBaseCellView, YippyItem {
         return min(estHeight, maxTextContainerHeight) + textContainerInset.yTotal
     }
     
-    static func makeItem() -> YippyItem {
-        return YippyFileIconCellView(frame: .zero)
+    static func makeItem() -> MagpieItem {
+        return MagpieFileIconCellView(frame: .zero)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  YippyItemContentView.swift
+//  MagpieItemContentView.swift
 //  Magpie
 //
 
@@ -7,7 +7,7 @@ import Foundation
 import Cocoa
 
 /// A basic `NSView` subclass that handles updates of the system appearance (e.g. dark/light modes) and updates its `layer`'s background and border colors.
-class YippyItemContentView: NSView {
+class MagpieItemContentView: NSView {
     
     var usesDynamicBackgroundColor = true
     

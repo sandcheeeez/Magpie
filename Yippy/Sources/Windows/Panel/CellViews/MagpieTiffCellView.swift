@@ -1,15 +1,15 @@
 //
-//  YippyTiffCellView.swift
+//  MagpieTiffCellView.swift
 //  Magpie
 //
 
 import Foundation
 import Cocoa
 
-class YippyTiffCellView: YippyItemBaseCellView, YippyItem {
+class MagpieTiffCellView: MagpieItemBaseCellView, MagpieItem {
     
     override class var identifier: NSUserInterfaceItemIdentifier {
-        NSUserInterfaceItemIdentifier(Accessibility.identifiers.yippyTiffCellView)
+        NSUserInterfaceItemIdentifier(Accessibility.identifiers.magpieTiffCellView)
     }
     
     static let imagePadding = NSEdgeInsetsZero
@@ -34,16 +34,16 @@ class YippyTiffCellView: YippyItemBaseCellView, YippyItem {
         contentView.addConstraint(NSLayoutConstraint(item: contentView!, attribute: .bottom, relatedBy: .equal, toItem: tiffView, attribute: .bottom, multiplier: 1, constant: Self.imagePadding.bottom))
     }
     
-    func setupCell(withYippyTableView yippyTableView: YippyTableView, forHistoryItem historyItem: HistoryItem, at i: Int) {
+    func setupCell(withYippyTableView magpieTableView: MagpieTableView, forHistoryItem historyItem: HistoryItem, at i: Int) {
         setupShortcutTextView(at: i)
         setupFooter(for: historyItem)
-        setHighlight(isSelected: yippyTableView.isRowSelected(i))
+        setHighlight(isSelected: magpieTableView.isRowSelected(i))
         tiffView.image = historyItem.getImage()
     }
     
-    static func getItemHeight(withYippyTableView yippyTableView: YippyTableView, forHistoryItem historyItem: HistoryItem) -> CGFloat {
+    static func getItemHeight(withYippyTableView magpieTableView: MagpieTableView, forHistoryItem historyItem: HistoryItem) -> CGFloat {
         // Calculate the width of the cell
-        let cellWidth = floor(yippyTableView.cellWidth)
+        let cellWidth = floor(magpieTableView.cellWidth)
         
         // TODO: Need placeholder or something
         guard let image = historyItem.getImage() else {
@@ -58,14 +58,14 @@ class YippyTiffCellView: YippyItemBaseCellView, YippyItem {
         let imageHeight = min(image.size.height * imageWidth / image.size.width, maxImageHeight)
         
         // Get max height of cell based on visible on visible height
-        let maxHeight = yippyTableView.visibleRect.height
+        let maxHeight = magpieTableView.visibleRect.height
         // Calculate cell height
         let height = min(imageHeight + imagePadding.yTotal + contentViewInsets.xTotal, maxHeight)
         
         return ceil(height)
     }
     
-    static func makeItem() -> YippyItem {
-        return YippyTiffCellView(frame: .zero)
+    static func makeItem() -> MagpieItem {
+        return MagpieTiffCellView(frame: .zero)
     }
 }

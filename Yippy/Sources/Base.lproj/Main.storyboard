@@ -684,7 +684,7 @@
         <!--Magpie View Controller-->
         <scene sceneID="YK8-4f-MXM">
             <objects>
-                <viewController storyboardIdentifier="QuotesViewController" id="Maf-jn-umO" customClass="YippyViewController" customModule="Magpie" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="QuotesViewController" id="Maf-jn-umO" customClass="MagpieViewController" customModule="Magpie" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="EMV-Rg-IFx">
                         <rect key="frame" x="0.0" y="0.0" width="345" height="308"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -695,7 +695,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="345" height="171"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="9QY-RJ-rk6" customClass="YippyTableView" customModule="Magpie" customModuleProvider="target">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="9QY-RJ-rk6" customClass="MagpieTableView" customModule="Magpie" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="345" height="171"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="0.0" height="2"/>
@@ -829,7 +829,7 @@
                         <outlet property="itemCountLabel" destination="zja-Rc-WlR" id="HRp-OV-FaZ"/>
                         <outlet property="itemGroupScrollView" destination="e6J-h8-BYZ" id="s4b-oM-7yo"/>
                         <outlet property="searchBar" destination="nog-IU-3eG" id="QV7-gQ-iQh"/>
-                        <outlet property="yippyHistoryView" destination="9QY-RJ-rk6" id="1ay-62-CPk"/>
+                        <outlet property="magpieHistoryView" destination="9QY-RJ-rk6" id="1ay-62-CPk"/>
                     </connections>
                 </viewController>
                 <customObject id="lTq-R9-WUZ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -839,8 +839,8 @@
         <!--Window Controller-->
         <scene sceneID="i01-lF-j9v">
             <objects>
-                <windowController storyboardIdentifier="YippyWindowController" id="6mG-8P-NBo" customClass="YippyWindowController" customModule="Magpie" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="5mc-W7-tKp" customClass="YippyWindow" customModule="Magpie" customModuleProvider="target">
+                <windowController storyboardIdentifier="MagpieWindowController" id="6mG-8P-NBo" customClass="MagpieWindowController" customModule="Magpie" customModuleProvider="target" sceneMemberID="viewController">
+                    <window key="window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="5mc-W7-tKp" customClass="MagpieWindow" customModule="Magpie" customModuleProvider="target">
                         <windowCollectionBehavior key="collectionBehavior" moveToActiveSpace="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="163" y="199" width="480" height="270"/>
@@ -924,7 +924,7 @@
         <scene sceneID="B92-uU-EjF">
             <objects>
                 <viewController storyboardIdentifier="PreviewTextViewController" id="wLM-tu-sp6" customClass="PreviewTextViewController" customModule="Magpie" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="G2Q-kv-fNF" customClass="YippyItemContentView" customModule="Magpie" customModuleProvider="target">
+                    <view key="view" id="G2Q-kv-fNF" customClass="MagpieItemContentView" customModule="Magpie" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -988,7 +988,7 @@
                                     <constraint firstAttribute="width" constant="111" id="gC7-e8-lwS"/>
                                     <constraint firstAttribute="height" constant="111" id="uKr-B3-ptu"/>
                                 </constraints>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="YippyIconColored" id="fDg-n1-Z9J"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="MagpieIconColored" id="fDg-n1-Z9J"/>
                             </imageView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NdS-xO-VUL">
                                 <rect key="frame" x="187" y="158" width="66" height="29"/>
@@ -1084,7 +1084,7 @@ Website: https://yippy.mattdavo.com</string>
                                     <constraint firstAttribute="width" constant="111" id="1i8-oJ-DGw"/>
                                     <constraint firstAttribute="height" constant="111" id="3jq-eG-JEO"/>
                                 </constraints>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="YippyIconColored" id="bDP-tq-SYF"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="MagpieIconColored" id="bDP-tq-SYF"/>
                             </imageView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0bn-y0-I1O">
                                 <rect key="frame" x="18" y="90" width="414" height="23"/>
@@ -1222,7 +1222,7 @@ Website: https://yippy.mattdavo.com</string>
                                     <constraint firstAttribute="height" constant="111" id="UKA-nb-Sh5"/>
                                     <constraint firstAttribute="width" constant="111" id="VAB-zM-X2s"/>
                                 </constraints>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="YippyIconColored" id="rNG-nu-umh"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="MagpieIconColored" id="rNG-nu-umh"/>
                             </imageView>
                         </subviews>
                         <constraints>
@@ -1287,7 +1287,7 @@ The default position for the Magpie is to float on the right edge of the screen,
                                     <constraint firstAttribute="width" constant="111" id="u1Y-nk-C8u"/>
                                     <constraint firstAttribute="height" constant="111" id="z66-Ks-bh4"/>
                                 </constraints>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="YippyIconColored" id="cSg-cu-ylB"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="MagpieIconColored" id="cSg-cu-ylB"/>
                             </imageView>
                         </subviews>
                         <constraints>
@@ -1310,7 +1310,7 @@ The default position for the Magpie is to float on the right edge of the screen,
         <scene sceneID="w7v-KV-oDL">
             <objects>
                 <viewController storyboardIdentifier="PreviewImageViewController" id="pfg-tV-l9k" customClass="PreviewImageViewController" customModule="Magpie" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="PDn-gT-0Go" customClass="YippyItemContentView" customModule="Magpie" customModuleProvider="target">
+                    <view key="view" id="PDn-gT-0Go" customClass="MagpieItemContentView" customModule="Magpie" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </view>
@@ -1334,6 +1334,6 @@ The default position for the Magpie is to float on the right edge of the screen,
         </scene>
     </scenes>
     <resources>
-        <image name="YippyIconColored" width="1024" height="1024"/>
+        <image name="MagpieIconColored" width="1024" height="1024"/>
     </resources>
 </document>

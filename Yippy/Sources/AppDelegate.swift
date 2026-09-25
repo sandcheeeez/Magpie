@@ -49,7 +49,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func checkBuildFlags() {
         #if BETA
-        YippyStatusItem.statusItemButtonImage = NSImage(systemSymbolName: "bird.fill", accessibilityDescription: "Magpie Beta")
+        MagpieStatusItem.statusItemButtonImage = NSImage(systemSymbolName: "bird.fill", accessibilityDescription: "Magpie Beta")
         #endif
     }
     
@@ -67,8 +67,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func setupHotKey() {
-        YippyHotKeys.toggle.changeHotKey(keyCombo: Settings.main.toggleHotKey)
-        YippyHotKeys.toggle.onDown {
+        MagpieHotKeys.toggle.changeHotKey(keyCombo: Settings.main.toggleHotKey)
+        MagpieHotKeys.toggle.onDown {
             Controller.main.togglePopover()
         }
     }

@@ -19,7 +19,7 @@ enum DevSnapshot {
         precondition(Bundle.main.bundleIdentifier?.hasSuffix("XCTest") == true, "Snapshots must not touch real user data")
         Helper.accessControlHelper = AccessControlHelperMock()
         Helper.keyPressHelper = KeyPressHelperMock()
-        try? FileManager.default.removeItem(at: Constants.urls.yippyAppSupport)
+        try? FileManager.default.removeItem(at: Constants.urls.magpieAppSupport)
     }
     
     static func run(outputDirectory: URL) {
@@ -35,7 +35,7 @@ enum DevSnapshot {
         Controller.main.togglePopover()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             // Select the image, whose content runs to the card's edges.
-            (Controller.main.yippyWindowController.contentViewController as? YippyViewController)?.selected = 3
+            (Controller.main.magpieWindowController.contentViewController as? MagpieViewController)?.selected = 3
         }
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
         
@@ -94,10 +94,10 @@ enum DevSnapshot {
     
     /// Renders the panel's contents over a colourful backdrop standing in for the desktop. The glass itself is drawn by the window server, so it isn't captured.
     private static func render(to url: URL, appearance: NSAppearance.Name) {
-        guard let window = Controller.main.yippyWindowController.window, let view = window.contentView else { return }
+        guard let window = Controller.main.magpieWindowController.window, let view = window.contentView else { return }
         NSApp.appearance = NSAppearance(named: appearance)
         view.layoutSubtreeIfNeeded()
-        Controller.main.yippyWindowController.contentViewController?.view.needsDisplay = true
+        Controller.main.magpieWindowController.contentViewController?.view.needsDisplay = true
         view.displayIfNeeded()
         
         guard let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return }
@@ -105,7 +105,7 @@ enum DevSnapshot {
         
         let dark = appearance == .darkAqua
         let image = NSImage(size: view.bounds.size, flipped: false) { rect in
-            let backdrop = NSBezierPath(roundedRect: rect, xRadius: YippyWindowController.cornerRadius, yRadius: YippyWindowController.cornerRadius)
+            let backdrop = NSBezierPath(roundedRect: rect, xRadius: MagpieWindowController.cornerRadius, yRadius: MagpieWindowController.cornerRadius)
             NSGradient(starting: dark ? NSColor(white: 0.16, alpha: 1) : NSColor(white: 0.95, alpha: 1),
                        ending: dark ? NSColor(white: 0.10, alpha: 1) : NSColor(white: 0.88, alpha: 1))!.draw(in: backdrop, angle: -90)
             rep.draw(in: rect)

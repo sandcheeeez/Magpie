@@ -9,7 +9,7 @@ class Accessibility {
     
     struct identifiers {
         static let welcomeWindow = "welcomeWindow"
-        static let yippyWindow = "yippyWindow"
+        static let magpieWindow = "magpieWindow"
         static let helpWindow = "helpWindow"
         static let aboutWindow = "aboutWindow"
         
@@ -35,12 +35,12 @@ class Accessibility {
         static let waitingForControlLabel = "waitingForControlLabel"
         static let howToUseLabel = "howToUseLabel"
         
-        static let yippyTableView = "yippyTableView"
-        static let yippyItemTextView = "YippyItemTextView"
-        static let yippyTextCellView = "YippyTextCellView"
-        static let yippyColorCellView = "YippyColorCellView"
-        static let yippyTiffCellView = "YippyTiffCellView"
-        static let yippyFileIconCellView = "YippyFileIconCellView"
-        static let yippyFileThumbnailCellView = "YippyFileThumbnailCellView"
+        static let magpieTableView = "magpieTableView"
+        static let magpieItemTextView = "MagpieItemTextView"
+        static let magpieTextCellView = "MagpieTextCellView"
+        static let magpieColorCellView = "MagpieColorCellView"
+        static let magpieTiffCellView = "MagpieTiffCellView"
+        static let magpieFileIconCellView = "MagpieFileIconCellView"
+        static let magpieFileThumbnailCellView = "MagpieFileThumbnailCellView"
     }
 }

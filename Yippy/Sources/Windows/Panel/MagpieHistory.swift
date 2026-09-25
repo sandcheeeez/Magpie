@@ -1,12 +1,12 @@
 //
-//  YippyHistory.swift
+//  MagpieHistory.swift
 //  Magpie
 //
 
 import Foundation
 import Cocoa
 
-class YippyHistory {
+class MagpieHistory {
     
     let history: History
     var items: [HistoryItem]

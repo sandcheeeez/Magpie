@@ -1,5 +1,5 @@
 //
-//  HistoryItem+YippyItem.swift
+//  HistoryItem+MagpieItem.swift
 //  Magpie
 //
 
@@ -7,23 +7,23 @@ import Foundation
 
 extension HistoryItem {
     
-    func getTableViewItemType() -> YippyItem.Type {
+    func getTableViewItemType() -> MagpieItem.Type {
         if getFileUrl() != nil {
             if getThumbnailImage() != nil {
-                return YippyFileThumbnailCellView.self
+                return MagpieFileThumbnailCellView.self
             }
             else {
-                return YippyFileIconCellView.self
+                return MagpieFileIconCellView.self
             }
         }
         else if getColor() != nil {
-            return YippyColorCellView.self
+            return MagpieColorCellView.self
         }
         else if types.contains(.tiff) || types.contains(.png) {
-            return YippyTiffCellView.self
+            return MagpieTiffCellView.self
         }
         else {
-            return YippyTextCellView.self
+            return MagpieTextCellView.self
         }
     }
 }

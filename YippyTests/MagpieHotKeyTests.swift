@@ -1,5 +1,5 @@
 //
-//  YippyHotKeyTests.swift
+//  MagpieHotKeyTests.swift
 //  MagpieTests
 //
 
@@ -7,14 +7,14 @@ import XCTest
 import HotKey  // Normally this would be a @testable import, but this is not currently supported by the Swift Package Manager. See: https://stackoverflow.com/a/52672307
 @testable import Magpie
 
-class YippyHotKeyTests: XCTestCase {
+class MagpieHotKeyTests: XCTestCase {
     
     var hotKey: HotKey!
-    var yippyHotKey: YippyHotKey!
+    var magpieHotKey: MagpieHotKey!
 
     override func setUp() {
         hotKey = HotKey(key: .a, modifiers: .none)
-        yippyHotKey = YippyHotKey(hotKey: hotKey)
+        magpieHotKey = MagpieHotKey(hotKey: hotKey)
     }
     
     func testKeyUp() {
@@ -23,7 +23,7 @@ class YippyHotKeyTests: XCTestCase {
         let handler = {
             keyUpHandlerCalled.fulfill()
         }
-        yippyHotKey.onUp(handler)
+        magpieHotKey.onUp(handler)
         
         // 2. When we have a key up event
         hotKey.simulateKeyUp()
@@ -38,7 +38,7 @@ class YippyHotKeyTests: XCTestCase {
         let handler = {
             keyDownHandlerCalled.fulfill()
         }
-        yippyHotKey.onDown(handler)
+        magpieHotKey.onDown(handler)
         
         // 2. When we have a key down event
         hotKey.simulateKeyDown()
@@ -54,8 +54,8 @@ class YippyHotKeyTests: XCTestCase {
         let handler = {
             keyDownHandlerCalled.fulfill()
         }
-        yippyHotKey.isPaused = true
-        yippyHotKey.onDown(handler)
+        magpieHotKey.isPaused = true
+        magpieHotKey.onDown(handler)
         
         // 2. When we have a key down event
         hotKey.simulateKeyDown()
@@ -71,10 +71,10 @@ class YippyHotKeyTests: XCTestCase {
         let handler = {
             keyDownHandlerCalled.fulfill()
         }
-        yippyHotKey.onLong(handler)
-        yippyHotKey.longPressStartingInterval = 0.5
-        yippyHotKey.longPressAcceleration = 2
-        yippyHotKey.longPressMinInterval = 0.1
+        magpieHotKey.onLong(handler)
+        magpieHotKey.longPressStartingInterval = 0.5
+        magpieHotKey.longPressAcceleration = 2
+        magpieHotKey.longPressMinInterval = 0.1
         
         // 2. When we have a long press event
         // 0.5 + 0.25 + 0.125 + 0.1 = 0.975 => 4

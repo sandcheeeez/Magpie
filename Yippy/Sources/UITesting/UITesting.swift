@@ -52,10 +52,10 @@ struct UITesting {
             ])
         }
         if FileManager.default.fileExists(atPath: testDir.path) {
-            if FileManager.default.fileExists(atPath: Constants.urls.yippyAppSupport.path) {
-                try FileManager.default.removeItem(at: Constants.urls.yippyAppSupport)
+            if FileManager.default.fileExists(atPath: Constants.urls.magpieAppSupport.path) {
+                try FileManager.default.removeItem(at: Constants.urls.magpieAppSupport)
             }
-            try FileManager.default.copyItem(at: testDir, to: Constants.urls.yippyAppSupport)
+            try FileManager.default.copyItem(at: testDir, to: Constants.urls.magpieAppSupport)
         }
         else {
             throw NSError(domain: "TestDirectoryError", code: 0, userInfo: [

@@ -1,12 +1,12 @@
 //
-//  YippyItemCellTextView.swift
+//  MagpieItemCellTextView.swift
 //  Magpie
 //
 
 import Foundation
 import Cocoa
 
-class YippyItemCellTextView: NSTextView {
+class MagpieItemCellTextView: NSTextView {
     
     override func mouseDown(with event: NSEvent) {
         self.nextResponder?.mouseDown(with: event)

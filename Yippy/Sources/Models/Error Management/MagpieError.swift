@@ -1,12 +1,12 @@
 //
-//  YippyError.swift
+//  MagpieError.swift
 //  Magpie
 //
 
 import Foundation
 import Cocoa
 
-struct YippyError: Loggable, Alertable, Error {
+struct MagpieError: Loggable, Alertable, Error {
     
     var error: Error
     
