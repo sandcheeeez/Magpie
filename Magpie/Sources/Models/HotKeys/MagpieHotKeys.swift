@@ -23,7 +23,7 @@ struct MagpieHotKeys {
     static var ctrlDelete = MagpieHotKey(key: .delete, modifiers: [.control])
     static var ctrlSpace = MagpieHotKey(key: .space, modifiers: [.control])
     static var cmdBackslash = MagpieHotKey(key: .backslash, modifiers: [.command])
-    static var optionReturn = MagpieHotKey(key: .return, modifiers: [.option])
+    static var cmdReturn = MagpieHotKey(key: .return, modifiers: [.command])
     static var cmdP = MagpieHotKey(key: .p, modifiers: [.command])
     static var cmdLeftArrow = MagpieHotKey(key: .leftArrow, modifiers: [.command])
     static var cmdRightArrow = MagpieHotKey(key: .rightArrow, modifiers: [.command])

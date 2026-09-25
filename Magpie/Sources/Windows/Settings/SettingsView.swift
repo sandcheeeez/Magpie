@@ -118,7 +118,7 @@ struct ShortcutsSettingsView: View {
 
     private let panelShortcuts: [(String, String)] = [
         ("Paste selected item", "↩"),
-        ("Paste as plain text", "⌥↩"),
+        ("Paste as plain text (images: recognised text)", "⌘↩"),
         ("Paste item 0–9", "⌘0 – ⌘9"),
         ("Pin or unpin", "⌘P"),
         ("Previous / next filter", "⌘← ⌘→"),

@@ -6,7 +6,7 @@
 
 Magpie remembers everything you copy (text, code, links, images, files and colours) and gets any of it back in a couple of keystrokes. It understands what you copied: it recognises code and its language, colours written as text, phone numbers and emails, and the text inside screenshots. So you can find things by what they are, not just when you copied them. Everything stays on your Mac.
 
-<p align="center"><img src="images/panel.png" width="760" alt="Magpie's history panel in light and dark mode, showing a Swift snippet, a message with a phone number, a link, a pinned note, a screenshot, colours and a file"></p>
+<p align="center"><img src="images/magpie-panel.png" width="760" alt="Magpie's history panel in light and dark mode, showing a Swift snippet, a message with a phone number, a link, a pinned note, a screenshot, colours and a file"></p>
 
 ## Features
 
@@ -23,7 +23,7 @@ Magpie remembers everything you copy (text, code, links, images, files and colou
 
 ### Paste it back
 - **↩** pastes into the app you were using, and **⌘0–⌘9** paste the first ten items directly.
-- **Paste as plain text** (⌥↩) drops formatting. For a screenshot, it pastes the recognised text.
+- **Paste as plain text** (⌘↩) drops formatting. For a screenshot, it pastes the recognised text.
 - **Right-click** for more: paste as plain text, pin, preview, copy recognised text, open link, show in Finder, delete.
 
 ### Keep what matters
@@ -31,7 +31,7 @@ Magpie remembers everything you copy (text, code, links, images, files and colou
 - **History size** from 50 items to **unlimited**.
 - **Storage overview** showing space used by each type and the largest items, with one-click clean-up.
 
-<p align="center"><img src="images/settings-storage.png" width="420" alt="The Storage tab in Settings, showing total size and usage by type"></p>
+<p align="center"><img src="images/magpie-settings-storage.png" width="420" alt="The Storage tab in Settings, showing total size and usage by type"></p>
 
 ### Built for macOS 26
 - A **Liquid Glass** panel that slides in from any screen edge, or floats in the centre of the screen.
@@ -79,7 +79,7 @@ The server only runs when an assistant launches it. It talks to that assistant o
 | --- | --- |
 | Show / hide Magpie | ⇧⌘V (configurable) |
 | Paste selected item | ↩ |
-| Paste as plain text | ⌥↩ |
+| Paste as plain text (images: recognised text) | ⌘↩ |
 | Paste item 0–9 | ⌘0 – ⌘9 |
 | Pin / unpin | ⌘P |
 | Previous / next filter | ⌘← / ⌘→ |

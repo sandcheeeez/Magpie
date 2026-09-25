@@ -103,7 +103,7 @@ class MagpieViewController: NSViewController {
         MagpieHotKeys.ctrlDelete.onDown(deleteSelected)
         MagpieHotKeys.ctrlSpace.onDown(togglePreview)
         MagpieHotKeys.cmdBackslash.onDown(focusSearchBar)
-        MagpieHotKeys.optionReturn.onDown(pasteSelectedAsPlainText)
+        MagpieHotKeys.cmdReturn.onDown(pasteSelectedAsPlainText)
         MagpieHotKeys.cmdP.onDown(togglePinSelected)
         MagpieHotKeys.cmdLeftArrow.onDown { self.cycleFilter(by: -1) }
         MagpieHotKeys.cmdRightArrow.onDown { self.cycleFilter(by: 1) }
@@ -142,7 +142,7 @@ class MagpieViewController: NSViewController {
         panelHotKeys.append(MagpieHotKeys.cmd9)
         panelHotKeys.append(MagpieHotKeys.ctrlDelete)
         panelHotKeys.append(MagpieHotKeys.ctrlSpace)
-        panelHotKeys.append(MagpieHotKeys.optionReturn)
+        panelHotKeys.append(MagpieHotKeys.cmdReturn)
         panelHotKeys.append(MagpieHotKeys.cmdP)
         panelHotKeys.append(MagpieHotKeys.cmdLeftArrow)
         panelHotKeys.append(MagpieHotKeys.cmdRightArrow)
