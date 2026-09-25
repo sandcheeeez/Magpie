@@ -20,6 +20,9 @@ class HorizontalButtonsView: NSScrollView {
     var rightPadding: CGFloat = 20
     var innerPadding: CGFloat = 10
     
+    /// Called with the index of the button the user clicked.
+    var onSelect: ((Int) -> Void)?
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         
@@ -94,6 +97,7 @@ class HorizontalButtonsView: NSScrollView {
     
     @objc private func buttonHandler(_ sender: NSButton) {
         updateSelected(sender.tag)
+        onSelect?(sender.tag)
     }
     
     override func setFrameSize(_ newSize: NSSize) {

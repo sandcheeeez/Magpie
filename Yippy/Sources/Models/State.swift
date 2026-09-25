@@ -33,6 +33,8 @@ class State {
     
     var pastesRichText: BehaviorRelay<Bool>
     
+    var excludedBundleIds: BehaviorRelay<[String]>
+    
     var disposeBag: DisposeBag
     
     // History
@@ -52,6 +54,7 @@ class State {
         self.launchAtLogin = BehaviorRelay<Bool>(value: LoginItem.isEnabled)
         self.showsRichText = BehaviorRelay<Bool>(value: settings.showsRichText)
         self.pastesRichText = BehaviorRelay<Bool>(value: settings.pastesRichText)
+        self.excludedBundleIds = BehaviorRelay<[String]>(value: settings.excludedBundleIds)
         self.currentScreen = BehaviorRelay<NSScreen>(value: Self.getCurrentScreen(forMouseLocation: NSEvent.mouseLocation))
         self.disposeBag = disposeBag
         
@@ -68,6 +71,12 @@ class State {
         self.pasteboardMonitor = PasteboardMonitor(pasteboard: NSPasteboard.general, changeCount: settings.pasteboardChangeCount, delegate: self.history)
         
         Self.monitorPastesRichText(state: self)
+        
+        self.excludedBundleIds.subscribe(onNext: { [history] in
+            history?.excludedBundleIds = Set($0)
+        }).disposed(by: disposeBag)
+        
+        self.history.recognizeTextInExistingImages()
     }
     
     // MARK: - Constructor Helpers
@@ -78,6 +87,7 @@ class State {
         settings.bindMaxHistoryTo(state: state.history.maxItems).disposed(by: disposeBag)
         settings.bindShowsRichTextTo(state: state.showsRichText.asObservable()).disposed(by: disposeBag)
         settings.bindPastesRichTextTo(state: state.pastesRichText.asObservable()).disposed(by: disposeBag)
+        settings.bindExcludedBundleIdsTo(state: state.excludedBundleIds.asObservable()).disposed(by: disposeBag)
     }
     
     static func monitorPastesRichText(state: State) {

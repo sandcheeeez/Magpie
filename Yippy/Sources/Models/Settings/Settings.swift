@@ -56,6 +56,18 @@ struct Settings: Codable, DefaultStorable {
         pastesRichText: true
     )
     
+    /// Password managers are excluded by default. Most mark their copies as concealed anyway, but not all do.
+    static let defaultExcludedBundleIds = [
+        "com.apple.Passwords",
+        "com.apple.keychainaccess",
+        "com.1password.1password",
+        "com.agilebits.onepassword7",
+        "com.bitwarden.desktop",
+        "org.keepassxc.keepassxc",
+        "com.lastpass.LastPass",
+        "com.dashlane.dashlanephonefinal",
+    ]
+    
     // MARK: - Settings
     
     var panelPosition: PanelPosition
@@ -69,6 +81,25 @@ struct Settings: Codable, DefaultStorable {
     var showsRichText: Bool
     
     var pastesRichText: Bool
+    
+    /// Bundle ids of apps whose copies are never saved to the history.
+    var excludedBundleIds = Settings.defaultExcludedBundleIds
+    
+    
+    // MARK: - Decoding
+    
+    /// Decodes settings, using defaults for any settings missing from older saved versions.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let defaults = Settings.default
+        panelPosition = try container.decodeIfPresent(PanelPosition.self, forKey: .panelPosition) ?? defaults.panelPosition
+        pasteboardChangeCount = try container.decodeIfPresent(Int.self, forKey: .pasteboardChangeCount) ?? defaults.pasteboardChangeCount
+        toggleHotKey = try container.decodeIfPresent(KeyCombo.self, forKey: .toggleHotKey) ?? defaults.toggleHotKey
+        maxHistory = try container.decodeIfPresent(Int.self, forKey: .maxHistory) ?? defaults.maxHistory
+        showsRichText = try container.decodeIfPresent(Bool.self, forKey: .showsRichText) ?? defaults.showsRichText
+        pastesRichText = try container.decodeIfPresent(Bool.self, forKey: .pastesRichText) ?? defaults.pastesRichText
+        excludedBundleIds = try container.decodeIfPresent([String].self, forKey: .excludedBundleIds) ?? defaults.excludedBundleIds
+    }
     
     
     // MARK: - State Binding Methods
@@ -100,6 +131,12 @@ struct Settings: Codable, DefaultStorable {
     func bindPastesRichTextTo(state: Observable<Bool>) -> Disposable {
         return state.bind { (x) in
             Settings.main.pastesRichText = x
+        }
+    }
+    
+    func bindExcludedBundleIdsTo(state: Observable<[String]>) -> Disposable {
+        return state.bind { (x) in
+            Settings.main.excludedBundleIds = x
         }
     }
 }

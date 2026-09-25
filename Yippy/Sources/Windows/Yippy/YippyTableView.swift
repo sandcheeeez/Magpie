@@ -23,6 +23,9 @@ class YippyTableView: NSTableView {
     
     var isRichText: Bool = true
     
+    /// Reordering by dragging only makes sense when the full, unfiltered history is shown.
+    var allowsReordering = true
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         
@@ -129,7 +132,7 @@ extension YippyTableView: NSTableViewDataSource {
     }
     
     func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableView.DropOperation) -> NSDragOperation {
-        if dropOperation == .above {
+        if dropOperation == .above && allowsReordering {
             return .move
         }
         else {

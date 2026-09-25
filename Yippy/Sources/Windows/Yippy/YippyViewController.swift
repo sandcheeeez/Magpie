@@ -28,13 +28,15 @@ class YippyViewController: NSViewController {
     
     var yippyHistory = YippyHistory(history: State.main.history, items: [])
     
-    var searchEngine = SearchEngine(data: [])
+    let searchEngine = SearchEngine()
+    
+    let filter = BehaviorRelay<HistoryFilter>(value: .all)
     
     let disposeBag = DisposeBag()
     
     var isPreviewShowing = false
     
-    var itemGroups = BehaviorRelay<[String]>(value: ["Clipboard", "Favourites", "Clipboard", "Favourites", "Clipboard", "Favourites"])
+    var itemGroups = BehaviorRelay<[String]>(value: HistoryFilter.allCases.map({ $0.title }))
     
     var isRichText = Settings.main.showsRichText
     
@@ -51,9 +53,15 @@ class YippyViewController: NSViewController {
         State.main.showsRichText.distinctUntilChanged().subscribe(onNext: onShowsRichText).disposed(by: disposeBag)
         
         itemGroupScrollView.bind(toData: itemGroups.asObservable()).disposed(by: disposeBag)
-        itemGroupScrollView.bind(toSelected: BehaviorRelay<Int>(value: 0).asObservable()).disposed(by: disposeBag)
-        // TODO: Remove this when implemented
-        itemGroupScrollView.constraint(withIdentifier: "height")?.constant = 0
+        itemGroupScrollView.bind(toSelected: filter.map({ $0.rawValue })).disposed(by: disposeBag)
+        itemGroupScrollView.onSelect = { [weak self] in
+            self?.filter.accept(HistoryFilter(rawValue: $0) ?? .all)
+        }
+        filter.distinctUntilChanged().skip(1).subscribe(onNext: { [weak self] _ in
+            self?.runSearch()
+        }).disposed(by: disposeBag)
+        
+        yippyHistoryView.menu = makeContextMenu()
         
         Observable.combineLatest(
             results,
@@ -86,6 +94,10 @@ class YippyViewController: NSViewController {
         YippyHotKeys.ctrlDelete.onDown(deleteSelected)
         YippyHotKeys.ctrlSpace.onDown(togglePreview)
         YippyHotKeys.cmdBackslash.onDown(focusSearchBar)
+        YippyHotKeys.optionReturn.onDown(pasteSelectedAsPlainText)
+        YippyHotKeys.cmdP.onDown(togglePinSelected)
+        YippyHotKeys.cmdLeftArrow.onDown { self.cycleFilter(by: -1) }
+        YippyHotKeys.cmdRightArrow.onDown { self.cycleFilter(by: 1) }
         
         // Paste hot keys
         YippyHotKeys.cmd0.onDown { self.shortcutPressed(key: 0) }
@@ -121,6 +133,10 @@ class YippyViewController: NSViewController {
         bindHotKeyToYippyWindow(YippyHotKeys.cmd9, disposeBag: disposeBag)
         bindHotKeyToYippyWindow(YippyHotKeys.ctrlDelete, disposeBag: disposeBag)
         bindHotKeyToYippyWindow(YippyHotKeys.ctrlSpace, disposeBag: disposeBag)
+        bindHotKeyToYippyWindow(YippyHotKeys.optionReturn, disposeBag: disposeBag)
+        bindHotKeyToYippyWindow(YippyHotKeys.cmdP, disposeBag: disposeBag)
+        bindHotKeyToYippyWindow(YippyHotKeys.cmdLeftArrow, disposeBag: disposeBag)
+        bindHotKeyToYippyWindow(YippyHotKeys.cmdRightArrow, disposeBag: disposeBag)
         
         searchBar.resignFirstResponder()
     }
@@ -141,9 +157,22 @@ class YippyViewController: NSViewController {
         }
     }
     
+    var isFiltered: Bool {
+        return !searchBar.stringValue.trimmingCharacters(in: .whitespaces).isEmpty || filter.value != .all
+    }
+    
     func onHistoryChange(_ history: [HistoryItem], change: History.Change) {
-        updateSearchEngine(items: history)
-        if !searchBar.stringValue.isEmpty {
+        if case .update(let i) = change {
+            // Metadata changed; the item may now be in or out of the filter (e.g. unpinned while viewing Pinned).
+            if isFiltered {
+                runSearch()
+            }
+            if let row = yippyHistory.items.firstIndex(of: history[i]) {
+                yippyHistoryView.reloadItem(row)
+            }
+            return
+        }
+        if isFiltered {
             runSearch()
         }
         else {
@@ -159,20 +188,17 @@ class YippyViewController: NSViewController {
         }
     }
     
-    func updateSearchEngine(items: [HistoryItem]) {
-        self.searchEngine = SearchEngine(data: items.compactMap({$0.getPlainString()}))
-    }
-    
     func onAllChange(_ results: Results, _ selected: (Int?, Int?)) {
         if results.items != self.yippyHistory.items {
                 if results.isSearchResult {
-                    self.itemCountLabel.stringValue = "\(results.items.count) matches"
+                    self.itemCountLabel.stringValue = "\(results.items.count) \(results.items.count == 1 ? "match" : "matches")"
                 }
                 else {
                     self.itemCountLabel.stringValue = "\(results.items.count) items"
                 }
                 
                 self.yippyHistory = YippyHistory(history: State.main.history, items: results.items)
+                self.yippyHistoryView.allowsReordering = !results.isSearchResult
                 self.yippyHistoryView.reloadData(self.yippyHistory.items, isRichText: self.isRichText)
             }
         
@@ -187,7 +213,7 @@ class YippyViewController: NSViewController {
             }
             self.yippyHistoryView.reloadItem(selected)
             
-            if self.isPreviewShowing {
+            if self.isPreviewShowing && selected < self.yippyHistory.items.count {
                 State.main.previewHistoryItem.accept(self.yippyHistory.items[selected])
             }
         }
@@ -221,6 +247,23 @@ class YippyViewController: NSViewController {
         }
     }
     
+    func pasteSelectedAsPlainText() {
+        if let selected = self.yippyHistoryView.selected {
+            paste(selected: selected, asPlainText: true)
+        }
+    }
+    
+    func togglePinSelected() {
+        if let selected = self.yippyHistoryView.selected {
+            yippyHistory.togglePin(selected: selected)
+        }
+    }
+    
+    func cycleFilter(by offset: Int) {
+        let count = HistoryFilter.allCases.count
+        filter.accept(HistoryFilter(rawValue: (filter.value.rawValue + offset + count) % count) ?? .all)
+    }
+    
     func deleteSelected() {
         if let selected = self.yippyHistoryView.selected {
             self.selected.accept(yippyHistory.delete(selected: selected))
@@ -236,6 +279,62 @@ class YippyViewController: NSViewController {
     
     func shortcutPressed(key: Int) {
         paste(selected: key)
+    }
+    
+    // MARK: - Context menu
+    
+    private enum MenuAction: Int {
+        case paste, pastePlainText, togglePin, preview, copyRecognizedText, openLink, revealInFinder, delete
+    }
+    
+    private func makeContextMenu() -> NSMenu {
+        let menu = NSMenu()
+        menu.delegate = self
+        return menu
+    }
+    
+    private func menuItem(_ title: String, symbol: String, action: MenuAction) -> NSMenuItem {
+        let item = NSMenuItem(title: title, action: #selector(contextMenuAction(_:)), keyEquivalent: "")
+        item.target = self
+        item.tag = action.rawValue
+        item.image = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
+        return item
+    }
+    
+    @objc private func contextMenuAction(_ sender: NSMenuItem) {
+        let row = yippyHistoryView.clickedRow
+        guard row >= 0, row < yippyHistory.items.count, let action = MenuAction(rawValue: sender.tag) else { return }
+        let item = yippyHistory.items[row]
+        switch action {
+        case .paste:
+            paste(selected: row)
+        case .pastePlainText:
+            paste(selected: row, asPlainText: true)
+        case .togglePin:
+            yippyHistory.togglePin(selected: row)
+        case .preview:
+            selected.accept(row)
+            isPreviewShowing = true
+            State.main.previewHistoryItem.accept(item)
+        case .copyRecognizedText:
+            guard let text = item.metadata.recognizedText else { return }
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(text, forType: .string)
+        case .openLink:
+            if let url = item.getUrl() ?? item.getPlainString().flatMap({ URL(string: $0.trimmingCharacters(in: .whitespacesAndNewlines)) }) {
+                close()
+                NSWorkspace.shared.open(url)
+            }
+        case .revealInFinder:
+            if let url = item.getFileUrl() {
+                NSWorkspace.shared.activateFileViewerSelecting([url])
+            }
+        case .delete:
+            let next = yippyHistory.delete(selected: row)
+            if !isFiltered {
+                selected.accept(next)
+            }
+        }
     }
     
     func togglePreview() {
@@ -256,19 +355,13 @@ class YippyViewController: NSViewController {
     }
     
     func runSearch() {
-        searchEngine.search(query: searchBar.stringValue, completion: { result in
-            if (result.query.query.isEmpty) {
-                self.results.accept(Results(items: State.main.history.items, isSearchResult: false))
-                return
+        let isFiltered = self.isFiltered
+        searchEngine.search(query: searchBar.stringValue, filter: filter.value, items: State.main.history.items) { items in
+            self.results.accept(Results(items: items, isSearchResult: isFiltered))
+            if self.selected.value == nil || self.selected.value! >= items.count {
+                self.resetSelected()
             }
-            
-            var filteredData = [HistoryItem]()
-            for i in result.results {
-                filteredData.append(State.main.history.items[i])
-            }
-            
-            self.results.accept(Results(items: filteredData, isSearchResult: true))
-        })
+        }
     }
     
     private func incrementSelected() {
@@ -295,9 +388,39 @@ class YippyViewController: NSViewController {
         }
     }
     
-    private func paste(selected: Int) {
+    private func paste(selected: Int, asPlainText: Bool = false) {
+        guard selected < yippyHistory.items.count else { return }
+        let yippyHistory = self.yippyHistory
         self.close()
-        yippyHistory.paste(selected: selected)
+        yippyHistory.paste(selected: selected, asPlainText: asPlainText)
+    }
+}
+
+extension YippyViewController: NSMenuDelegate {
+    
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        let row = yippyHistoryView.clickedRow
+        guard row >= 0, row < yippyHistory.items.count else { return }
+        let item = yippyHistory.items[row]
+        
+        menu.addItem(menuItem("Paste", symbol: "doc.on.clipboard", action: .paste))
+        if YippyHistory.plainText(for: item) != nil {
+            menu.addItem(menuItem(item.kind == .image ? "Paste Recognized Text" : "Paste as Plain Text", symbol: "textformat", action: .pastePlainText))
+        }
+        menu.addItem(menuItem(item.metadata.isPinned ? "Unpin" : "Pin", symbol: item.metadata.isPinned ? "pin.slash" : "pin", action: .togglePin))
+        menu.addItem(menuItem("Preview", symbol: "eye", action: .preview))
+        if let text = item.metadata.recognizedText, !text.isEmpty {
+            menu.addItem(menuItem("Copy Recognized Text", symbol: "text.viewfinder", action: .copyRecognizedText))
+        }
+        if item.kind == .link {
+            menu.addItem(menuItem("Open Link", symbol: "safari", action: .openLink))
+        }
+        if item.kind == .file {
+            menu.addItem(menuItem("Show in Finder", symbol: "folder", action: .revealInFinder))
+        }
+        menu.addItem(.separator())
+        menu.addItem(menuItem("Delete", symbol: "trash", action: .delete))
     }
 }
 

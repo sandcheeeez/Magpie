@@ -22,22 +22,58 @@ class YippyHistory {
         self.pasteboard = NSPasteboard.general
     }
     
-    func paste(selected: Int) {
+    /// The index in the full history of the item at `selected` in the displayed (possibly filtered) items.
+    private func historyIndex(ofSelected selected: Int) -> Int? {
+        return history.items.firstIndex(of: items[selected])
+    }
+    
+    /// Pastes the item into the previously active app.
+    ///
+    /// - Parameter asPlainText: Paste only plain text, dropping formatting. Images paste their recognised text, if any.
+    func paste(selected: Int, asPlainText: Bool = false) {
+        let item = items[selected]
+        
         // Internally action the pasteboard change
         // Our pasteboard monitor will detect the change
         // But our `History` will know that it has already been consumed
-        history.moveItem(at: selected, to: 0)
+        if let i = historyIndex(ofSelected: selected) {
+            history.moveItem(at: i, to: 0)
+        }
         let newChangeCount = pasteboard.clearContents()
         history.recordPasteboardChange(withCount: newChangeCount)
         
         // Write object
-        pasteboard.writeObjects([items[selected]])
+        if asPlainText, let text = Self.plainText(for: item) {
+            pasteboard.setString(text, forType: .string)
+        }
+        else {
+            pasteboard.writeObjects([item])
+        }
         
         DispatchQueue.global().async {
             DispatchQueue.main.async {
                 self.executePaste(startTime: Date())
             }
         }
+    }
+    
+    static func plainText(for item: HistoryItem) -> String? {
+        switch item.kind {
+        case .image:
+            guard let text = item.metadata.recognizedText, !text.isEmpty else { return nil }
+            return text
+        case .color:
+            return nil
+        case .file:
+            return item.getFileUrl()?.path
+        case .link, .text:
+            return item.getPlainString() ?? item.getRtfAttributedString()?.string ?? item.getUrl()?.absoluteString
+        }
+    }
+    
+    func togglePin(selected: Int) {
+        guard let i = historyIndex(ofSelected: selected) else { return }
+        history.setPinned(!history.items[i].metadata.isPinned, forItemAt: i)
     }
     
     private func executePaste(startTime: Date) {
@@ -56,8 +92,9 @@ class YippyHistory {
     
     /// Returns the next item to select
     func delete(selected: Int) -> Int? {
-        history.deleteItem(at: selected)
-        if selected == 0 {
+        guard let i = historyIndex(ofSelected: selected) else { return selected }
+        history.deleteItem(at: i)
+        if i == 0 {
             // If we want to remove this, then we may have to change the `HistoryItem` writingOptions() to not `.promised`, because if something is pasted from history, then deleted, it can no longer satisfy the promise.
             pasteboard.clearContents()
         }

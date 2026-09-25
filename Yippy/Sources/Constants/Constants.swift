@@ -64,6 +64,10 @@ struct Constants {
             return history.appendingPathComponent("order.xml", isDirectory: false)
         }
         
+        static var historyMetadata: URL {
+            return yippyAppSupport.appendingPathComponent("history-metadata.json", isDirectory: false)
+        }
+
         static var errorLog: URL {
             return yippyAppSupport.appendingPathComponent("error.log", isDirectory: false)
         }

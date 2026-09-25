@@ -39,6 +39,58 @@ class HistoryItem: NSObject {
     /// File system id. Unique name of the folder contains the data for this item
     let fsId: UUID
     
+    /// Copy time, source app, pinned state and recognised text.
+    var metadata = HistoryItemMetadata(copiedAt: Date())
+    
+    /// The broad kind of content, derived from the pasteboard types and data.
+    lazy var kind: HistoryItemKind = {
+        if types.contains(.fileURL) {
+            return .file
+        }
+        if types.contains(.color) {
+            return .color
+        }
+        if types.contains(.tiff) || types.contains(.png) {
+            return .image
+        }
+        if types.contains(.URL) {
+            return .link
+        }
+        if let str = getPlainString(), Self.isLink(str) {
+            return .link
+        }
+        return .text
+    }()
+    
+    /// Case and diacritic folded text used for searching, excluding recognised text which can change.
+    lazy var searchableText: String = {
+        var parts = [String]()
+        switch kind {
+        case .file:
+            if let url = getFileUrl() {
+                parts.append(url.lastPathComponent)
+                parts.append(url.path)
+            }
+        case .image, .color:
+            break
+        case .link, .text:
+            if let str = getPlainString() ?? getRtfAttributedString()?.string {
+                parts.append(String(str.prefix(Self.maxSearchableLength)))
+            }
+            else if let url = getUrl() {
+                parts.append(url.absoluteString)
+            }
+        }
+        return Self.foldForSearch(parts.joined(separator: "\n"))
+    }()
+    
+    /// Limits how much of very long text is searched, keeping search fast.
+    static let maxSearchableLength = 20_000
+    
+    static func foldForSearch(_ str: String) -> String {
+        return str.folding(options: [.caseInsensitive, .diacriticInsensitive, .widthInsensitive], locale: nil)
+    }
+    
     /// Whether the item is being cached.
     var isCached: Bool {
         return cache.isItemRegistered(fsId)

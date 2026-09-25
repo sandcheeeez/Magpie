@@ -141,7 +141,9 @@
 		34EC0FF92504ADE7004E1A63 /* SearchEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EC0FF82504ADE7004E1A63 /* SearchEngine.swift */; };
 		34F1047D23542CCE00B65251 /* HistoryItem+YippyItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F1047C23542CCE00B65251 /* HistoryItem+YippyItem.swift */; };
 		34F1047E23542D1600B65251 /* PasteboardType+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345BAE3323500E4B008ACB4C /* PasteboardType+Codable.swift */; };
+		42B6F2330A4EE1A2D16DADE6 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B679C12318A792B1DFA689 /* TextRecognizer.swift */; };
 		450DD275E227C6EAC455C70E /* LoginItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D36FC7A206FA20B75B81814 /* LoginItem.swift */; };
+		764DF3758B5EB4CD5F35E6A2 /* HistoryItemMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = A09A2D3C7841CFB98A6BEDBD /* HistoryItemMetadata.swift */; };
 		A264A9577B701DDB6DE3BFBF /* Pods_Yippy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0ACFCB0B26BF8B8E6EF42EA /* Pods_Yippy.framework */; };
 		B8A057305B33D2028FC0EC05 /* Pods_YippyUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06717A6CF5535260A83784EF /* Pods_YippyUITests.framework */; };
 		D104B1D4E210055A8E6424F0 /* Pods_YippyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1AA8E9C3FA65CDE7DA527C7 /* Pods_YippyTests.framework */; };
@@ -308,6 +310,8 @@
 		473D1B2417E6C47B92751AA6 /* Pods-YippyTests.beta debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyTests.beta debug.xcconfig"; path = "Target Support Files/Pods-YippyTests/Pods-YippyTests.beta debug.xcconfig"; sourceTree = "<group>"; };
 		497AE5F620140FB1A3632D80 /* Pods-YippyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyTests.debug.xcconfig"; path = "Target Support Files/Pods-YippyTests/Pods-YippyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6345AD4696DA11C3A58F38CB /* Pods-Yippy.beta debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yippy.beta debug.xcconfig"; path = "Target Support Files/Pods-Yippy/Pods-Yippy.beta debug.xcconfig"; sourceTree = "<group>"; };
+		81B679C12318A792B1DFA689 /* TextRecognizer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
+		A09A2D3C7841CFB98A6BEDBD /* HistoryItemMetadata.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HistoryItemMetadata.swift; sourceTree = "<group>"; };
 		B1AA8E9C3FA65CDE7DA527C7 /* Pods_YippyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YippyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7B2145CEF513C8B71E739A5 /* Pods-YippyUITests.xctest.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YippyUITests.xctest.xcconfig"; path = "Target Support Files/Pods-YippyUITests/Pods-YippyUITests.xctest.xcconfig"; sourceTree = "<group>"; };
 		C0ACFCB0B26BF8B8E6EF42EA /* Pods_Yippy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yippy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -464,6 +468,7 @@
 				345B14AE2341AEEA00C2D0DA /* KeyPressHelper.swift */,
 				345B14B02341AF1900C2D0DA /* KeyPressHelperMock.swift */,
 				2D36FC7A206FA20B75B81814 /* LoginItem.swift */,
+				81B679C12318A792B1DFA689 /* TextRecognizer.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -684,6 +689,7 @@
 				3423B1C0234D8AFF00B40715 /* HistoryItem.swift */,
 				34F1047C23542CCE00B65251 /* HistoryItem+YippyItem.swift */,
 				34CA01FD235D3AE700EB067C /* DataFileManager.swift */,
+				A09A2D3C7841CFB98A6BEDBD /* HistoryItemMetadata.swift */,
 			);
 			path = History;
 			sourceTree = "<group>";
@@ -1148,6 +1154,8 @@
 				34B5C42C23580CC6005247EB /* WarningLogger.swift in Sources */,
 				3488B14022FAE8F30019E7DA /* Constants.swift in Sources */,
 				450DD275E227C6EAC455C70E /* LoginItem.swift in Sources */,
+				764DF3758B5EB4CD5F35E6A2 /* HistoryItemMetadata.swift in Sources */,
+				42B6F2330A4EE1A2D16DADE6 /* TextRecognizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -26,6 +26,7 @@ class PasteboardMonitor {
         self.pasteboard = pasteboard
         self.delegate = delegate
         self.lastChangeCount = changeCount
+        self.frontmostApp = NSWorkspace.shared.frontmostApplication?.bundleIdentifier
         
         // Registers if any application becomes active (or comes frontmost) and calls a method if it's the case.
         // https://stackoverflow.com/a/49402868

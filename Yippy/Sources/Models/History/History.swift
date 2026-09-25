@@ -13,41 +13,44 @@ import RxRelay
 
 /// Representation of all the history
 class History {
-    
+
     private var _items = [HistoryItem]()
-    
+
     /// Behaviour relay for the last change count of the pasteboard.
     /// Private so that it cannot be manipulated outside of the class.
     private var _lastRecordedChangeCount = BehaviorRelay<Int>(value: -1)
-    
+
     /// Observable for the last recorded change count of the pasteboard.
     var observableLastRecordedChangeCount: Observable<Int> {
         return _lastRecordedChangeCount.asObservable()
     }
-    
+
     /// The last change count for which the items on the pasteboard have been added to the history.
     var lastRecordedChangeCount: Int {
         return _lastRecordedChangeCount.value
     }
-    
+
     /// The file manager for the storage of pasteboard history.
     var historyFM: HistoryFileManager
-    
+
+    /// The store for item metadata (copy time, source app, pinned state, recognised text).
+    var metadataStore: HistoryMetadataStore
+
     /// The cache for the history item.
     var cache: HistoryCache
-    
+
     private var _maxItems: BehaviorRelay<Int>
-    
+
     var items: [HistoryItem] {
         get {
             return self._items
         }
     }
-    
+
     var maxItems: Observable<Int> {
         _maxItems.asObservable()
     }
-    
+
     enum Change {
         case initial
         case insert(index: Int)
@@ -55,12 +58,16 @@ class History {
         case clear
         case move(from: Int, to: Int)
         case itemLimitDecreased(deletedItems: [HistoryItem])
+        /// The item's metadata changed, e.g. it was pinned or its text was recognised.
+        case update(index: Int)
     }
-    
+
     typealias SubscribeHandler = ([HistoryItem], Change) -> Void
     private var subscribers = [SubscribeHandler]()
-    
-    private let bundleIdDenylist = [String]()
+
+    /// Copies made while one of these apps is frontmost are not saved.
+    var excludedBundleIds = Set<String>()
+
     /// If a pasteboard item's types contains any of these, it will not be saved.
     private let pasteboardTypeDenylist: Set = [
         "org.nspasteboard.TransientType",
@@ -76,99 +83,179 @@ class History {
     private let pasteboardTypeIgnoreList = Set([
         "dyn.ah62d4rv4gu8zg55zsmv0nvperf4g86varvu0635zqfx0nkdsqf00nkduqf31k3pcr7u1e3basv61a3k",
     ].map({NSPasteboard.PasteboardType(rawValue: $0)}));
-    
-    init(historyFM: HistoryFileManager = .default, cache: HistoryCache, items: [HistoryItem], maxItems: Int = Constants.system.maxHistoryItems) {
+
+    init(historyFM: HistoryFileManager = .default, metadataStore: HistoryMetadataStore = .default, cache: HistoryCache, items: [HistoryItem], maxItems: Int = Constants.system.maxHistoryItems) {
         self.historyFM = historyFM
+        self.metadataStore = metadataStore
         self.cache = cache
         self._items = items
         self._maxItems = BehaviorRelay<Int>(value: maxItems)
-        
-        if items.count > maxItems {
+
+        if unpinnedCount > maxItems {
             reduceHistory(to: maxItems)
         }
     }
-    
+
     static func load(historyFM: HistoryFileManager = .default, cache: HistoryCache) -> History {
-        return historyFM.loadHistory(cache: cache)
+        let history = historyFM.loadHistory(cache: cache)
+        history.restoreMetadata()
+        return history
     }
-    
+
+    /// Applies saved metadata to the loaded items. Items saved before metadata existed use their folder's creation date.
+    private func restoreMetadata() {
+        let stored = metadataStore.load()
+        for item in _items {
+            if let metadata = stored[item.fsId] {
+                item.metadata = metadata
+            }
+            else {
+                let path = historyFM.getUrl(forItemWithId: item.fsId).path
+                let created = (try? FileManager.default.attributesOfItem(atPath: path))?[.creationDate] as? Date
+                item.metadata = HistoryItemMetadata(copiedAt: created ?? Date())
+            }
+        }
+        metadataStore.save(_items)
+    }
+
     func subscribe(onNext: @escaping SubscribeHandler) {
         subscribers.append(onNext)
         onNext(_items, Change.initial)
     }
-    
+
+    private func notify(_ change: Change) {
+        subscribers.forEach({$0(_items, change)})
+    }
+
+    private var unpinnedCount: Int {
+        return _items.reduce(0, { $0 + ($1.metadata.isPinned ? 0 : 1) })
+    }
+
     func insertItem(_ item: HistoryItem, at i: Int) {
         _items.insert(item, at: i)
-        subscribers.forEach({$0(_items, Change.insert(index: i))})
+        notify(.insert(index: i))
         historyFM.insertItem(newHistory: _items, at: i)
-        
-        if _items.count > _maxItems.value {
-            let deletedItem = _items[_items.count - 1]
-            deleteItem(at: _items.count - 1)
-            subscribers.forEach({$0(_items, Change.delete(deletedItem: deletedItem))})
+        metadataStore.save(_items)
+
+        if unpinnedCount > _maxItems.value {
+            reduceHistory(to: _maxItems.value)
         }
     }
-    
+
     func deleteItem(at i: Int) {
         let removed = _items.remove(at: i)
-        subscribers.forEach({$0(_items, Change.delete(deletedItem: removed))})
+        notify(.delete(deletedItem: removed))
         historyFM.deleteItem(newHistory: _items, deleted: removed)
+        metadataStore.save(_items)
     }
-    
+
     func clear() {
-        _items.forEach({$0.stopCaching()})
-        _items = []
-        subscribers.forEach({$0(_items, Change.clear)})
-        historyFM.clearHistory()
+        // Pinned items survive clearing the history.
+        let pinned = _items.filter({ $0.metadata.isPinned })
+        if pinned.isEmpty {
+            _items.forEach({$0.stopCaching()})
+            _items = []
+            notify(.clear)
+            historyFM.clearHistory()
+        }
+        else {
+            let removed = _items.filter({ !$0.metadata.isPinned })
+            _items = pinned
+            notify(.itemLimitDecreased(deletedItems: removed))
+            historyFM.deleteItems(newHistory: _items, deleted: removed)
+        }
+        metadataStore.save(_items)
     }
-    
+
     func moveItem(at i: Int, to j: Int) {
         let item = _items.remove(at: i)
         _items.insert(item, at: j)
-        subscribers.forEach({$0(_items, Change.move(from: i, to: j))})
+        notify(.move(from: i, to: j))
         historyFM.moveItem(newHistory: _items, from: i, to: j)
     }
-    
+
+    func setPinned(_ isPinned: Bool, forItemAt i: Int) {
+        guard _items[i].metadata.isPinned != isPinned else { return }
+        _items[i].metadata.isPinned = isPinned
+        notify(.update(index: i))
+        metadataStore.save(_items)
+
+        if !isPinned && unpinnedCount > _maxItems.value {
+            reduceHistory(to: _maxItems.value)
+        }
+    }
+
+    func setRecognizedText(_ text: String, for item: HistoryItem) {
+        guard let i = _items.firstIndex(of: item) else { return }
+        item.metadata.recognizedText = text
+        notify(.update(index: i))
+        metadataStore.save(_items)
+    }
+
     func recordPasteboardChange(withCount changeCount: Int) {
         _lastRecordedChangeCount.accept(changeCount)
     }
-    
+
     func setMaxItems(_ maxItems: Int) {
         if maxItems < _maxItems.value {
             reduceHistory(to: maxItems)
         }
         _maxItems.accept(maxItems)
     }
-    
+
+    /// Removes the oldest unpinned items until there are at most `maxItems` unpinned items.
     private func reduceHistory(to maxItems: Int) {
-        guard _items.count > maxItems else {
+        var excess = unpinnedCount - maxItems
+        guard excess > 0 else {
             return;
         }
-        historyFM.reduce(oldHistory: _items, toSize: maxItems)
-        let deletedItems = Array(_items.suffix(_items.count - maxItems))
-        _items = Array(_items.prefix(maxItems))
-        subscribers.forEach({$0(_items, Change.itemLimitDecreased(deletedItems: deletedItems))})
+        var deletedItems = [HistoryItem]()
+        for i in _items.indices.reversed() where excess > 0 && !_items[i].metadata.isPinned {
+            deletedItems.append(_items.remove(at: i))
+            excess -= 1
+        }
+        historyFM.deleteItems(newHistory: _items, deleted: deletedItems)
+        metadataStore.save(_items)
+        notify(.itemLimitDecreased(deletedItems: deletedItems))
+    }
+
+    /// Recognises text in image items that haven't been processed yet, one at a time in the background.
+    func recognizeTextInExistingImages() {
+        let pending = _items.filter({ $0.kind == .image && $0.metadata.recognizedText == nil })
+        Task { @MainActor in
+            for item in pending {
+                guard let text = await TextRecognizer.recognizeText(in: item) else { continue }
+                setRecognizedText(text, for: item)
+            }
+        }
     }
 }
 
 extension History: PasteboardMonitorDelegate {
-    
+
     func pasteboardDidChange(_ pasteboard: NSPasteboard, originBundleId: String?) {
         // Check if we made this pasteboard change, if so, ignore
         if pasteboard.changeCount == lastRecordedChangeCount {
             return
         }
-        
+
+        // Save pasteboard change count
+        defer { recordPasteboardChange(withCount: pasteboard.changeCount) }
+
+        if let origin = originBundleId, excludedBundleIds.contains(origin) {
+            return
+        }
+
         // Check there are items on the pasteboard
         guard let items = pasteboard.pasteboardItems else {
             return
         }
-        
+
         for item in items {
             let filteredTypes = Set(item.types).subtracting(self.pasteboardTypeIgnoreList)
             let hasTypes = !filteredTypes.isEmpty
             let hasNoDeniedTypes = Set(filteredTypes.map({ $0.rawValue })).isDisjoint(with: pasteboardTypeDenylist)
-            
+
             if hasTypes && hasNoDeniedTypes {
                 var data = [NSPasteboard.PasteboardType: Data]()
                 for type in filteredTypes {
@@ -185,12 +272,18 @@ extension History: PasteboardMonitorDelegate {
                 }
                 if !data.isEmpty {
                     let historyItem = HistoryItem(unsavedData: data, cache: cache)
+                    historyItem.metadata = HistoryItemMetadata(copiedAt: Date(), sourceBundleId: originBundleId)
                     insertItem(historyItem, at: 0)
+
+                    if historyItem.kind == .image {
+                        Task { @MainActor in
+                            if let text = await TextRecognizer.recognizeText(in: historyItem) {
+                                self.setRecognizedText(text, for: historyItem)
+                            }
+                        }
+                    }
                 }
             }
         }
-        
-        // Save pasteboard change count
-        recordPasteboardChange(withCount: pasteboard.changeCount)
     }
 }
