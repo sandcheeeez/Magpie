@@ -71,3 +71,4 @@ build-snap
 build-test
 build-signed
 .backups/
+.DS_Store
