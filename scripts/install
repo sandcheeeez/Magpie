@@ -1,0 +1,14 @@
+#!/bin/bash
+set -o pipefail
+cd "$(dirname "$0")/.."
+export LANG=en_US.UTF-8
+# Builds a signed Release, replaces /Applications/Magpie.app and relaunches it.
+xcodebuild -project Magpie.xcodeproj -scheme Magpie -configuration Release -destination 'generic/platform=macOS' -derivedDataPath build-signed -allowProvisioningUpdates build 2>&1 \
+  | grep -E "error:|\*\* BUILD" | grep -v "^ *\/" | sort -u | head -30
+APP=build-signed/Build/Products/Release/Magpie.app
+[ -d "$APP" ] || exit 1
+osascript -e 'tell application id "com.sandcheeeez.Magpie" to quit' 2>/dev/null
+for i in 1 2 3 4 5 6; do pgrep -x Magpie >/dev/null || break; sleep 1; done
+pkill -x Magpie 2>/dev/null
+rm -rf /Applications/Magpie.app && ditto "$APP" /Applications/Magpie.app && open /Applications/Magpie.app
+sleep 3; pgrep -x Magpie >/dev/null && echo "Magpie installed and running"

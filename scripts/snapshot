@@ -1,0 +1,13 @@
+#!/bin/bash
+set -o pipefail
+cd "$(dirname "$0")/.."
+export LANG=en_US.UTF-8
+# Renders the panel and settings with sample data (XCTest build, isolated data) into PNGs in $1.
+OUT="${1:?usage: scripts/snapshot <output dir>}"
+xcodebuild -project Magpie.xcodeproj -scheme Magpie -configuration XCTest -destination 'generic/platform=macOS' -derivedDataPath build-snap CODE_SIGNING_ALLOWED=NO build 2>&1 \
+  | grep -E "error:|BUILD FAILED" | grep -v "^ *\/" | sort -u | head -30
+APP=build-snap/Build/Products/XCTest/Magpie.app
+codesign --force --deep -s - "$APP" >/dev/null 2>&1
+rm -rf "$OUT"; "$APP/Contents/MacOS/Magpie" --snapshot="$OUT" >/dev/null 2>&1 &
+PID=$!; for i in $(seq 1 30); do kill -0 $PID 2>/dev/null || break; sleep 0.5; done; kill $PID 2>/dev/null
+ls "$OUT"

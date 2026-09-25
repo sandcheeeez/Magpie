@@ -1,0 +1,8 @@
+#!/bin/bash
+# Adds, removes or renames files in Magpie.xcodeproj, keeping git in sync.
+#   scripts/xcodeproj add <path>...        (TARGET=MagpieTests for test files)
+#   scripts/xcodeproj remove <path>...
+#   scripts/xcodeproj rename <old> <new>   (same folder)
+# Uses the xcodeproj gem that ships with Homebrew's CocoaPods (brew install cocoapods).
+cd "$(dirname "$0")/.."
+GEM_HOME="$(brew --prefix cocoapods)/libexec" exec ruby scripts/xcodeproj.rb "$@"

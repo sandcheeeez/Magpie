@@ -1,0 +1,7 @@
+#!/bin/bash
+set -o pipefail
+cd "$(dirname "$0")/.."
+export LANG=en_US.UTF-8
+# Quick unsigned Release build; prints only errors and the result.
+xcodebuild -project Magpie.xcodeproj -scheme Magpie -configuration Release -destination 'generic/platform=macOS' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build 2>&1 \
+  | grep -E "error:|\*\* BUILD" | grep -v "^ *\/" | sed 's|^.*/Magpie/Sources/|Magpie/Sources/|' | sort -u | head -40

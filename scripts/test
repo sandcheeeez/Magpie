@@ -1,0 +1,7 @@
+#!/bin/bash
+set -o pipefail
+cd "$(dirname "$0")/.."
+export LANG=en_US.UTF-8
+# Runs the unit tests (not the UI tests); prints failures and the summary. Times out after 5 minutes.
+perl -e "alarm 300; exec @ARGV" xcodebuild -project Magpie.xcodeproj -scheme "Magpie XCTest" -destination 'platform=macOS,arch=arm64' -derivedDataPath build-test -allowProvisioningUpdates test -only-testing:MagpieTests 2>&1 \
+  | grep -E "error:|✘|recorded an issue|Expectation failed|failed \(|Test run with|\*\* TEST" | grep -v "^ *\/" | head -60
