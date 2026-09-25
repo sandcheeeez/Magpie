@@ -207,8 +207,52 @@ struct PrivacySettingsView: View {
                 Text("Items that apps mark as passwords or temporary are never saved, whatever app they come from.")
                     .foregroundStyle(.secondary)
             }
+
+            AssistantAccessSection(state: model.state)
         }
         .formStyle(.grouped)
+    }
+}
+
+/// Opt-in access for AI assistants through Magpie's local MCP server.
+private struct AssistantAccessSection: View {
+
+    @Bindable var state: AppState
+    @State private var copied = false
+
+    private var command: String {
+        let executable = Bundle.main.executablePath ?? "/Applications/Magpie.app/Contents/MacOS/Magpie"
+        return "claude mcp add magpie -- \"\(executable)\" --mcp"
+    }
+
+    var body: some View {
+        Section {
+            Toggle("Let AI assistants read your history", isOn: $state.allowsAssistantAccess)
+            if state.allowsAssistantAccess {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Connect Claude Code by running:")
+                    HStack(alignment: .top) {
+                        Text(command)
+                            .font(.system(.caption, design: .monospaced))
+                            .textSelection(.enabled)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Button(copied ? "Copied" : "Copy") {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(command, forType: .string)
+                            copied = true
+                        }
+                    }
+                    Text("Other assistants that support MCP can run the same command, `Magpie --mcp`.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text("Assistant access")
+        } footer: {
+            Text("Assistants you connect can list, search and read your history, including recognised text in images. Access is read-only and runs locally through MCP; nothing is sent over the network by Magpie. Excluded apps and password copies are never saved, so they can't be read.")
+                .foregroundStyle(.secondary)
+        }
     }
 }
 

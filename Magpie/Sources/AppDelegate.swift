@@ -6,7 +6,6 @@
 import Cocoa
 import HotKey
 
-@NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     
 

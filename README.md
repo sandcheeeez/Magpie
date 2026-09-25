@@ -28,6 +28,18 @@ Clipboard history is sensitive, so Magpie keeps it on your Mac:
 - **Stored locally.** History lives in a SwiftData store in `~/Library/Application Support/com.sandcheeeez.Magpie`. There is no sync yet; if iCloud sync is added, it will only ever use your own iCloud account.
 - **Sensitive copies are skipped.** Items that apps mark as passwords or temporary (`org.nspasteboard.ConcealedType` and similar) are never saved, and nothing is saved from excluded apps (password managers by default; configurable in Settings → Privacy).
 
+## Using your clipboard with AI assistants (MCP)
+
+Magpie includes a local [MCP](https://modelcontextprotocol.io) server, so assistants such as Claude Code can list, search and read your clipboard history. It's **off by default**:
+
+1. Turn on **Settings → Privacy → Let AI assistants read your history**.
+2. Connect Claude Code:
+   ```
+   claude mcp add magpie -- /Applications/Magpie.app/Contents/MacOS/Magpie --mcp
+   ```
+
+The server runs only when an assistant launches it, talks to it over stdin/stdout (no network port), opens the history read-only, and can only return what Magpie saved. Excluded apps and password copies are never saved. Tools: `list_clipboard_history`, `search_clipboard_history`, `get_clipboard_item`.
+
 ## Keyboard shortcuts
 
 | Action | Shortcut |

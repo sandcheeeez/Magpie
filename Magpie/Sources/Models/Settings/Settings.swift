@@ -84,6 +84,9 @@ struct Settings: Codable, Equatable {
     /// Bundle ids of apps whose copies are never saved to the history.
     var excludedBundleIds = Settings.defaultExcludedBundleIds
     
+    /// Whether AI assistants connected through `Magpie --mcp` may read the history. Off by default.
+    var allowsAssistantAccess = false
+    
     
     // MARK: - Decoding
     
@@ -98,6 +101,7 @@ struct Settings: Codable, Equatable {
         showsRichText = try container.decodeIfPresent(Bool.self, forKey: .showsRichText) ?? defaults.showsRichText
         pastesRichText = try container.decodeIfPresent(Bool.self, forKey: .pastesRichText) ?? defaults.pastesRichText
         excludedBundleIds = try container.decodeIfPresent([String].self, forKey: .excludedBundleIds) ?? defaults.excludedBundleIds
+        allowsAssistantAccess = try container.decodeIfPresent(Bool.self, forKey: .allowsAssistantAccess) ?? defaults.allowsAssistantAccess
     }
 }
 

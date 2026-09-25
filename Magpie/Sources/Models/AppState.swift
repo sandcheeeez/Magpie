@@ -49,6 +49,11 @@ class AppState {
         }
     }
     
+    /// Whether AI assistants connected through `Magpie --mcp` may read the history.
+    var allowsAssistantAccess: Bool {
+        didSet { Settings.main.allowsAssistantAccess = allowsAssistantAccess }
+    }
+    
     /// The most unpinned items the history keeps.
     var maxHistory: Int {
         didSet { history.setMaxItems(maxHistory) }
@@ -70,6 +75,7 @@ class AppState {
         pastesRichText = settings.pastesRichText
         excludedBundleIds = settings.excludedBundleIds
         maxHistory = settings.maxHistory
+        allowsAssistantAccess = settings.allowsAssistantAccess
         HistoryItem.pastesRichText = settings.pastesRichText
         
         // Setup history

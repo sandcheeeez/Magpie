@@ -104,7 +104,8 @@ final class ClipRepresentation {
 /// Creates the SwiftData container for the history.
 enum HistoryStore {
     
-    static func makeContainer(inMemory: Bool = false) throws -> ModelContainer {
+    /// - Parameter readOnly: Open without saving, for readers such as the MCP server that run alongside the app.
+    static func makeContainer(inMemory: Bool = false, readOnly: Bool = false) throws -> ModelContainer {
         let schema = Schema([ClipItem.self, ClipRepresentation.self])
         let configuration: ModelConfiguration
         if inMemory {
@@ -112,7 +113,7 @@ enum HistoryStore {
         }
         else {
             try FileManager.default.createDirectory(at: Constants.urls.magpieAppSupport, withIntermediateDirectories: true)
-            configuration = ModelConfiguration(schema: schema, url: Constants.urls.historyStore)
+            configuration = ModelConfiguration(schema: schema, url: Constants.urls.historyStore, allowsSave: !readOnly)
         }
         return try ModelContainer(for: schema, configurations: [configuration])
     }
