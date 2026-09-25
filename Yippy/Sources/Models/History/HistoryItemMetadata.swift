@@ -33,6 +33,7 @@ class HistoryMetadataStore {
 
     private let queue = DispatchQueue(label: "HistoryMetadataStoreQueue", qos: .utility)
     private var pendingSave: DispatchWorkItem?
+    private var pendingSnapshot: [String: HistoryItemMetadata]?
 
     init(url: URL) {
         self.url = url
@@ -43,7 +44,12 @@ class HistoryMetadataStore {
             return [:]
         }
         do {
-            return try Self.decoder.decode([UUID: HistoryItemMetadata].self, from: data)
+            let byId = try Self.decoder.decode([String: HistoryItemMetadata].self, from: data)
+            return Dictionary(uniqueKeysWithValues: byId.compactMap({ key, value in UUID(uuidString: key).map({ ($0, value) }) }))
+        }
+        catch where (try? Self.decoder.decode([UUID: HistoryItemMetadata].self, from: data)) != nil {
+            // Early builds encoded `[UUID: _]`, which JSONEncoder writes as a flat key/value array.
+            return (try? Self.decoder.decode([UUID: HistoryItemMetadata].self, from: data)) ?? [:]
         }
         catch {
             YippyWarning(localizedDescription: "Failed to read history metadata: \(error.localizedDescription)").log(with: WarningLogger.general)
@@ -53,8 +59,9 @@ class HistoryMetadataStore {
 
     /// Saves the metadata of `items`, coalescing saves that happen in quick succession.
     func save(_ items: [HistoryItem]) {
-        let snapshot = Dictionary(uniqueKeysWithValues: items.map({ ($0.fsId, $0.metadata) }))
+        let snapshot = Dictionary(uniqueKeysWithValues: items.map({ ($0.fsId.uuidString, $0.metadata) }))
         pendingSave?.cancel()
+        pendingSnapshot = snapshot
         let work = DispatchWorkItem { [url] in
             Self.write(snapshot, to: url)
         }
@@ -64,14 +71,16 @@ class HistoryMetadataStore {
 
     /// Writes any pending save immediately. Call before the app terminates.
     func flush() {
-        guard let work = pendingSave else { return }
+        guard let snapshot = pendingSnapshot else { return }
+        pendingSave?.cancel()
         pendingSave = nil
-        work.cancel()
-        queue.sync {}
-        work.perform()
+        pendingSnapshot = nil
+        queue.sync {
+            Self.write(snapshot, to: url)
+        }
     }
 
-    private static func write(_ metadata: [UUID: HistoryItemMetadata], to url: URL) {
+    private static func write(_ metadata: [String: HistoryItemMetadata], to url: URL) {
         do {
             try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
             try encoder.encode(metadata).write(to: url, options: .atomic)
@@ -84,6 +93,7 @@ class HistoryMetadataStore {
     private static let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = .sortedKeys
         return encoder
     }()
 
