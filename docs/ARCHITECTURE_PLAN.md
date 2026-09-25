@@ -57,6 +57,6 @@ Work happens on `main` in small commits. Each checked step has been built and co
 - [x] **Filters.** A Code chip, plus a Tags menu listing the tags present in the history.
 - [x] **Unlimited history.** Add an "Unlimited" option to the history size.
 - [x] **Storage settings.** Show total size, a breakdown by kind, and the largest items with delete buttons, plus bulk clearing per kind. Pinned items are protected.
-- [ ] **Privacy.** Remove the unused WebKit-backed HTML parsing and the old website link. Add a test that fails if network APIs appear in the app. Document the local-only guarantee.
+- [x] **Privacy.** Remove the unused WebKit-backed HTML parsing and the old website link. Add a test that fails if network APIs appear in the app. Document the local-only guarantee.
 - [ ] **MCP server.** `Magpie --mcp` speaks MCP over stdio and reads the history store read-only. It is off until enabled in Settings, runs locally only, and only returns what Magpie already stored (excluded and concealed items never exist).
 - [ ] **UI tests.** Update `MagpieUITests` for the current UI.

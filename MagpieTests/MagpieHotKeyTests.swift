@@ -77,12 +77,12 @@ class MagpieHotKeyTests: XCTestCase {
         magpieHotKey.longPressMinInterval = 0.1
         
         // 2. When we have a long press event
-        // 0.5 + 0.25 + 0.125 + 0.1 = 0.975 => 4
-        // ROund to 0.98 to be safe
-        hotKey.simulateKeyPress(for: 0.98)
+        // Fires at 0.5, 0.75, 0.875 and 0.975s; the next would be at 1.075s.
+        // Release midway between, so timer jitter under load can't change the count.
+        hotKey.simulateKeyPress(for: 1.025)
         
         // 3. Then the handler should be called multiple times
-        waitForExpectations(timeout: 1.1, handler: nil)
+        waitForExpectations(timeout: 2, handler: nil)
     }
 }
 

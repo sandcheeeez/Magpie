@@ -10,12 +10,23 @@ A fast, keyboard-first clipboard manager for macOS. Magpie keeps everything you 
 
 - **Native on Apple silicon**, with a Liquid Glass panel that slides in from any screen edge or floats in the centre
 - **Pinned items** that are never trimmed from history and survive Clear History (⌘P)
-- **Filters** for pinned items, text, links, images, files and colours (⌘← / ⌘→)
+- **Filters** for pinned items, text, code, links, images, files and colours (⌘← / ⌘→), plus automatic **tags** for code languages, emails, phone numbers and addresses
+- **Code detection** with the language (Swift, Python, JavaScript, TypeScript, Shell, SQL, HTML, CSS, JSON, Go, Rust, C/C++, Java), and **colour detection** for `#hex`, `rgb()` and `hsl()` text
+- **Storage overview** showing space used by type and the largest items, with unlimited history available
 - **Ranked search** across text, file names, the app something was copied from, and **text inside images**, recognised on-device with Vision
 - **Source app and time** shown on every item
 - **Paste as plain text** (⌥↩). For images, this pastes the recognised text
 - **Excluded apps**: nothing copied from them is saved. Password managers are excluded by default, and anything an app marks as a password or temporary is never saved
 - **Right-click actions**: paste, paste as plain text, pin, preview, copy recognised text, open link, show in Finder, delete
+
+## Privacy
+
+Clipboard history is sensitive, so Magpie keeps it on your Mac:
+
+- **No network access.** Magpie makes no network requests: no analytics, no update checks, no link previews. A test (`PrivacyTests`) fails the build if networking APIs are ever added to the app.
+- **On-device processing.** Text recognition in images (Vision), code and colour detection, and tagging all run locally.
+- **Stored locally.** History lives in a SwiftData store in `~/Library/Application Support/com.sandcheeeez.Magpie`. There is no sync yet; if iCloud sync is added, it will only ever use your own iCloud account.
+- **Sensitive copies are skipped.** Items that apps mark as passwords or temporary (`org.nspasteboard.ConcealedType` and similar) are never saved, and nothing is saved from excluded apps (password managers by default; configurable in Settings → Privacy).
 
 ## Keyboard shortcuts
 

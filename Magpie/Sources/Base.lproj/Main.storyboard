@@ -1023,9 +1023,7 @@
                                                 <fragment>
                                                     <string key="content">Magpie is developed by sandcheeeez. It is based on Magpie by Matthew Davidson, used under the MIT License.
 
-Source code available at: https://github.com/sandcheeeez/Magpie
-
-Website: https://yippy.mattdavo.com</string>
+Source code available at: https://github.com/sandcheeeez/Magpie</string>
                                                     <attributes>
                                                         <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                         <font key="NSFont" metaFont="system"/>
