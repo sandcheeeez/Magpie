@@ -100,6 +100,26 @@ class HistoryItem: NSObject {
     }
     
     
+    /// A short one-line description, e.g. for lists in Settings.
+    var displayTitle: String {
+        switch kind {
+        case .file:
+            return getFileUrl()?.lastPathComponent ?? "File"
+        case .image:
+            if let text = recognizedText?.split(separator: "\n").first, !text.isEmpty {
+                return "Image: \(text)"
+            }
+            return "Image"
+        case .color:
+            return getPlainString()?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "Colour"
+        case .text, .code, .link:
+            let text = HistoryItemText.getString(forItem: self)
+            let line = text.split(whereSeparator: \.isNewline).first.map(String.init) ?? text
+            return String(line.trimmingCharacters(in: .whitespaces).prefix(80))
+        }
+    }
+    
+    
     // MARK: - Data
 
     /// Returns the data for given type, or `nil` if the item doesn't have it or has been removed.

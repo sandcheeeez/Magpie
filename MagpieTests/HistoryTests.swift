@@ -71,6 +71,29 @@ import SwiftData
         #expect(strings(history) == ["4", "3", "1"])
     }
     
+    @Test func unlimitedHistoryKeepsEverything() {
+        history.setMaxItems(Constants.settings.unlimitedHistory)
+        for i in 0..<150 {
+            history.insert(data: text("\(i)"), sourceBundleId: nil)
+        }
+        #expect(history.items.count == 150)
+    }
+    
+    @Test func specificItemsCanBeDeleted() {
+        let a = history.insert(data: text("a"), sourceBundleId: nil)
+        history.insert(data: text("b"), sourceBundleId: nil)
+        let c = history.insert(data: text("c"), sourceBundleId: nil)
+        history.delete(items: [a, c])
+        
+        #expect(strings(history) == ["b"])
+        #expect(a.isRemoved && c.isRemoved)
+    }
+    
+    @Test func sizeIsRecorded() {
+        let item = history.insert(data: [.string: Data("hello".utf8), .rtf: Data(count: 100)], sourceBundleId: nil)
+        #expect(item.byteCount == 105)
+    }
+    
     @Test func clearKeepsPinnedItems() {
         history.insert(data: text("keep"), sourceBundleId: nil)
         history.setPinned(true, forItemAt: 0)

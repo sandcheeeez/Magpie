@@ -55,8 +55,8 @@ Work happens on `main` in small commits. Each checked step has been built and co
 - [x] **Content analysis.** A single `ClipAnalyzer` works out kind, tags and stats when an item is copied. Kinds gain `code`, and text such as `#598CF2` / `rgb(…)` / `hsl(…)` counts as a colour. Tags cover the code language, email, phone, address and date. Stored items are re-analysed whenever the analyser version increases.
 - [x] **Footer details.** Character count for text, and the language for code.
 - [x] **Filters.** A Code chip, plus a Tags menu listing the tags present in the history.
-- [ ] **Unlimited history.** Add an "Unlimited" option to the history size.
-- [ ] **Storage settings.** Show total size, a breakdown by kind, and the largest items with delete buttons, plus bulk clearing per kind. Pinned items are protected.
+- [x] **Unlimited history.** Add an "Unlimited" option to the history size.
+- [x] **Storage settings.** Show total size, a breakdown by kind, and the largest items with delete buttons, plus bulk clearing per kind. Pinned items are protected.
 - [ ] **Privacy.** Remove the unused WebKit-backed HTML parsing and the old website link. Add a test that fails if network APIs appear in the app. Document the local-only guarantee.
 - [ ] **MCP server.** `Magpie --mcp` speaks MCP over stdio and reads the history store read-only. It is off until enabled in Settings, runs locally only, and only returns what Magpie already stored (excluded and concealed items never exist).
 - [ ] **UI tests.** Update `MagpieUITests` for the current UI.

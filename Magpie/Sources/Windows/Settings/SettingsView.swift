@@ -93,7 +93,9 @@ struct GeneralSettingsView: View {
             }
             Section {
                 Picker("Keep up to", selection: $state.maxHistory) {
-                    ForEach(Constants.settings.maxHistoryItemsOptions, id: \.self) { Text("\($0) items").tag($0) }
+                    ForEach(Constants.settings.maxHistoryItemsOptions, id: \.self) { option in
+                        Text(option == Constants.settings.unlimitedHistory ? "Unlimited" : "\(option.formatted()) items").tag(option)
+                    }
                 }
             } header: {
                 Text("History")
@@ -207,5 +209,134 @@ struct PrivacySettingsView: View {
             }
         }
         .formStyle(.grouped)
+    }
+}
+
+
+/// Space used by the history, for the Storage settings.
+@Observable
+final class StorageModel {
+    
+    struct KindUsage: Identifiable {
+        let kind: HistoryItemKind
+        let count: Int
+        let bytes: Int
+        var id: HistoryItemKind { kind }
+    }
+    
+    private(set) var totalBytes = 0
+    private(set) var itemCount = 0
+    private(set) var byKind = [KindUsage]()
+    private(set) var largest = [HistoryItem]()
+    
+    @ObservationIgnored private let history = AppState.main.history!
+    
+    init() {
+        refresh()
+        // Keep the numbers current while the window is open, e.g. as new items are copied.
+        history.subscribe { [weak self] _, _ in self?.refresh() }
+    }
+    
+    func refresh() {
+        let items = history.items
+        totalBytes = items.reduce(0, { $0 + $1.byteCount })
+        itemCount = items.count
+        byKind = Dictionary(grouping: items, by: \.kind)
+            .map({ KindUsage(kind: $0.key, count: $0.value.count, bytes: $0.value.reduce(0, { $0 + $1.byteCount })) })
+            .sorted(by: { $0.bytes > $1.bytes })
+        largest = Array(items.sorted(by: { $0.byteCount > $1.byteCount }).prefix(15))
+    }
+    
+    func delete(_ item: HistoryItem) {
+        history.delete(items: [item])
+    }
+    
+    /// Deletes all unpinned items of a kind.
+    func clear(_ kind: HistoryItemKind) {
+        history.delete(items: history.items.filter({ $0.kind == kind && !$0.isPinned }))
+    }
+    
+    static func format(_ bytes: Int) -> String {
+        return ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .file)
+    }
+}
+
+struct StorageSettingsView: View {
+    
+    @State private var model = StorageModel()
+    @State private var kindToClear: HistoryItemKind?
+    
+    var body: some View {
+        Form {
+            Section {
+                LabeledContent("History") {
+                    Text("\(StorageModel.format(model.totalBytes)) in \(model.itemCount.formatted()) items")
+                }
+                LabeledContent("Location") {
+                    Button("Show in Finder") {
+                        NSWorkspace.shared.activateFileViewerSelecting([Constants.urls.historyStore])
+                    }
+                }
+            } footer: {
+                Text("Your history is stored only on this Mac. Magpie never sends it anywhere.")
+                    .foregroundStyle(.secondary)
+            }
+            
+            Section("By type") {
+                ForEach(model.byKind) { usage in
+                    LabeledContent {
+                        HStack {
+                            Text(StorageModel.format(usage.bytes)).monospacedDigit().foregroundStyle(.secondary)
+                            Button("Clear…") { kindToClear = usage.kind }
+                        }
+                    } label: {
+                        Label("\(HistoryFilter.kind(usage.kind).title) (\(usage.count.formatted()))", systemImage: HistoryFilter.kind(usage.kind).symbolName)
+                    }
+                }
+            }
+            
+            Section {
+                ForEach(model.largest, id: \.id) { item in
+                    HStack(spacing: 8) {
+                        Image(systemName: HistoryFilter.kind(item.kind).symbolName)
+                            .frame(width: 18)
+                            .foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(item.displayTitle).lineLimit(1)
+                            Text(item.copiedAt, style: .date).font(.caption).foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Text(StorageModel.format(item.byteCount)).monospacedDigit().foregroundStyle(.secondary)
+                        if item.isPinned {
+                            Image(systemName: "pin.fill").foregroundStyle(.orange).help("Pinned items are kept. Unpin it to delete it.")
+                        }
+                        else {
+                            Button {
+                                model.delete(item)
+                            } label: {
+                                Image(systemName: "trash")
+                            }
+                            .buttonStyle(.borderless)
+                            .help("Delete this item")
+                        }
+                    }
+                }
+            } header: {
+                Text("Largest items")
+            }
+        }
+        .formStyle(.grouped)
+        .onAppear { model.refresh() }
+        .confirmationDialog(
+            "Delete all \(kindToClear.map({ HistoryFilter.kind($0).title.lowercased() }) ?? "") from your history?",
+            isPresented: Binding(get: { kindToClear != nil }, set: { if !$0 { kindToClear = nil } })
+        ) {
+            Button("Delete", role: .destructive) {
+                if let kind = kindToClear { model.clear(kind) }
+                kindToClear = nil
+            }
+        } message: {
+            Text("Pinned items are kept. This can't be undone.")
+        }
     }
 }

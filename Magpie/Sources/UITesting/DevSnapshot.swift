@@ -45,10 +45,17 @@ enum DevSnapshot {
             NSApp.appearance = NSAppearance(named: .aqua)
             Controller.main.showSettings()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                if let view = Controller.main.settingsWindowController.window?.contentView {
+                let settingsWindow = Controller.main.settingsWindowController.window
+                if let view = settingsWindow?.contentView {
                     renderView(view, to: outputDirectory.appendingPathComponent("settings.png"))
                 }
-                NSApp.terminate(nil)
+                (settingsWindow?.contentViewController as? NSTabViewController)?.selectedTabViewItemIndex = 3
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                    if let view = settingsWindow?.contentView {
+                        renderView(view, to: outputDirectory.appendingPathComponent("settings-storage.png"))
+                    }
+                    NSApp.terminate(nil)
+                }
             }
         }
     }

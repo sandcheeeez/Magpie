@@ -16,6 +16,7 @@ class SettingsWindowController: NSWindowController {
         tabs.addTabViewItem(tab("General", symbol: "gearshape", view: GeneralSettingsView(model: model)))
         tabs.addTabViewItem(tab("Shortcuts", symbol: "command", view: ShortcutsSettingsView(model: model)))
         tabs.addTabViewItem(tab("Privacy", symbol: "hand.raised", view: PrivacySettingsView(model: model)))
+        tabs.addTabViewItem(tab("Storage", symbol: "internaldrive", view: StorageSettingsView()))
         
         let window = NSWindow(contentViewController: tabs)
         window.styleMask = [.titled, .closable]

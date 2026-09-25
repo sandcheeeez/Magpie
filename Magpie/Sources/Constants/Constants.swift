@@ -70,7 +70,10 @@ struct Constants {
     
     struct settings {
         
-        static let maxHistoryItemsOptions = [50, 100, 200, 500, 750, 1000, 1500]
+        /// `maxHistory` value meaning the history is never trimmed.
+        static let unlimitedHistory = Int.max
+        
+        static let maxHistoryItemsOptions = [50, 100, 200, 500, 750, 1000, 1500, 2500, 5000, 10000, unlimitedHistory]
         
         static let maxHistoryItemsDefaultIndex = 3
         

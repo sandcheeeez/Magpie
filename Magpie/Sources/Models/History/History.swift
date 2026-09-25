@@ -151,6 +151,17 @@ class History {
         notify(.delete(deletedItem: removed))
     }
 
+    /// Deletes specific items, e.g. the largest ones from the Storage settings.
+    func delete(items toDelete: [HistoryItem]) {
+        let ids = Set(toDelete.map(\.id))
+        let removed = _items.filter({ ids.contains($0.id) })
+        guard !removed.isEmpty else { return }
+        _items.removeAll(where: { ids.contains($0.id) })
+        delete(removed)
+        save()
+        notify(.itemLimitDecreased(deletedItems: removed))
+    }
+    
     /// Removes everything except pinned items.
     func clear() {
         let removed = _items.filter({ !$0.isPinned })
