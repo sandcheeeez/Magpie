@@ -28,6 +28,8 @@ class YippyItemBaseCellView: NSTableCellView {
     }
 
     var cardView: NSView!
+    /// Draws the card's outline above the content, so edge-to-edge content like images can't cover the selection border.
+    private var borderView: PassthroughView!
     var contentView: YippyItemContentView!
     var shortcutTextView: YippyItemCellTextView!
     var itemTextView: YippyItemCellTextView!
@@ -54,8 +56,8 @@ class YippyItemBaseCellView: NSTableCellView {
             cardView.layer?.backgroundColor = (isSelected
                 ? accent.withAlphaComponent(0.14)
                 : NSColor.textBackgroundColor.withAlphaComponent(0.55)).cgColor
-            cardView.layer?.borderColor = (isSelected ? accent : NSColor.separatorColor.withAlphaComponent(0.25)).cgColor
-            cardView.layer?.borderWidth = isSelected ? 2 : 1
+            borderView.layer?.borderColor = (isSelected ? accent : NSColor.separatorColor.withAlphaComponent(0.25)).cgColor
+            borderView.layer?.borderWidth = isSelected ? 2 : 1
             shortcutTextView.backgroundColor = isSelected ? accent : NSColor.tertiarySystemFill
             shortcutTextView.textColor = isSelected ? .white : .secondaryLabelColor
         }
@@ -103,6 +105,12 @@ class YippyItemBaseCellView: NSTableCellView {
         itemTextView.drawsBackground = false
         itemTextView.setAccessibilityIdentifier(Accessibility.identifiers.yippyItemTextView)
 
+        borderView = PassthroughView(frame: .zero)
+        borderView.wantsLayer = true
+        borderView.layer?.cornerRadius = Self.cardCornerRadius
+        borderView.layer?.cornerCurve = .continuous
+        addSubview(borderView, positioned: .above, relativeTo: contentView)
+        
         setupCardView()
         setupContentView()
         setupShortcutTextView()
@@ -117,6 +125,13 @@ class YippyItemBaseCellView: NSTableCellView {
             cardView.topAnchor.constraint(equalTo: topAnchor, constant: Self.cardInsets.top),
             trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: Self.cardInsets.right),
             bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: Self.cardInsets.bottom),
+        ])
+        borderView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            borderView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
+            borderView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
+            borderView.topAnchor.constraint(equalTo: cardView.topAnchor),
+            borderView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor),
         ])
     }
 
@@ -234,6 +249,14 @@ class YippyItemBaseCellView: NSTableCellView {
             shortcutTextView.constraint(withIdentifier: "width")?.constant = 0
         }
         applyColors()
+    }
+}
+
+/// A view that ignores the mouse, so clicks and drags reach the views underneath.
+class PassthroughView: NSView {
+    
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        return nil
     }
 }
 

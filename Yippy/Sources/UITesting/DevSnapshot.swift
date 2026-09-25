@@ -33,6 +33,8 @@ enum DevSnapshot {
         }
         
         Controller.main.togglePopover()
+        // Select the image, whose content runs to the card's edges.
+        (Controller.main.yippyWindowController.contentViewController as? YippyViewController)?.selected.accept(3)
         try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
