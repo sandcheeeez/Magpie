@@ -197,6 +197,31 @@ class History {
         notify(.update(index: i))
     }
 
+    /// Keeps an item that looks like a secret, so it's no longer suggested for deletion, or suggests it again.
+    func setSecretDismissed(_ dismissed: Bool, for item: HistoryItem) {
+        guard let i = _items.firstIndex(of: item) else { return }
+        item.secretDismissed = dismissed
+        save()
+        notify(.update(index: i))
+    }
+
+    func setSecretVerdict(_ verdict: Bool?, for item: HistoryItem) {
+        guard let i = _items.firstIndex(of: item) else { return }
+        item.secretVerdict = verdict
+        save()
+        notify(.update(index: i))
+    }
+
+    /// Items Magpie suggests deleting because they look like passwords, tokens or keys.
+    var suggestedSecrets: [HistoryItem] {
+        return _items.filter(\.isSuggestedSecret)
+    }
+
+    /// Deletes confirmed secrets copied before `date`, for automatic deletion. Guesses, pinned items and items the user kept are left alone.
+    func deleteSecrets(copiedBefore date: Date) {
+        delete(items: _items.filter({ $0.isConfirmedSecret && !$0.secretDismissed && !$0.isPinned && $0.copiedAt < date }))
+    }
+
     func recordPasteboardChange(withCount changeCount: Int) {
         lastRecordedChangeCount = changeCount
     }
@@ -266,6 +291,27 @@ class History {
         notify(.itemLimitDecreased(deletedItems: deletedItems))
     }
 
+    private var secretsToReview = [HistoryItem]()
+    private var isReviewingSecrets = false
+
+    /// Asks the on-device model about items that might be secrets, one at a time in the background. Does nothing if the model isn't available.
+    func reviewPossibleSecrets(_ items: [HistoryItem]? = nil) {
+        secretsToReview.append(contentsOf: (items ?? _items).filter(\.needsSecretReview))
+        guard !isReviewingSecrets, !secretsToReview.isEmpty, SecretReviewer.isAvailable else { return }
+        isReviewingSecrets = true
+        Task { @MainActor in
+            while !secretsToReview.isEmpty {
+                let item = secretsToReview.removeFirst()
+                guard !item.isRemoved, item.needsSecretReview,
+                      let text = item.getPlainString() ?? item.getRtfAttributedString()?.string else { continue }
+                if let verdict = await SecretReviewer.containsSecret(text), !item.isRemoved {
+                    setSecretVerdict(verdict, for: item)
+                }
+            }
+            isReviewingSecrets = false
+        }
+    }
+
     /// Recognises text in image items that haven't been processed yet, one at a time in the background.
     func recognizeTextInExistingImages() {
         let pending = _items.filter({ $0.kind == .image && $0.recognizedText == nil })
@@ -319,6 +365,7 @@ extension History: PasteboardMonitorDelegate {
                 }
                 if !data.isEmpty {
                     let historyItem = insert(data: data, sourceBundleId: originBundleId)
+                    reviewPossibleSecrets([historyItem])
 
                     if historyItem.kind == .image {
                         Task { @MainActor in

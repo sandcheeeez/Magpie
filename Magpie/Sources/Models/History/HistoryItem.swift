@@ -51,6 +51,38 @@ class HistoryItem: NSObject {
     let byteCount: Int
 
     let sourceBundleId: String?
+    
+    /// Why the item looks like a password, token or key, if it does.
+    let secretReason: String?
+    
+    /// Whether `secretReason` comes from a known format rather than a guess.
+    let secretIsCertain: Bool
+    
+    /// The on-device model's opinion of a possible secret. `nil` until it has looked. Change it through `History`.
+    var secretVerdict: Bool? {
+        didSet { if !isRemoved { model.secretVerdict = secretVerdict } }
+    }
+    
+    /// The user chose to keep the item although it looks like a secret. Change it through `History`.
+    var secretDismissed: Bool {
+        didSet { if !isRemoved { model.secretDismissed = secretDismissed } }
+    }
+    
+    /// A known format, or a guess the on-device model agreed with.
+    var isConfirmedSecret: Bool {
+        return secretReason != nil && (secretIsCertain || secretVerdict == true)
+    }
+    
+    /// Whether Magpie suggests deleting the item. Guesses are suggested once the model agrees, or straight away if the model isn't available. Pinned and kept items aren't suggested.
+    var isSuggestedSecret: Bool {
+        guard secretReason != nil, !secretDismissed, !isPinned else { return false }
+        return isConfirmedSecret || (secretVerdict == nil && !SecretReviewer.isAvailable)
+    }
+    
+    /// A guess the on-device model hasn't looked at yet.
+    var needsSecretReview: Bool {
+        return secretReason != nil && !secretIsCertain && secretVerdict == nil
+    }
 
     /// Pinned items are never removed when the history exceeds its limit. Change it through `History`.
     var isPinned: Bool {
@@ -88,6 +120,10 @@ class HistoryItem: NSObject {
         self.codeLanguage = model.codeLanguage
         self.byteCount = model.byteCount
         self.sourceBundleId = model.sourceBundleId
+        self.secretReason = model.secretReason
+        self.secretIsCertain = model.secretIsCertain
+        self.secretVerdict = model.secretVerdict
+        self.secretDismissed = model.secretDismissed
         self.isPinned = model.isPinned
         self.recognizedText = model.recognizedText
     }

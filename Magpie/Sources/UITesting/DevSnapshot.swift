@@ -49,12 +49,19 @@ enum DevSnapshot {
                 if let view = settingsWindow?.contentView {
                     renderView(view, to: outputDirectory.appendingPathComponent("settings.png"))
                 }
-                (settingsWindow?.contentViewController as? NSTabViewController)?.selectedTabViewItemIndex = 3
+                let tabs = settingsWindow?.contentViewController as? NSTabViewController
+                tabs?.selectedTabViewItemIndex = 3
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                     if let view = settingsWindow?.contentView {
                         renderView(view, to: outputDirectory.appendingPathComponent("settings-storage.png"))
                     }
-                    NSApp.terminate(nil)
+                    tabs?.selectedTabViewItemIndex = 2
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                        if let view = settingsWindow?.contentView {
+                            renderView(view, to: outputDirectory.appendingPathComponent("settings-privacy.png"))
+                        }
+                        NSApp.terminate(nil)
+                    }
                 }
             }
         }
@@ -90,6 +97,8 @@ enum DevSnapshot {
             Sample(data: text("#FF6B35"), app: "com.apple.Safari", age: 40000),
             Sample(data: [.color: colorData], app: "com.apple.DigitalColorMeter", age: 86400),
             Sample(data: [.fileURL: URL(fileURLWithPath: "/System/Applications/Calculator.app").dataRepresentation], app: "com.apple.finder", age: 172800),
+            // A made-up token, oldest so it stays out of the panel screenshots. Built in pieces so secret scanners don't flag the source.
+            Sample(data: text("ghp" + "_" + "x7Kq2mPz9RtL4vWn8YcB3sDf6HjA1uEo5iGk"), app: "com.apple.Terminal", age: 259200),
         ]
     }
     

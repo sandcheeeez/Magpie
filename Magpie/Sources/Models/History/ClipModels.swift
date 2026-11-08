@@ -47,6 +47,18 @@ final class ClipItem {
     /// Total size of the item's data.
     var byteCount: Int = 0
     
+    /// Why the item looks like a password, token or key, if it does.
+    var secretReason: String?
+    
+    /// Whether `secretReason` comes from a known format rather than a guess.
+    var secretIsCertain: Bool = false
+    
+    /// The on-device model's opinion of a possible secret. `nil` until it has looked.
+    var secretVerdict: Bool?
+    
+    /// The user chose to keep the item although it looks like a secret.
+    var secretDismissed: Bool = false
+    
     /// The `ClipAnalyzer.version` that produced the fields above.
     var analysisVersion: Int = 0
     
@@ -79,6 +91,11 @@ final class ClipItem {
         lineCount = analysis.lineCount
         codeLanguage = analysis.codeLanguage
         byteCount = analysis.byteCount
+        if secretReason != analysis.secret?.reason {
+            secretVerdict = nil
+        }
+        secretReason = analysis.secret?.reason
+        secretIsCertain = analysis.secret?.isCertain ?? false
         analysisVersion = ClipAnalyzer.version
     }
 }

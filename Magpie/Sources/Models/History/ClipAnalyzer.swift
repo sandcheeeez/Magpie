@@ -19,13 +19,15 @@ struct ClipAnalysis: Equatable {
     var codeLanguage: String?
     /// Total size of all the item's pasteboard data.
     var byteCount: Int
+    /// Set if the text looks like a password, token or key.
+    var secret: SecretFinding? = nil
 }
 
 /// Classifies pasteboard data: its kind, tags, code language and size.
 enum ClipAnalyzer {
 
     /// Increase when analysis changes, so stored items are analysed again on the next launch.
-    static let version = 1
+    static let version = 2
 
     static func analyze(_ data: [NSPasteboard.PasteboardType: Data]) -> ClipAnalysis {
         let byteCount = data.values.reduce(0, { $0 + $1.count })
@@ -72,6 +74,7 @@ enum ClipAnalyzer {
         }
 
         analysis.tags = tags(in: text, codeLanguage: analysis.codeLanguage)
+        analysis.secret = SecretDetector.detect(in: text)
         return analysis
     }
 

@@ -172,6 +172,8 @@ struct PrivacySettingsView: View {
 
     var body: some View {
         Form {
+            SensitiveItemsSection(state: model.state)
+
             Section {
                 List(selection: $selection) {
                     ForEach(model.state.excludedBundleIds, id: \.self) { bundleId in
@@ -211,6 +213,102 @@ struct PrivacySettingsView: View {
             AssistantAccessSection(state: model.state)
         }
         .formStyle(.grouped)
+    }
+}
+
+/// Items that look like passwords, tokens or keys, for the Privacy settings.
+@Observable
+final class SensitiveItemsModel {
+
+    private(set) var items = [HistoryItem]()
+
+    @ObservationIgnored private let history = AppState.main.history!
+
+    init() {
+        refresh()
+        history.subscribe { [weak self] _, _ in self?.refresh() }
+    }
+
+    func refresh() {
+        items = history.suggestedSecrets
+    }
+
+    func delete(_ items: [HistoryItem]) {
+        history.delete(items: items)
+    }
+
+    func keep(_ item: HistoryItem) {
+        history.setSecretDismissed(true, for: item)
+    }
+}
+
+private struct SensitiveItemsSection: View {
+
+    @Bindable var state: AppState
+    @State private var model = SensitiveItemsModel()
+    @State private var confirmsDeletingAll = false
+
+    private static let retentionOptions: [(Int, String)] = [(0, "Never"), (1, "After 1 hour"), (24, "After 1 day"), (168, "After 1 week")]
+
+    var body: some View {
+        Section {
+            if model.items.isEmpty {
+                Label("Nothing in your history looks like a password or key.", systemImage: "checkmark.shield")
+                    .foregroundStyle(.secondary)
+            }
+            else {
+                ForEach(model.items, id: \.id) { item in
+                    HStack(spacing: 8) {
+                        Image(systemName: item.isConfirmedSecret ? "key.fill" : "questionmark.key.filled")
+                            .frame(width: 18)
+                            .foregroundStyle(item.isConfirmedSecret ? .orange : .secondary)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(SecretDetector.mask(item.getPlainString() ?? item.displayTitle))
+                                .monospaced()
+                                .lineLimit(1)
+                            Text("\(item.secretReason ?? "Secret") · \(item.copiedAt.formatted(.relative(presentation: .named)))")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Button("Keep") { model.keep(item) }
+                            .buttonStyle(.borderless)
+                            .help("Stop suggesting this item")
+                        Button {
+                            model.delete([item])
+                        } label: {
+                            Image(systemName: "trash")
+                        }
+                        .buttonStyle(.borderless)
+                        .help("Delete this item")
+                    }
+                }
+                HStack {
+                    Spacer()
+                    Button("Delete All…") { confirmsDeletingAll = true }
+                }
+            }
+            Picker("Delete automatically", selection: $state.secretRetentionHours) {
+                ForEach(Self.retentionOptions, id: \.0) { Text($0.1).tag($0.0) }
+            }
+        } header: {
+            Text("Passwords and keys")
+        } footer: {
+            Text(footer).foregroundStyle(.secondary)
+        }
+        .onAppear { model.refresh() }
+        .confirmationDialog("Delete \(model.items.count) items that look like passwords or keys?", isPresented: $confirmsDeletingAll) {
+            Button("Delete", role: .destructive) { model.delete(model.items) }
+        } message: {
+            Text("This can't be undone.")
+        }
+    }
+
+    private var footer: String {
+        let review = SecretReviewer.isAvailable
+            ? "Apple Intelligence double-checks uncertain matches on this Mac."
+            : "Turn on Apple Intelligence to have uncertain matches double-checked on this Mac."
+        return "Magpie looks through your history for API keys, tokens and passwords. \(review) Automatic deletion only removes known key formats and matches the model confirmed. Pinned and kept items are never removed."
     }
 }
 

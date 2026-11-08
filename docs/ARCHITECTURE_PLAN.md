@@ -61,6 +61,13 @@ Work happens on `main` in small commits. Each checked step has been built and co
 - [x] **MCP server.** `Magpie --mcp` speaks MCP over stdio and reads the history store read-only. It is off until enabled in Settings, runs locally only, and only returns what Magpie already stored (excluded and concealed items never exist).
 - [x] **UI tests.** Update `MagpieUITests` for the current UI: fixtures built in code, and new search, filter and pin tests. They compile but haven't been run yet. They take over the mouse and keyboard, and need the test runner to be allowed to control the computer.
 
+### Phase 6: Sensitive items (2026-11-07)
+- [x] **Secret detection.** `SecretDetector` flags known key and token formats (certain) and password-like text (possible) during analysis. Analyser version 2 rescans the stored history on launch.
+- [x] **On-device review.** `SecretReviewer` asks Apple's Foundation Models (on-device, no network) about possible matches, one at a time in the background. Without Apple Intelligence, possible matches are suggested as-is.
+- [x] **Review UI.** Privacy settings list suggested items (masked) with Keep and Delete, plus Delete All. The status menu shows "Review N Passwords and Keys…" when there are any. Pinned and kept items are never suggested.
+- [x] **Automatic deletion.** Opt-in (off by default): confirmed secrets older than 1 hour / 1 day / 1 week are deleted. Guesses the model hasn't confirmed are never deleted automatically.
+- [ ] Consider hiding suggested secrets from the MCP server, and checking text recognised in images.
+
 ## Before the first public release
 - [ ] Switch the bundle id from `com.sandcheeeez.Magpie` to one based on the owner's domain (`com.<domain>.Magpie`), before anyone else installs it. Changing it later resets every user's history, settings and Accessibility permission.
 - [ ] Sign with a Developer ID certificate and notarise. The Apple Development certificate used for local builds embeds the owner's Apple ID email, so share source rather than builds until then.

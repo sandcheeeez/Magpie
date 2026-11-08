@@ -54,6 +54,14 @@ class AppState {
         didSet { Settings.main.allowsAssistantAccess = allowsAssistantAccess }
     }
     
+    /// Hours after which confirmed secrets are deleted automatically. `0` never deletes them.
+    var secretRetentionHours: Int {
+        didSet {
+            Settings.main.secretRetentionHours = secretRetentionHours
+            deleteExpiredSecrets()
+        }
+    }
+    
     /// The most unpinned items the history keeps.
     var maxHistory: Int {
         didSet { history.setMaxItems(maxHistory) }
@@ -76,6 +84,7 @@ class AppState {
         excludedBundleIds = settings.excludedBundleIds
         maxHistory = settings.maxHistory
         allowsAssistantAccess = settings.allowsAssistantAccess
+        secretRetentionHours = settings.secretRetentionHours
         HistoryItem.pastesRichText = settings.pastesRichText
         
         // Setup history
@@ -88,6 +97,19 @@ class AppState {
         pasteboardMonitor = PasteboardMonitor(pasteboard: NSPasteboard.general, changeCount: settings.pasteboardChangeCount, delegate: history)
         
         history.recognizeTextInExistingImages()
+        history.reviewPossibleSecrets()
+        deleteExpiredSecrets()
+        secretExpiryTimer = Timer.scheduledTimer(withTimeInterval: 5 * 60, repeats: true) { [weak self] _ in
+            self?.deleteExpiredSecrets()
+        }
+    }
+    
+    @ObservationIgnored private var secretExpiryTimer: Timer?
+    
+    /// Deletes confirmed secrets older than `secretRetentionHours`, if set.
+    func deleteExpiredSecrets() {
+        guard secretRetentionHours > 0, let history = history else { return }
+        history.deleteSecrets(copiedBefore: Date().addingTimeInterval(-Double(secretRetentionHours) * 3600))
     }
     
     

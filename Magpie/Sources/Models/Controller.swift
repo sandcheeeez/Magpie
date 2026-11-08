@@ -71,6 +71,9 @@ class Controller {
             .with(menuItem: NSMenuItem(title: "Settings…", action: #selector(showSettings), keyEquivalent: ",")
                 .with(accessibilityIdentifier: "")
             )
+            .with(menuItem: NSMenuItem(title: "Review Passwords and Keys…", action: #selector(showSensitiveItems), keyEquivalent: "")
+                .with(tag: sensitiveItemsTag)
+            )
             .with(menuItem: NSMenuItem.separator())
             .with(menuItem: NSMenuItem(title: "Toggle Window", action: #selector(togglePopover), keyEquivalent: "V")
                 .with(accessibilityIdentifier: Accessibility.identifiers.toggleMagpieWindowButton)
@@ -93,6 +96,15 @@ class Controller {
         menu.autoenablesItems = false
         
         Self.setMenuItemsTarget(target: target, menu: menu)
+        
+        if let sensitiveItem = menu.item(withTag: sensitiveItemsTag) {
+            sensitiveItem.isHidden = true
+            state.history.subscribe { _, _ in
+                let count = state.history.suggestedSecrets.count
+                sensitiveItem.isHidden = count == 0
+                sensitiveItem.title = "Review \(count) Password\(count == 1 ? "" : "s") and Keys…"
+            }
+        }
         
         observe({ state.launchAtLogin }) { launchAtLogin in
             menu.item(withTitle: "Launch at Login")?.state = launchAtLogin ? .on : .off
@@ -123,6 +135,9 @@ class Controller {
         
         return menu
     }
+    
+    /// Tags the status menu's item for reviewing sensitive items. Position items use their raw values (small numbers) as tags.
+    private static let sensitiveItemsTag = 1000
     
     static func createWindowPositionSubmenu(settings: Settings) -> NSMenu {
         let menu = NSMenu(title: "")
@@ -180,6 +195,12 @@ class Controller {
     
     @objc func clearHistoryClicked() {
         state.history.clear()
+    }
+    
+    /// Opens the Privacy settings, which list items that look like passwords or keys.
+    @objc func showSensitiveItems() {
+        showSettings()
+        (settingsWindowController.window?.contentViewController as? NSTabViewController)?.selectedTabViewItemIndex = 2
     }
     
     @objc func showHelpWindow() {

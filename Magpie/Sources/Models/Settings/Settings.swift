@@ -87,6 +87,9 @@ struct Settings: Codable, Equatable {
     /// Whether AI assistants connected through `Magpie --mcp` may read the history. Off by default.
     var allowsAssistantAccess = false
     
+    /// Hours after which items that are certainly passwords, tokens or keys are deleted automatically. `0` keeps them until deleted by hand.
+    var secretRetentionHours = 0
+    
     
     // MARK: - Decoding
     
@@ -102,6 +105,7 @@ struct Settings: Codable, Equatable {
         pastesRichText = try container.decodeIfPresent(Bool.self, forKey: .pastesRichText) ?? defaults.pastesRichText
         excludedBundleIds = try container.decodeIfPresent([String].self, forKey: .excludedBundleIds) ?? defaults.excludedBundleIds
         allowsAssistantAccess = try container.decodeIfPresent(Bool.self, forKey: .allowsAssistantAccess) ?? defaults.allowsAssistantAccess
+        secretRetentionHours = try container.decodeIfPresent(Int.self, forKey: .secretRetentionHours) ?? defaults.secretRetentionHours
     }
 }
 
