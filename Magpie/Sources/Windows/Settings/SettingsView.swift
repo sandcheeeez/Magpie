@@ -266,6 +266,8 @@ private struct SensitiveItemsSection: View {
                             Text(SecretDetector.mask(item.getPlainString() ?? item.displayTitle))
                                 .monospaced()
                                 .lineLimit(1)
+                                // Hovering shows the full text, so it can be checked before deleting or keeping it.
+                                .help(String((item.getPlainString() ?? item.displayTitle).prefix(1000)))
                             Text("\(item.secretReason ?? "Secret") · \(item.copiedAt.formatted(.relative(presentation: .named)))")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
