@@ -43,7 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func checkBuildFlags() {
         #if BETA
-        MagpieStatusItem.statusItemButtonImage = NSImage(systemSymbolName: "bird.fill", accessibilityDescription: "Magpie Beta")
+        MagpieStatusItem.statusItemButtonImage?.accessibilityDescription = "Stash Beta"
         #endif
     }
     

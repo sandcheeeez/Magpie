@@ -8,7 +8,13 @@ import Cocoa
 
 class MagpieStatusItem {
     
-    static var statusItemButtonImage = NSImage(systemSymbolName: "bird", accessibilityDescription: "Magpie")
+    /// The clipboard from the app icon in one colour (see icons/build.py). A template image, so macOS tints it for the menu bar.
+    static var statusItemButtonImage: NSImage? = {
+        let image = NSImage(named: "StatusIcon")
+        image?.isTemplate = true
+        image?.accessibilityDescription = "Stash"
+        return image
+    }()
     
     static func create() -> NSStatusItem {
         let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
