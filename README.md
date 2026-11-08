@@ -85,7 +85,7 @@ The server only runs when an assistant launches it. It talks to that assistant o
 | Previous / next filter | ⌘← / ⌘→ |
 | Search | ⌘\\ |
 | Preview | ⌃Space |
-| Delete | ⌃⌫ |
+| Delete | ⌫ or ⌃⌫ |
 | Move panel | ⌃⌥⌘ + arrow |
 | Close | ⎋ |
 

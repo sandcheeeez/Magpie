@@ -101,6 +101,16 @@ class MagpieViewController: NSViewController {
         MagpieHotKeys.ctrlAltCmdDownArrow.onDown { AppState.main.panelPosition = .bottom }
         MagpieHotKeys.ctrlAltCmdUpArrow.onDown { AppState.main.panelPosition = .top }
         MagpieHotKeys.ctrlDelete.onDown(deleteSelected)
+        // Plain Delete also deletes the selected item. The hot key captures the key, so while there is search text to edit, it's passed on to the search field instead.
+        MagpieHotKeys.delete.onDown { [unowned self] in
+            if let editor = self.searchEditor { editor.deleteBackward(nil) } else { self.deleteSelected() }
+        }
+        MagpieHotKeys.delete.onLong { [unowned self] in
+            self.searchEditor?.deleteBackward(nil)
+        }
+        MagpieHotKeys.forwardDelete.onDown { [unowned self] in
+            if let editor = self.searchEditor { editor.deleteForward(nil) } else { self.deleteSelected() }
+        }
         MagpieHotKeys.ctrlSpace.onDown(togglePreview)
         MagpieHotKeys.cmdBackslash.onDown(focusSearchBar)
         MagpieHotKeys.cmdReturn.onDown(pasteSelectedAsPlainText)
@@ -141,6 +151,8 @@ class MagpieViewController: NSViewController {
         panelHotKeys.append(MagpieHotKeys.cmd8)
         panelHotKeys.append(MagpieHotKeys.cmd9)
         panelHotKeys.append(MagpieHotKeys.ctrlDelete)
+        panelHotKeys.append(MagpieHotKeys.delete)
+        panelHotKeys.append(MagpieHotKeys.forwardDelete)
         panelHotKeys.append(MagpieHotKeys.ctrlSpace)
         panelHotKeys.append(MagpieHotKeys.cmdReturn)
         panelHotKeys.append(MagpieHotKeys.cmdP)
@@ -420,6 +432,12 @@ class MagpieViewController: NSViewController {
                 AppState.main.previewHistoryItem = nil
             }
         }
+    }
+    
+    /// The search field's editor, while it's focused and has text that Delete should edit.
+    private var searchEditor: NSText? {
+        guard !searchBar.stringValue.isEmpty else { return nil }
+        return searchBar.currentEditor()
     }
     
     func focusSearchBar() {

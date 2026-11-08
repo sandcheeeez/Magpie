@@ -124,7 +124,7 @@ struct ShortcutsSettingsView: View {
         ("Previous / next filter", "⌘← ⌘→"),
         ("Search", "⌘\\"),
         ("Preview", "⌃Space"),
-        ("Delete", "⌃⌫"),
+        ("Delete", "⌫ or ⌃⌫"),
         ("Move panel", "⌃⌥⌘ + arrow"),
         ("Close", "⎋"),
     ]
