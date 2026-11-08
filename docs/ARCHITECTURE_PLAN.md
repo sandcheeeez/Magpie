@@ -68,6 +68,13 @@ Work happens on `main` in small commits. Each checked step has been built and co
 - [x] **Automatic deletion.** Opt-in (off by default): confirmed secrets older than 1 hour / 1 day / 1 week are deleted. Guesses the model hasn't confirmed are never deleted automatically.
 - [ ] Consider hiding suggested secrets from the MCP server, and checking text recognised in images.
 
+### Phase 7: Name and icons (2026-11-07)
+- [x] **Icons.** Clipboard concept in the Home dashboard / Vehicles style (gradient stroke, green status ring, dark tile), ocean palette. App, beta and menu bar (template SVG) icons all come from `icons/build.py`; the concept sheet is `design/concepts.py`.
+- [x] **Rename to Stash.** Product name, app bundle, menus, windows, settings text, MCP server name and README. The Swift module stays `Magpie`, and the bundle id is unchanged, so history, settings and Accessibility permission carry over.
+- [x] **Panel keys.** Plain Delete/Forward Delete delete the selected item and plain ← → switch filters; while the search field has text, they edit it instead.
+- [ ] Optionally rename the internals (targets, schemes, types, repo) and pick a domain-based bundle id `com.<domain>.Stash` together, before the first public release.
+- [ ] Refresh the README panel screenshots, which still show the old name.
+
 ## Before the first public release
 - [ ] Switch the bundle id from `com.sandcheeeez.Magpie` to one based on the owner's domain (`com.<domain>.Magpie`), before anyone else installs it. Changing it later resets every user's history, settings and Accessibility permission.
 - [ ] Sign with a Developer ID certificate and notarise. The Apple Development certificate used for local builds embeds the owner's Apple ID email, so share source rather than builds until then.

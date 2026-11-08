@@ -17,7 +17,7 @@ struct UITesting {
     
     static func setupUITestEnvironment(launchArgs: [String]) {
         guard isTestBuild else {
-            NSLog("Magpie: ignoring --uitesting outside the XCTest build")
+            NSLog("Stash: ignoring --uitesting outside the XCTest build")
             return
         }
         

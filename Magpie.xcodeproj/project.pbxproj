@@ -1198,8 +1198,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.8.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.Magpie;
-				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = Magpie;
+				PRODUCT_MODULE_NAME = Magpie;
+				PRODUCT_NAME = Stash;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1224,8 +1224,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.8.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.Magpie;
-				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = Magpie;
+				PRODUCT_MODULE_NAME = Magpie;
+				PRODUCT_NAME = Stash;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1249,7 +1249,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Magpie.app/Contents/MacOS/Magpie";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stash.app/Contents/MacOS/Stash";
 			};
 			name = Debug;
 		};
@@ -1271,7 +1271,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Magpie.app/Contents/MacOS/Magpie";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stash.app/Contents/MacOS/Stash";
 			};
 			name = Release;
 		};
@@ -1398,8 +1398,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.8.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieBeta;
-				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = "Magpie Beta";
+				PRODUCT_MODULE_NAME = Magpie;
+				PRODUCT_NAME = "Stash Beta";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG BETA";
 				SWIFT_VERSION = 5.0;
@@ -1424,7 +1424,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Magpie.app/Contents/MacOS/Magpie";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stash.app/Contents/MacOS/Stash";
 			};
 			name = "Beta Debug";
 		};
@@ -1523,8 +1523,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.8.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieBeta;
-				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = "Magpie Beta";
+				PRODUCT_MODULE_NAME = Magpie;
+				PRODUCT_NAME = "Stash Beta";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = BETA;
 				SWIFT_VERSION = 5.0;
@@ -1549,7 +1549,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Magpie.app/Contents/MacOS/Magpie";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stash.app/Contents/MacOS/Stash";
 			};
 			name = "Beta Release";
 		};
@@ -1655,8 +1655,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 2.8.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieXCTest;
-				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = Magpie;
+				PRODUCT_MODULE_NAME = Magpie;
+				PRODUCT_NAME = Stash;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG XCTEST";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1681,7 +1681,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.sandcheeeez.MagpieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Magpie.app/Contents/MacOS/Magpie";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Stash.app/Contents/MacOS/Stash";
 			};
 			name = XCTest;
 		};

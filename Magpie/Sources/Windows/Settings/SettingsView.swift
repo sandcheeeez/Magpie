@@ -82,7 +82,7 @@ struct GeneralSettingsView: View {
         @Bindable var state = model.state
         Form {
             Section {
-                Toggle("Open Magpie when you log in", isOn: Binding(get: { state.launchAtLogin }, set: { state.setLaunchAtLogin($0) }))
+                Toggle("Open Stash when you log in", isOn: Binding(get: { state.launchAtLogin }, set: { state.setLaunchAtLogin($0) }))
             }
             Section("Panel") {
                 Picker("Position", selection: $state.panelPosition) {
@@ -121,7 +121,7 @@ struct ShortcutsSettingsView: View {
         ("Paste as plain text (images: recognised text)", "⌘↩"),
         ("Paste item 0–9", "⌘0 – ⌘9"),
         ("Pin or unpin", "⌘P"),
-        ("Previous / next filter", "⌘← ⌘→"),
+        ("Previous / next filter", "← → or ⌘← ⌘→"),
         ("Search", "⌘\\"),
         ("Preview", "⌃Space"),
         ("Delete", "⌫ or ⌃⌫"),
@@ -131,7 +131,7 @@ struct ShortcutsSettingsView: View {
 
     var body: some View {
         Form {
-            Section("Show Magpie") {
+            Section("Show Stash") {
                 LabeledContent("Shortcut") {
                     if model.isRecording {
                         HStack {
@@ -306,7 +306,7 @@ private struct SensitiveItemsSection: View {
         let review = SecretReviewer.isAvailable
             ? "Apple Intelligence double-checks uncertain matches on this Mac."
             : "Turn on Apple Intelligence to have uncertain matches double-checked on this Mac."
-        return "Magpie looks through your history for API keys, tokens and passwords. \(review) Automatic deletion only removes known key formats and matches the model confirmed. Pinned and kept items are never removed."
+        return "Stash looks through your history for API keys, tokens and passwords. \(review) Automatic deletion only removes known key formats and matches the model confirmed. Pinned and kept items are never removed."
     }
 }
 
@@ -342,8 +342,8 @@ private struct AssistantAccessSection: View {
     @State private var copied = false
 
     private var command: String {
-        let executable = Bundle.main.executablePath ?? "/Applications/Magpie.app/Contents/MacOS/Magpie"
-        return "claude mcp add magpie -- \"\(executable)\" --mcp"
+        let executable = Bundle.main.executablePath ?? "/Applications/Stash.app/Contents/MacOS/Stash"
+        return "claude mcp add stash -- \"\(executable)\" --mcp"
     }
 
     var body: some View {
@@ -363,7 +363,7 @@ private struct AssistantAccessSection: View {
                             copied = true
                         }
                     }
-                    Text("Other assistants that support MCP can run the same command, `Magpie --mcp`.")
+                    Text("Other assistants that support MCP can run the same command, `Stash --mcp`.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -371,7 +371,7 @@ private struct AssistantAccessSection: View {
         } header: {
             Text("Assistant access")
         } footer: {
-            Text("Assistants you connect can list, search and read your history, including recognised text in images. Access is read-only and runs locally through MCP; nothing is sent over the network by Magpie. Excluded apps and password copies are never saved, so they can't be read.")
+            Text("Assistants you connect can list, search and read your history, including recognised text in images. Access is read-only and runs locally through MCP; nothing is sent over the network by Stash. Excluded apps and password copies are never saved, so they can't be read.")
                 .foregroundStyle(.secondary)
         }
     }
@@ -443,7 +443,7 @@ struct StorageSettingsView: View {
                     }
                 }
             } footer: {
-                Text("Your history is stored only on this Mac. Magpie never sends it anywhere.")
+                Text("Your history is stored only on this Mac. Stash never sends it anywhere.")
                     .foregroundStyle(.secondary)
             }
             

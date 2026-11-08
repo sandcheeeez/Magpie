@@ -61,10 +61,10 @@ class Controller {
     
     static func createMenu(settings: Settings, state: AppState, target: AnyObject?) -> NSMenu {
         let menu = NSMenu()
-            .with(menuItem: NSMenuItem(title: "About Magpie", action: #selector(showAboutWindow), keyEquivalent: "")
+            .with(menuItem: NSMenuItem(title: "About Stash", action: #selector(showAboutWindow), keyEquivalent: "")
                 .with(accessibilityIdentifier: Accessibility.identifiers.aboutButton)
             )
-            .with(menuItem: NSMenuItem(title: "Magpie Help", action: #selector(showHelpWindow), keyEquivalent: "")
+            .with(menuItem: NSMenuItem(title: "Stash Help", action: #selector(showHelpWindow), keyEquivalent: "")
                 .with(accessibilityIdentifier: Accessibility.identifiers.helpButton)
             )
             .with(menuItem: NSMenuItem.separator())

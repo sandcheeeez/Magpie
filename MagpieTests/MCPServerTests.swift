@@ -43,7 +43,7 @@ import SwiftData
         let initialize = try request(server, "initialize", ["protocolVersion": "2025-06-18"])
         let result = try #require(initialize["result"] as? [String: Any])
         #expect(result["protocolVersion"] as? String == "2025-06-18")
-        #expect((result["serverInfo"] as? [String: Any])?["name"] as? String == "magpie")
+        #expect((result["serverInfo"] as? [String: Any])?["name"] as? String == "stash")
         
         let tools = try #require((try request(server, "tools/list")["result"] as? [String: Any])?["tools"] as? [[String: Any]])
         #expect(tools.compactMap({ $0["name"] as? String }) == ["list_clipboard_history", "search_clipboard_history", "get_clipboard_item"])

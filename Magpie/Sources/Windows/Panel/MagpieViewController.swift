@@ -117,6 +117,15 @@ class MagpieViewController: NSViewController {
         MagpieHotKeys.cmdP.onDown(togglePinSelected)
         MagpieHotKeys.cmdLeftArrow.onDown { self.cycleFilter(by: -1) }
         MagpieHotKeys.cmdRightArrow.onDown { self.cycleFilter(by: 1) }
+        // Plain ← → also switch filters, unless there's search text to move through (as with Delete above).
+        MagpieHotKeys.leftArrow.onDown { [unowned self] in
+            if let editor = self.searchEditor { editor.moveLeft(nil) } else { self.cycleFilter(by: -1) }
+        }
+        MagpieHotKeys.leftArrow.onLong { [unowned self] in self.searchEditor?.moveLeft(nil) }
+        MagpieHotKeys.rightArrow.onDown { [unowned self] in
+            if let editor = self.searchEditor { editor.moveRight(nil) } else { self.cycleFilter(by: 1) }
+        }
+        MagpieHotKeys.rightArrow.onLong { [unowned self] in self.searchEditor?.moveRight(nil) }
         
         // Paste hot keys
         MagpieHotKeys.cmd0.onDown { self.shortcutPressed(key: 0) }
@@ -158,6 +167,8 @@ class MagpieViewController: NSViewController {
         panelHotKeys.append(MagpieHotKeys.cmdP)
         panelHotKeys.append(MagpieHotKeys.cmdLeftArrow)
         panelHotKeys.append(MagpieHotKeys.cmdRightArrow)
+        panelHotKeys.append(MagpieHotKeys.leftArrow)
+        panelHotKeys.append(MagpieHotKeys.rightArrow)
         
         Magpie.observe({ AppState.main.isHistoryPanelShown }) { [weak self] isShown in
             self?.panelHotKeys.forEach({ $0.isPaused = !isShown })
@@ -167,7 +178,7 @@ class MagpieViewController: NSViewController {
     }
     
     private func styleHeader() {
-        if let title = view.subviews.compactMap({ $0 as? NSTextField }).first(where: { $0.stringValue == "Magpie" }) {
+        if let title = view.subviews.compactMap({ $0 as? NSTextField }).first(where: { $0.stringValue == "Stash" }) {
             title.font = NSFont.systemFont(ofSize: 17, weight: .bold).rounded
         }
         itemCountLabel.font = .monospacedDigitSystemFont(ofSize: 11, weight: .medium)
@@ -434,7 +445,7 @@ class MagpieViewController: NSViewController {
         }
     }
     
-    /// The search field's editor, while it's focused and has text that Delete should edit.
+    /// The search field's editor, while it's focused and has text that Delete and the arrow keys should edit.
     private var searchEditor: NSText? {
         guard !searchBar.stringValue.isEmpty else { return nil }
         return searchBar.currentEditor()

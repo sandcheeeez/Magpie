@@ -1,12 +1,12 @@
-<p align="center"><img src="images/icon.png" width="128" alt="Magpie icon"></p>
+<p align="center"><img src="images/icon.png" width="128" alt="Stash icon"></p>
 
-<h1 align="center">Magpie</h1>
+<h1 align="center">Stash</h1>
 
 <p align="center">A fast, keyboard-first clipboard manager for macOS that keeps your history private.</p>
 
-Magpie remembers everything you copy (text, code, links, images, files and colours) and gets any of it back in a couple of keystrokes. It understands what you copied: it recognises code and its language, colours written as text, phone numbers and emails, and the text inside screenshots. So you can find things by what they are, not just when you copied them. Everything stays on your Mac.
+Stash remembers everything you copy (text, code, links, images, files and colours) and gets any of it back in a couple of keystrokes. It understands what you copied: it recognises code and its language, colours written as text, phone numbers and emails, and the text inside screenshots. So you can find things by what they are, not just when you copied them. Everything stays on your Mac.
 
-<p align="center"><img src="images/magpie-panel.png" width="760" alt="Magpie's history panel in light and dark mode, showing a Swift snippet, a message with a phone number, a link, a pinned note, a screenshot, colours and a file"></p>
+<p align="center"><img src="images/magpie-panel.png" width="760" alt="Stash's history panel in light and dark mode, showing a Swift snippet, a message with a phone number, a link, a pinned note, a screenshot, colours and a file"></p>
 
 ## Features
 
@@ -39,28 +39,28 @@ Magpie remembers everything you copy (text, code, links, images, files and colou
 
 ## Privacy
 
-Clipboard history is some of the most sensitive data on your Mac, so Magpie is designed to keep it there:
+Clipboard history is some of the most sensitive data on your Mac, so Stash is designed to keep it there:
 
-- **No network access.** Magpie makes no network requests: no analytics, no update checks, no link previews. A test (`PrivacyTests`) fails the build if networking APIs are ever added to the app.
+- **No network access.** Stash makes no network requests: no analytics, no update checks, no link previews. A test (`PrivacyTests`) fails the build if networking APIs are ever added to the app.
 - **On-device processing.** Text recognition, code and colour detection, and tagging all run locally.
 - **Stored locally.** Your history lives in `~/Library/Application Support/com.sandcheeeez.Magpie`. There is no sync. If iCloud sync is added, it will only ever use your own iCloud account.
 - **Sensitive copies are skipped.** Anything an app marks as a password or temporary (such as `org.nspasteboard.ConcealedType`) is never saved. Nothing is saved from excluded apps: password managers by default, and any app you add in **Settings → Privacy**.
 
 ## Use your clipboard with AI assistants (MCP)
 
-Magpie includes a local [MCP](https://modelcontextprotocol.io) server, so assistants like Claude can find things you copied: "use the error I just copied", "what was the address in that screenshot?". It's **off by default**.
+Stash includes a local [MCP](https://modelcontextprotocol.io) server, so assistants like Claude can find things you copied: "use the error I just copied", "what was the address in that screenshot?". It's **off by default**.
 
 1. Turn on **Settings → Privacy → Let AI assistants read your history**.
 2. Connect your assistant:
    - **Claude Code:**
      ```
-     claude mcp add magpie -- /Applications/Magpie.app/Contents/MacOS/Magpie --mcp
+     claude mcp add stash -- /Applications/Stash.app/Contents/MacOS/Stash --mcp
      ```
    - **Claude desktop app (chats):** add this to `~/Library/Application Support/Claude/claude_desktop_config.json`, then restart Claude:
      ```json
      {
        "mcpServers": {
-         "magpie": { "command": "/Applications/Magpie.app/Contents/MacOS/Magpie", "args": ["--mcp"] }
+         "stash": { "command": "/Applications/Stash.app/Contents/MacOS/Stash", "args": ["--mcp"] }
        }
      }
      ```
@@ -71,18 +71,18 @@ Magpie includes a local [MCP](https://modelcontextprotocol.io) server, so assist
 | `search_clipboard_history` | Search text, text in images, and source apps. |
 | `get_clipboard_item` | An item's full content, optionally with the image. |
 
-The server only runs when an assistant launches it. It talks to that assistant over stdin/stdout (it never opens a network port), opens your history read-only, and can only return what Magpie saved, which never includes excluded apps or password copies. Turning the setting off stops all access immediately. Web and mobile assistants can't use it, because they only support MCP servers on the internet.
+The server only runs when an assistant launches it. It talks to that assistant over stdin/stdout (it never opens a network port), opens your history read-only, and can only return what Stash saved, which never includes excluded apps or password copies. Turning the setting off stops all access immediately. Web and mobile assistants can't use it, because they only support MCP servers on the internet.
 
 ## Keyboard shortcuts
 
 | Action | Shortcut |
 | --- | --- |
-| Show / hide Magpie | ⇧⌘V (configurable) |
+| Show / hide Stash | ⇧⌘V (configurable) |
 | Paste selected item | ↩ |
 | Paste as plain text (images: recognised text) | ⌘↩ |
 | Paste item 0–9 | ⌘0 – ⌘9 |
 | Pin / unpin | ⌘P |
-| Previous / next filter | ⌘← / ⌘→ |
+| Previous / next filter | ← / → or ⌘← / ⌘→ |
 | Search | ⌘\\ |
 | Preview | ⌃Space |
 | Delete | ⌫ or ⌃⌫ |
@@ -100,12 +100,12 @@ The server only runs when an assistant launches it. It talks to that assistant o
 
 ## Install
 
-Magpie doesn't have a downloadable release yet (see the [roadmap](#roadmap)). To build it yourself:
+Stash doesn't have a downloadable release yet (see the [roadmap](#roadmap)). To build it yourself:
 
 1. Install [Xcode](https://developer.apple.com/xcode/) on a Mac running **macOS 26 or later**.
 2. Clone this repository, open `Magpie.xcodeproj`, and under **Signing & Capabilities** choose your team. A free Apple account works.
-3. Choose **Product → Archive**, or just run the **Magpie** scheme, and move `Magpie.app` to Applications.
-4. Open Magpie and allow **Accessibility** access when asked (System Settings → Privacy & Security → Accessibility). Magpie needs it to paste into other apps.
+3. Choose **Product → Archive**, or just run the **Magpie** scheme (it builds Stash), and move `Stash.app` to Applications.
+4. Open Stash and allow **Accessibility** access when asked (System Settings → Privacy & Security → Accessibility). Stash needs it to paste into other apps.
 
 Signing with your own team keeps the Accessibility permission when you update. Unsigned builds have to be approved again after each rebuild.
 
@@ -138,16 +138,16 @@ xcodebuild -project Magpie.xcodeproj -scheme "Magpie XCTest" -destination 'platf
 
 They cover history storage (against an in-memory store), search ranking, content analysis, settings, the MCP server, and the no-network guarantee.
 
-UI tests (`MagpieUITests`) drive the app with the mouse and keyboard, so run them when you aren't using the Mac. Quit your own Magpie first, because both would claim ⇧⌘V. They seed their own history and never touch yours, but they do change the clipboard.
+UI tests (`MagpieUITests`) drive the app with the mouse and keyboard, so run them when you aren't using the Mac. Quit your own Stash first, because both would claim ⇧⌘V. They seed their own history and never touch yours, but they do change the clipboard.
 
 ### Screenshots and icon
 
-- `Magpie --snapshot=<dir>`, in the XCTest build, renders the panel and settings with sample data into PNGs. The images in this README were made that way.
-- The app icon is drawn in code: `swift tools/make-icon.swift Magpie/Resources/Assets.xcassets/AppIcon.appiconset` (add `beta` for the beta icon).
+- `Stash --snapshot=<dir>`, in the XCTest build, renders the panel and settings with sample data into PNGs. The images in this README were made that way.
+- The icons (app, beta and menu bar) are built from one SVG design by `python3 icons/build.py` (needs Google Chrome to render). `design/concepts.py` renders the concept sheet they were chosen from.
 
 ## Roadmap
 
-- [ ] Signed and notarised releases, so Magpie can be downloaded and opened without building it
+- [ ] Signed and notarised releases, so Stash can be downloaded and opened without building it
 - [ ] Optional iCloud sync of history and pins, using only your own iCloud account
 - [ ] Run and stabilise the UI test suite
 - [x] Content analysis: code languages, colours from text, and tags
@@ -158,4 +158,4 @@ UI tests (`MagpieUITests`) drive the app with the mouse and keyboard, so run the
 
 ## Credits
 
-Magpie is a fork of [Yippy](https://github.com/mattDavo/Yippy) by Matthew Davidson, used under the MIT License. See [LICENSE](LICENSE).
+Stash (previously Magpie) is a fork of [Yippy](https://github.com/mattDavo/Yippy) by Matthew Davidson, used under the MIT License. See [LICENSE](LICENSE).
