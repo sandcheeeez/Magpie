@@ -263,11 +263,7 @@ private struct SensitiveItemsSection: View {
                             .frame(width: 18)
                             .foregroundStyle(item.isConfirmedSecret ? .orange : .secondary)
                         VStack(alignment: .leading, spacing: 1) {
-                            Text(SecretDetector.mask(item.getPlainString() ?? item.displayTitle))
-                                .monospaced()
-                                .lineLimit(1)
-                                // Hovering shows the full text, so it can be checked before deleting or keeping it.
-                                .help(String((item.getPlainString() ?? item.displayTitle).prefix(1000)))
+                            RevealOnHoverText(text: item.getPlainString() ?? item.displayTitle)
                             Text("\(item.secretReason ?? "Secret") · \(item.copiedAt.formatted(.relative(presentation: .named)))")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
@@ -311,6 +307,31 @@ private struct SensitiveItemsSection: View {
             ? "Apple Intelligence double-checks uncertain matches on this Mac."
             : "Turn on Apple Intelligence to have uncertain matches double-checked on this Mac."
         return "Magpie looks through your history for API keys, tokens and passwords. \(review) Automatic deletion only removes known key formats and matches the model confirmed. Pinned and kept items are never removed."
+    }
+}
+
+/// Masked text that shows in full while the pointer is over it, so an item can be checked before it's deleted or kept.
+private struct RevealOnHoverText: View {
+
+    let text: String
+    @State private var isRevealed = false
+
+    var body: some View {
+        Group {
+            if isRevealed {
+                Text(String(text.prefix(1000)).trimmingCharacters(in: .whitespacesAndNewlines))
+                    .lineLimit(8)
+                    .textSelection(.enabled)
+            }
+            else {
+                Text(SecretDetector.mask(text))
+                    .lineLimit(1)
+            }
+        }
+        .monospaced()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .onHover { isRevealed = $0 }
     }
 }
 
