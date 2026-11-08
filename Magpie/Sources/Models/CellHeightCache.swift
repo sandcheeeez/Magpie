@@ -7,7 +7,7 @@ import Foundation
 
 class CellHeightsCache {
     
-    struct Context: Equatable {
+    struct Context: Hashable {
         var cellWidth: CGFloat
         var isRichText: Bool
     }

@@ -18,6 +18,18 @@ class MagpieTableView: NSTableView {
     
     var cellHeightsCache = CellHeightsCache()
     
+    /// Each item's cell type. Working it out reads the item's data and can make a file thumbnail, which is too slow to repeat for every row on every reload.
+    private var itemTypes = [UUID: MagpieItem.Type]()
+    
+    func itemType(for item: HistoryItem) -> MagpieItem.Type {
+        if let type = itemTypes[item.id] {
+            return type
+        }
+        let type = item.getTableViewItemType()
+        itemTypes[item.id] = type
+        return type
+    }
+    
     var isRichText: Bool = true
     
     /// Reordering by dragging only makes sense when the full, unfiltered history is shown.
@@ -93,7 +105,7 @@ extension MagpieTableView: NSTableViewDataSource {
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
         let historyItem = magpieItems[row]
-        let itemType = historyItem.getTableViewItemType()
+        let itemType = self.itemType(for: historyItem)
         let cell = tableView.makeView(withIdentifier: itemType.identifier, owner: nil) as? MagpieItem ?? itemType.makeItem()
         cell.setupCell(withYippyTableView: self, forHistoryItem: historyItem, at: row)
         if let cell = cell as? NSTableCellView {
@@ -188,13 +200,13 @@ extension MagpieTableView: NSTableViewDelegate {
     
     func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         let historyItem = magpieItems[row]
-        let itemType = historyItem.getTableViewItemType()
+        let itemType = self.itemType(for: historyItem)
         
         if let height = cellHeightsCache.cellHeight(forId: historyItem.id, withCellIdentifier: itemType.identifier.rawValue, cellWidth: cellWidth, isRichText: isRichText) {
             return height
         }
         
-        let height = historyItem.getTableViewItemType().getItemHeight(withYippyTableView: tableView as! MagpieTableView, forHistoryItem: historyItem)
+        let height = itemType.getItemHeight(withYippyTableView: tableView as! MagpieTableView, forHistoryItem: historyItem)
         
         cellHeightsCache.storeCellHeight(height, forId: historyItem.id, withCellIdentifier: itemType.identifier.rawValue, cellWidth: cellWidth, isRichText: isRichText)
         

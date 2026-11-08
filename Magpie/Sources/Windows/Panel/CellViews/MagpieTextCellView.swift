@@ -69,6 +69,9 @@ class MagpieTextCellView: MagpieItemBaseCellView, MagpieItem {
         return min(estTextHeight, maxTextContainerHeight) + Self.padding.top + Self.padding.bottom + Self.textInset.yTotal + Self.contentViewInsets.yTotal
     }
     
+    /// Characters measured for a cell's height. Far more than fits in the tallest cell at any panel width.
+    private static let maxMeasuredLength = 2000
+    
     static func calculateCellHeight(magpieTableView: MagpieTableView, historyItem: HistoryItem) -> CGFloat {
         // Calculate the width of the cell
         let cellWidth = floor(magpieTableView.cellWidth)
@@ -76,8 +79,12 @@ class MagpieTextCellView: MagpieItemBaseCellView, MagpieItem {
         // Calculate the width of the text container
         let width = MagpieTextCellView.getTextContainerWidth(cellWidth: cellWidth)
         
-        // Create an attributed string of the text
-        let attrStr = HistoryItemText.getAttributedString(forItem: historyItem, usingItemRtf: magpieTableView.isRichText)
+        // Create an attributed string of the text. Cells are capped at `maxCellHeight`, so only the start of long text needs laying out:
+        // measuring all of a long item took seconds and froze the panel when the heights had to be recalculated.
+        var attrStr = HistoryItemText.getAttributedString(forItem: historyItem, usingItemRtf: magpieTableView.isRichText)
+        if attrStr.length > maxMeasuredLength {
+            attrStr = attrStr.attributedSubstring(from: NSRange(location: 0, length: maxMeasuredLength))
+        }
         
         // Determine the height of the text
         let estTextHeight = attrStr.calculateSize(withMaxWidth: width).height
